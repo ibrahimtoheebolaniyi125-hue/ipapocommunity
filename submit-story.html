@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Submit a news story, community announcement or event to Ipapo Broadcast.">
+    <title>Submit Story | Ipapo Broadcast</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="css/pages.css">
+
+    <script src="js/auth.js"></script>
+    <script>
+        if (window.AuthService) {
+            window.AuthService.guardProtectedPage('login.html');
+        }
+    </script>
+</head>
+<body>
+
+    <header class="header" id="header">
+        <a href="index.html" class="logo">
+            IPAPO <span>Broadcast</span>
+        </a>
+
+        <nav class="navbar" id="navbar">
+            <a href="home.html" class="nav-link">Home</a>
+            <a href="news.html" class="nav-link">News</a>
+            <a href="live.html" class="nav-link">Live</a>
+            <a href="programs.html" class="nav-link">Programs</a>
+            <a href="community.html" class="nav-link active">Community</a>
+            <a href="events.html" class="nav-link">Events</a>
+            <a href="gallery.html" class="nav-link">Gallery</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </nav>
+
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+            ☰
+        </button>
+    </header>
+
+    <section class="page-hero">
+        <div class="hero-content">
+            <a href="community.html" style="color:var(--primary); font-size:13px; font-weight:600; display:inline-flex; align-items:center; gap:6px; margin-bottom:14px; text-decoration:none;">
+                ← Back to Community Hub
+            </a>
+            <span class="hero-badge">CITIZEN JOURNALISM</span>
+            <h1>Submit Community <span>News or Story</span></h1>
+            <p>Help us report authentic stories, local achievements, youth initiatives, and cultural activities from your corner of Ipapo.</p>
+        </div>
+    </section>
+
+    <main style="max-width: 800px; margin: -30px auto 90px; padding: 0 20px; position:relative; z-index:5;">
+        <div class="dash-card" style="padding: 40px;">
+
+            <div id="submissionSuccessBanner" style="display:none; background:rgba(16,185,129,0.12); border:1.5px solid #10b981; border-radius:14px; padding:24px; margin-bottom:25px; color:#065f46;">
+                <h3 style="color:#047857; margin-bottom:6px; display:flex; align-items:center; gap:8px;">
+                    <span>✓</span> Story Submitted Successfully!
+                </h3>
+                <p style="font-size:14px; margin:0 0 14px; line-height:1.6;">
+                    Thank you for contributing to Ipapo Broadcast. Your report has been routed to our editorial team for fact-checking and review. Once approved, it will be published to the public news feed.
+                </p>
+                <div style="display:flex; gap:12px;">
+                    <a href="community.html" class="btn" style="min-height:36px; padding:0 18px; font-size:12.5px;">Return to Community Hub</a>
+                    <button type="button" class="btn-outline" style="min-height:36px; padding:0 18px; font-size:12.5px; background:rgba(255,255,255,0.07); color:#e2e8f0; border-color:rgba(255,255,255,0.18);" onclick="resetStoryForm()">Submit Another Story</button>
+                </div>
+            </div>
+
+            <form id="storySubmissionForm" novalidate>
+                <h3 style="font-size: 20px; color: #f1f5f9; margin-bottom: 22px;">Story Details</h3>
+
+                <div class="form-group" style="margin-bottom: 18px;">
+                    <label style="font-size: 13px; font-weight: 600; color: #e2e8f0; margin-bottom: 6px; display:block;">
+                        Story Headline / Title *
+                    </label>
+                    <input type="text" id="storyTitle" class="auth-input" style="color:#e2e8f0; background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.14);" placeholder="e.g. Muslim High School Inter-House Sports Highlights" required>
+                    <span class="error-message" id="titleErr">Please enter a headline for your story.</span>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px;">
+                    <div class="form-group">
+                        <label style="font-size: 13px; font-weight: 600; color: #e2e8f0; margin-bottom: 6px; display:block;">Category *</label>
+                        <select id="storyCategory" class="auth-input" style="color:#e2e8f0; background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.14);">
+                            <option value="Community">Community</option>
+                            <option value="Education">Education</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Culture">Culture</option>
+                            <option value="Local Business">Local Business</option>
+                            <option value="Announcement">Town Announcement</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="font-size: 13px; font-weight: 600; color: #e2e8f0; margin-bottom: 6px; display:block;">Location in Ipapo *</label>
+                        <input type="text" id="storyLocation" class="auth-input" style="color:#e2e8f0; background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.14);" placeholder="e.g. Isale Baale or Market Square" required>
+                        <span class="error-message" id="locErr">Please specify the location.</span>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 18px;">
+                    <label style="font-size: 13px; font-weight: 600; color: #e2e8f0; margin-bottom: 6px; display:block;">
+                        Full Story Description / What Happened *
+                    </label>
+                    <textarea id="storyDesc" class="auth-input" style="color:#e2e8f0; background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.14); min-height: 140px;" placeholder="Provide the details, dates, people involved, and what this means for Ipapo..." required></textarea>
+                    <span class="error-message" id="descErr">Please write the story description.</span>
+                </div>
+
+                <!-- Image Upload / Preset Picker -->
+                <div class="form-group" style="margin-bottom: 24px;">
+                    <label style="font-size: 13px; font-weight: 600; color: #e2e8f0; margin-bottom: 6px; display:block;">
+                        Featured Image / Photo
+                    </label>
+                    <div style="display:flex; gap:12px; align-items:center;">
+                        <input type="file" id="storyImageFile" accept="image/*" style="font-size:13px;">
+                        <span style="font-size:12px; color:#94a3b8;">(Upload photo from device)</span>
+                    </div>
+                    <div id="imagePreviewBox" style="margin-top:12px; display:none;">
+                        <img id="imagePreview" src="" alt="Preview" style="max-height: 180px; border-radius: 8px; border:1px solid #cbd5e1;">
+                    </div>
+                </div>
+
+                <hr style="border:none; border-top:1px solid rgba(255,255,255,0.07); margin: 25px 0;">
+
+                <h3 style="font-size: 18px; color: #f1f5f9; margin-bottom: 18px;">Your Contact Information</h3>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px;">
+                    <div class="form-group">
+                        <label style="font-size: 13px; font-weight: 600; color: #e2e8f0; margin-bottom: 6px; display:block;">Your Full Name *</label>
+                        <input type="text" id="contactName" class="auth-input" style="color:#e2e8f0; background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.14);" required>
+                        <span class="error-message" id="nameErr">Name is required.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="font-size: 13px; font-weight: 600; color: #e2e8f0; margin-bottom: 6px; display:block;">Phone Number / WhatsApp *</label>
+                        <input type="tel" id="contactPhone" class="auth-input" style="color:#e2e8f0; background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.14);" placeholder="080... or +234..." required>
+                        <span class="error-message" id="phoneErr">Phone number is required.</span>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 24px;">
+                    <label style="font-size: 13px; font-weight: 600; color: #e2e8f0; margin-bottom: 6px; display:block;">Email Address (Optional)</label>
+                    <input type="email" id="contactEmail" class="auth-input" style="color:#e2e8f0; background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.14);" placeholder="you@domain.com">
+                </div>
+
+                <button type="submit" class="btn" id="submitStoryBtn" style="min-height: 48px; width: 100%; font-size: 14.5px;">
+                    Submit Story for Review →
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    IPAPO <span>Broadcast</span>
+                </a>
+                <p>Trusted Voice • Professional Media • Community First</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="news.html">News</a>
+                <a href="live.html">Live</a>
+                <a href="programs.html">Programs</a>
+                <a href="community.html">Community</a>
+                <a href="events.html">Events</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+
+            <div class="footer-links">
+                <h4>Follow Us</h4>
+                <a href="https://wa.me/08070426269" target="_blank" rel="noopener">WhatsApp</a>
+                <a href="contact.html">Instagram</a>
+                <a href="news.html">YouTube</a>
+                <a href="index.html#newsletter">Newsletter</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 Ipapo Broadcast. All Rights Reserved.</p>
+            <p>Built with ❤️ for the community.</p>
+        </div>
+
+        <div class="footer-credit">
+            <span class="credit-label">@</span>
+            <span class="builder">Ibrahim Olaniyi (Programmer)</span>
+        </div>
+    </footer>
+    <script src="js/news.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        const storyForm = document.getElementById('storySubmissionForm');
+        const storyTitle = document.getElementById('storyTitle');
+        const storyCategory = document.getElementById('storyCategory');
+        const storyLocation = document.getElementById('storyLocation');
+        const storyDesc = document.getElementById('storyDesc');
+        const storyImageFile = document.getElementById('storyImageFile');
+        const imagePreviewBox = document.getElementById('imagePreviewBox');
+        const imagePreview = document.getElementById('imagePreview');
+        const contactName = document.getElementById('contactName');
+        const contactPhone = document.getElementById('contactPhone');
+        const contactEmail = document.getElementById('contactEmail');
+        const successBanner = document.getElementById('submissionSuccessBanner');
+
+        let selectedImageData = 'img/group.jpg';
+n
+        if (window.AuthService) {
+            const user = window.AuthService.getCurrentUser();
+            if (user) {
+                contactName.value = `${user.firstName} ${user.lastName}`;
+                contactEmail.value = user.email || '';
+                contactPhone.value = user.phone || '';
+                storyLocation.value = user.location || '';
+            }
+        }
+
+        storyImageFile.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    selectedImageData = e.target.result;
+                    imagePreview.src = selectedImageData;
+                    imagePreviewBox.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        storyForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            let valid = true;
+            document.querySelectorAll('.error-message').forEach(el => el.classList.remove('visible'));
+
+            if (!storyTitle.value.trim()) {
+                document.getElementById('titleErr').classList.add('visible');
+                valid = false;
+            }
+            if (!storyLocation.value.trim()) {
+                document.getElementById('locErr').classList.add('visible');
+                valid = false;
+            }
+            if (!storyDesc.value.trim()) {
+                document.getElementById('descErr').classList.add('visible');
+                valid = false;
+            }
+            if (!contactName.value.trim()) {
+                document.getElementById('nameErr').classList.add('visible');
+                valid = false;
+            }
+            if (!contactPhone.value.trim()) {
+                document.getElementById('phoneErr').classList.add('visible');
+                valid = false;
+            }
+
+            if (!valid) return;
+
+            if (window.DashboardService) {
+                window.DashboardService.submitStory({
+                    title: storyTitle.value.trim(),
+                    category: storyCategory.value,
+                    location: storyLocation.value.trim(),
+                    description: storyDesc.value.trim(),
+                    image: selectedImageData,
+                    contactName: contactName.value.trim(),
+                    contactPhone: contactPhone.value.trim(),
+                    contactEmail: contactEmail.value.trim()
+                });
+
+                storyForm.style.display = 'none';
+                successBanner.style.display = 'block';
+                successBanner.scrollIntoView({ behavior: 'smooth' });
+
+                if (window.showToast) window.showToast('Story submitted for editorial review!', 'success');
+            }
+        });
+
+        function resetStoryForm() {
+            storyForm.reset();
+            storyForm.style.display = 'block';
+            successBanner.style.display = 'none';
+            imagePreviewBox.style.display = 'none';
+            selectedImageData = 'img/group.jpg';
+        }
+    </script>
+</body>
+</html>

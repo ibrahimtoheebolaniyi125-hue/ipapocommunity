@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add News Article | Ipapo Broadcast Admin</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../css/admin.css">
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/news.js"></script>
+    <script src="admin.js"></script>
+    <script>
+        if (window.AuthService) {
+            window.AuthService.guardAdminPage('admin-login.html');
+        }
+    </script>
+</head>
+<body class="admin-body">
+    <aside class="admin-sidebar">
+        <div>
+            <a href="admin-dashboard.html" class="admin-logo">
+                IPAPO <span>Admin</span>
+                <span class="admin-badge-tag">PORTAL</span>
+            </a>
+
+            <nav class="admin-nav">
+                <a href="admin-dashboard.html" class="admin-nav-item">📊 Overview</a>
+                <a href="manage-news.html" class="admin-nav-item">📰 Manage News</a>
+                <a href="add-news.html" class="admin-nav-item active">✍️ Add New Article</a>
+                <a href="manage-users.html" class="admin-nav-item">👥 Registered Users</a>
+                <a href="manage-events.html" class="admin-nav-item">📅 Manage Events</a>
+                <a href="manage-submissions.html" class="admin-nav-item">📬 Citizen Submissions</a>
+                <a href="settings.html" class="admin-nav-item">⚙️ Station Settings</a>
+            </nav>
+        </div>
+
+        <div style="border-top: 1px solid var(--admin-border); padding-top: 15px;">
+            <a href="../index.html" class="admin-nav-item" target="_blank">🌐 View Live Website ↗</a>
+            <a href="admin-login.html" class="admin-nav-item text-danger" onclick="AuthService.logout()">🚪 Sign Out</a>
+        </div>
+    </aside>
+    <main class="admin-main">
+        <header class="admin-topbar">
+            <div>
+                <h1>Publish New Article</h1>
+                <p style="color: var(--admin-muted); font-size: 13.5px; margin: 4px 0 0;">
+                    Compose and publish a story to the Ipapo Broadcast platform.
+                </p>
+            </div>
+            <a href="manage-news.html" class="admin-btn admin-btn-outline">← Back to News Table</a>
+        </header>
+
+        <section class="admin-card-box" style="max-width: 850px;">
+            <form id="addNewsForm">
+                <div class="admin-form-group">
+                    <label class="admin-form-label" for="articleTitle">Article Headline *</label>
+                    <input type="text" id="articleTitle" class="admin-form-control" placeholder="Enter compelling news headline" required>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label" for="articleCategory">Category *</label>
+                        <select id="articleCategory" class="admin-form-control">
+                            <option value="Community">Community</option>
+                            <option value="Politics">Politics</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Education">Education</option>
+                            <option value="Culture">Culture</option>
+                            <option value="Media">Media</option>
+                        </select>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label class="admin-form-label" for="articleAuthor">Author / Reporter</label>
+                        <input type="text" id="articleAuthor" class="admin-form-control" value="Ipapo Media Desk">
+                    </div>
+                </div>
+
+                <div class="admin-form-group">
+                    <label class="admin-form-label" for="articleImage">Featured Image URL or Asset Path</label>
+                    <input type="text" id="articleImage" class="admin-form-control" value="img/group.jpg">
+                    <small style="color:var(--admin-muted); font-size:11.5px; display:block; margin-top:4px;">
+                        
+                    </small>
+                </div>
+
+                <div class="admin-form-group">
+                    <label class="admin-form-label" for="articleSummary">Excerpt / Short Summary *</label>
+                    <textarea id="articleSummary" class="admin-form-control" style="min-height: 80px;" placeholder="Brief 1-2 sentence lead for cards and preview tickers..." required></textarea>
+                </div>
+
+                <div class="admin-form-group">
+                    <label class="admin-form-label" for="articleContent">Full Article Body (HTML or paragraphs) *</label>
+                    <textarea id="articleContent" class="admin-form-control" style="min-height: 180px;" placeholder="<p>Full article body paragraph...</p>" required></textarea>
+                </div>
+
+                <div class="admin-form-group">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; color:#fff; font-size:13.5px;">
+                        <input type="checkbox" id="isBreaking" style="width:16px; height:16px; accent-color:var(--admin-primary);">
+                        <span>Flag as Breaking News (shows red badge & ticker priority)</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="admin-btn admin-btn-primary" style="padding: 12px 26px; font-size: 14px;">
+                    Publish Article Now →
+                </button>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        document.getElementById('addNewsForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const title = document.getElementById('articleTitle').value.trim();
+            const category = document.getElementById('articleCategory').value;
+            const author = document.getElementById('articleAuthor').value.trim();
+            const image = document.getElementById('articleImage').value.trim();
+            const summary = document.getElementById('articleSummary').value.trim();
+            const content = document.getElementById('articleContent').value.trim();
+            const isBreaking = document.getElementById('isBreaking').checked;
+
+            if (!title || !summary || !content) return;
+
+            window.NewsService.addArticle({
+                title,
+                category,
+                author,
+                image,
+                summary,
+                content: content.startsWith('<') ? content : `<p>${content.replace(/\n\n/g, '</p><p>')}</p>`,
+                isBreaking,
+                date: 'September 2026',
+                readTime: '4 min read'
+            });
+
+            alert('Article published successfully!');
+            window.location.href = 'manage-news.html';
+        });
+    </script>
+</body>
+</html>

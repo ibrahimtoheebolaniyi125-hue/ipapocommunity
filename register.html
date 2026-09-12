@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create an account on Ipapo Broadcast - Join your community platform for news, events, live radio and civic discussions.">
+    <title>Sign Up | Ipapo Broadcast</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="css/auth.css">
+
+    <script src="js/auth.js"></script>
+    <script>
+        if (window.AuthService && window.AuthService.isAuthenticated()) {
+            window.location.replace("home.html");
+        }
+    </script>
+</head>
+<body class="auth-page">
+
+    <div class="auth-container">
+
+        <aside class="auth-brand-panel">
+            <div class="brand-header">
+                <a href="index.html" class="logo">
+                    IPAPO <span>Broadcast</span>
+                </a>
+            </div>
+
+            <div class="brand-hero">
+                <span class="brand-badge">🤝 Community Membership</span>
+                <h1>Join the Voice of <span>Ipapo.</span></h1>
+                <p>Register to save news articles, listen to live radio programs, RSVP for community festivals, submit local stories, and receive breaking updates directly from your town.</p>
+
+                <div class="brand-highlights">
+                    <div class="highlight-item">
+                        <strong>Resident Hub</strong>
+                        <span>Community Forums & News</span>
+                    </div>
+                    <div class="highlight-item">
+                        <strong>Verified</strong>
+                        <span>Ipapo Citizen Network</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="brand-footer">
+                <p>© 2026 Ipapo Broadcast • Oyo State, Nigeria • Built for the Community</p>
+            </div>
+        </aside>
+
+        <!-- Right Form Panel -->
+        <main class="auth-form-panel">
+            <div class="auth-card" style="max-width: 520px;">
+
+                <div class="auth-header">
+                    <h2>Create an Account</h2>
+                    <p>Fill in your details to register as a member of Ipapo Broadcast.</p>
+                </div>
+
+                <form class="auth-form" id="registerForm" novalidate>
+
+                    <!-- Names Row -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="firstName">First Name *</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">👤</span>
+                                <input type="text" class="auth-input" id="firstName" placeholder="e.g. Ibrahim" required>
+                            </div>
+                            <span class="error-message" id="firstNameError">First name is required.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="lastName">Last Name *</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">👤</span>
+                                <input type="text" class="auth-input" id="lastName" placeholder="e.g. Olaniyi" required>
+                            </div>
+                            <span class="error-message" id="lastNameError">Last name is required.</span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="username">Username *</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">🏷️</span>
+                                <input type="text" class="auth-input" id="username" placeholder="e.g. ibrahim_ipapo" required>
+                            </div>
+                            <span class="error-message" id="usernameError">Username is required.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="email">Email Address *</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">✉️</span>
+                                <input type="email" class="auth-input" id="email" placeholder="you@domain.com" required>
+                            </div>
+                            <span class="error-message" id="emailError">Valid email required.</span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="phone">Phone Number</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">📞</span>
+                                <input type="tel" class="auth-input" id="phone" placeholder="080... or +234...">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="location">Location / Ward in Ipapo</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">📍</span>
+                                <select class="auth-input" id="location" style="appearance:none; -webkit-appearance:none; padding-right:30px; cursor:pointer;">
+                                    <option value="Isale Baale, Ipapo" style="background:#10141d;">Isale Baale, Ipapo</option>
+                                    <option value="Oke-Amu Road, Ipapo" style="background:#10141d;">Oke-Amu Road, Ipapo</option>
+                                    <option value="Oja Titun / Market Area" style="background:#10141d;">Oja Titun / Market Area</option>
+                                    <option value="Agunloye Compound, Ipapo" style="background:#10141d;">Agunloye Compound, Ipapo</option>
+                                    <option value="Station Road / Civic Center" style="background:#10141d;">Station Road / Civic Center</option>
+                                    <option value="Ipapo Descendant (Diaspora / Other)" style="background:#10141d;">Ipapo Descendant (Diaspora / Other)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="regPassword">Password *</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔒</span>
+                            <input type="password" class="auth-input" id="regPassword" placeholder="Create a strong password" required>
+                            <button type="button" class="toggle-password" id="toggleRegPassword" aria-label="Toggle password visibility">👁️</button>
+                        </div>
+                        <span class="error-message" id="regPasswordError">Password does not meet requirements.</span>
+
+                        <div class="password-requirements" id="passwordChecklist">
+                            <div class="req-item" id="reqLength"><span class="req-icon"></span> At least 8 characters</div>
+                            <div class="req-item" id="reqUpper"><span class="req-icon"></span> At least one uppercase letter (A-Z)</div>
+                            <div class="req-item" id="reqNumber"><span class="req-icon"></span> At least one number (0-9)</div>
+                            <div class="req-item" id="reqSpecial"><span class="req-icon"></span> At least one special character (!@#$%^&*)</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="confirmPassword">Confirm Password *</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔒</span>
+                            <input type="password" class="auth-input" id="confirmPassword" placeholder="Re-enter your password" required>
+                            <button type="button" class="toggle-password" id="toggleConfirmPassword" aria-label="Toggle confirm password visibility">👁️</button>
+                        </div>
+                        <span class="error-message" id="confirmPasswordError">Passwords do not match.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label" style="font-size:12px; align-items:flex-start;">
+                            <input type="checkbox" id="termsCheck" required style="margin-top:2px;">
+                            <span>I agree to the <a href="about.html" target="_blank" style="color:var(--primary); text-decoration:underline;">Ipapo Community Terms</a> and will respect civil dialogue and station guidelines.</span>
+                        </label>
+                        <span class="error-message" id="termsError">You must accept the terms to register.</span>
+                    </div>
+
+                    <div class="error-message" id="regGlobalError" style="font-size:13px; text-align:center; padding:6px; background:rgba(239,68,68,0.1); border-radius:6px;"></div>
+
+                    <button type="submit" class="auth-submit-btn" id="regSubmitBtn">
+                        <span class="btn-text">Create Account →</span>
+                        <div class="spinner"></div>
+                    </button>
+
+                    <div class="auth-switch">
+                        Already have an account? 
+                        <a href="login.html">Sign In</a>
+                    </div>
+                </form>
+
+            </div>
+        </main>
+
+    </div>
+
+    <div id="ipapoToast" class="auth-toast" role="alert" aria-live="assertive"></div>
+
+    <script>
+        const regForm = document.getElementById('registerForm');
+        const firstName = document.getElementById('firstName');
+        const lastName = document.getElementById('lastName');
+        const username = document.getElementById('username');
+        const email = document.getElementById('email');
+        const phone = document.getElementById('phone');
+        const locationSelect = document.getElementById('location');
+        const regPassword = document.getElementById('regPassword');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const termsCheck = document.getElementById('termsCheck');
+        const regSubmitBtn = document.getElementById('regSubmitBtn');
+        const regGlobalError = document.getElementById('regGlobalError');
+
+        document.getElementById('toggleRegPassword').addEventListener('click', () => {
+            const isPass = regPassword.type === 'password';
+            regPassword.type = isPass ? 'text' : 'password';
+            document.getElementById('toggleRegPassword').textContent = isPass ? '🙈' : '👁️';
+        });
+
+        document.getElementById('toggleConfirmPassword').addEventListener('click', () => {
+            const isPass = confirmPassword.type === 'password';
+            confirmPassword.type = isPass ? 'text' : 'password';
+            document.getElementById('toggleConfirmPassword').textContent = isPass ? '🙈' : '👁️';
+        });
+
+        const reqLength = document.getElementById('reqLength');
+        const reqUpper = document.getElementById('reqUpper');
+        const reqNumber = document.getElementById('reqNumber');
+        const reqSpecial = document.getElementById('reqSpecial');
+
+        regPassword.addEventListener('input', () => {
+            const val = regPassword.value;
+            reqLength.classList.toggle('valid', val.length >= 8);
+            reqUpper.classList.toggle('valid', /[A-Z]/.test(val));
+            reqNumber.classList.toggle('valid', /\d/.test(val));
+            reqSpecial.classList.toggle('valid', /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(val));
+        });
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById("ipapoToast");
+            toast.className = `auth-toast ${type === 'error' ? 'toast-error' : type === 'success' ? 'toast-success' : ''}`;
+            toast.innerHTML = `<span>${type === 'error' ? '⚠️' : type === 'success' ? '✓' : 'ℹ️'}</span> <div>${message}</div>`;
+            toast.classList.add("show");
+            setTimeout(() => { toast.classList.remove("show"); }, 4000);
+        }
+
+        regForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            document.querySelectorAll('.error-message').forEach(el => el.classList.remove('visible'));
+            document.querySelectorAll('.auth-input').forEach(el => el.classList.remove('has-error'));
+            regGlobalError.style.display = 'none';
+
+            let hasError = false;
+
+            if (!firstName.value.trim()) {
+                document.getElementById('firstNameError').classList.add('visible');
+                firstName.classList.add('has-error');
+                hasError = true;
+            }
+
+            if (!lastName.value.trim()) {
+                document.getElementById('lastNameError').classList.add('visible');
+                lastName.classList.add('has-error');
+                hasError = true;
+            }
+
+            if (!username.value.trim()) {
+                document.getElementById('usernameError').classList.add('visible');
+                username.classList.add('has-error');
+                hasError = true;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email.value.trim() || !emailRegex.test(email.value.trim())) {
+                document.getElementById('emailError').classList.add('visible');
+                email.classList.add('has-error');
+                hasError = true;
+            }
+
+            const passwordVal = regPassword.value;
+            const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+            if (!passwordRegex.test(passwordVal)) {
+                document.getElementById('regPasswordError').classList.add('visible');
+                regPassword.classList.add('has-error');
+                hasError = true;
+            }
+
+            if (passwordVal !== confirmPassword.value) {
+                document.getElementById('confirmPasswordError').classList.add('visible');
+                confirmPassword.classList.add('has-error');
+                hasError = true;
+            }
+
+            if (!termsCheck.checked) {
+                document.getElementById('termsError').classList.add('visible');
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            regSubmitBtn.classList.add('loading');
+            regSubmitBtn.disabled = true;
+
+            try {
+                const newUser = await window.AuthService.register({
+                    firstName: firstName.value.trim(),
+                    lastName: lastName.value.trim(),
+                    username: username.value.trim(),
+                    email: email.value.trim(),
+                    phone: phone.value.trim(),
+                    location: locationSelect.value,
+                    password: passwordVal
+                });
+
+                showToast("Account created successfully! Signing you in...", "success");
+
+                await window.AuthService.login(newUser.email, passwordVal, true);
+
+                setTimeout(() => {
+                    window.location.replace("home.html");
+                }, 800);
+
+            } catch (err) {
+                regSubmitBtn.classList.remove('loading');
+                regSubmitBtn.disabled = false;
+                regGlobalError.textContent = err.message || 'Registration failed.';
+                regGlobalError.classList.add('visible');
+                regGlobalError.style.display = 'block';
+                showToast(err.message, 'error');
+            }
+        });
+    </script>
+</body>
+</html>

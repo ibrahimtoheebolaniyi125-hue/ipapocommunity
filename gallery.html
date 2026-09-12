@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ipapo Photo Gallery - Moments of community life, cultural traditions, sports, education and developmental milestones.">
+    <title>Photo Gallery | Ipapo Broadcast</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="css/pages.css">
+
+    <script src="js/auth.js"></script>
+    <script>
+        if (window.AuthService) {
+            window.AuthService.guardProtectedPage('login.html');
+        }
+    </script>
+</head>
+<body>
+
+    <header class="header" id="header">
+        <a href="index.html" class="logo">
+            IPAPO <span>Broadcast</span>
+        </a>
+
+        <nav class="navbar" id="navbar">
+            <a href="home.html" class="nav-link">Home</a>
+            <a href="news.html" class="nav-link">News</a>
+            <a href="live.html" class="nav-link">Live</a>
+            <a href="programs.html" class="nav-link">Programs</a>
+            <a href="community.html" class="nav-link">Community</a>
+            <a href="events.html" class="nav-link">Events</a>
+            <a href="gallery.html" class="nav-link active">Gallery</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </nav>
+
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+            ☰
+        </button>
+    </header>
+    <section class="page-hero">
+        <div class="hero-content">
+            <span class="hero-badge">VISUAL ARCHIVES OF IPAPO</span>
+            <h1>Moments From <span>Our Town</span></h1>
+            <p>A visual journey celebrating the proud people, cultural heritage, youth achievements, school sports, and development projects of Ipapo.</p>
+        </div>
+    </section>
+    <div class="content-toolbar">
+        <div class="category-filter-pills" id="galleryTabs">
+            <button type="button" class="filter-pill active" data-filter="all">All Photos</button>
+            <button type="button" class="filter-pill" data-filter="culture">Culture & Royal</button>
+            <button type="button" class="filter-pill" data-filter="education">Education & Youth</button>
+            <button type="button" class="filter-pill" data-filter="development">Development</button>
+            <button type="button" class="filter-pill" data-filter="sports">Sports</button>
+        </div>
+    </div>
+
+    <main style="max-width: 1200px; margin: 0 auto 90px; padding: 0 6%;">
+        <div class="gallery-grid" id="galleryContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+            
+            <div class="gallery-item" data-category="culture" data-caption="Aafin Oba Ipapo: The Royal Palace and King of Ipapo HRM Oba Yekini Ademola Abioye II" style="cursor: pointer; border-radius: 14px; overflow: hidden; position: relative;">
+                <img src="img/ippao.jpg" alt="Palace Heritage" style="width: 100%; height: 260px; object-fit: cover; transition: transform 0.4s ease;">
+                <div style="position: absolute; bottom: 0; inset-inline: 0; padding: 12px; background: linear-gradient(transparent, rgba(0,0,0,0.85)); color: #fff; font-size: 13px;">
+                    <strong>Royal Palace Heritage</strong>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-category="development" data-caption="Ipapo Community Development & Scholarship Award Gathering" style="cursor: pointer; border-radius: 14px; overflow: hidden; position: relative;">
+                <img src="img/group.jpg" alt="Community Gathering" style="width: 100%; height: 260px; object-fit: cover; transition: transform 0.4s ease;">
+                <div style="position: absolute; bottom: 0; inset-inline: 0; padding: 12px; background: linear-gradient(transparent, rgba(0,0,0,0.85)); color: #fff; font-size: 13px;">
+                    <strong>Community Gathering</strong>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-category="sports" data-caption="Inter-house sports athletics and student competitions at Muslim High School Ipapo" style="cursor: pointer; border-radius: 14px; overflow: hidden; position: relative;">
+                <img src="img/school.jpg" alt="School Sports" style="width: 100%; height: 260px; object-fit: cover; transition: transform 0.4s ease;">
+                <div style="position: absolute; bottom: 0; inset-inline: 0; padding: 12px; background: linear-gradient(transparent, rgba(0,0,0,0.85)); color: #fff; font-size: 13px;">
+                    <strong>Inter-House Sports Finals</strong>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-category="education" data-caption="Federation of Ipapo Students Union (FIPSU) Leadership & Youth Mentorship" style="cursor: pointer; border-radius: 14px; overflow: hidden; position: relative;">
+                <img src="img/fipsupro.jpg" alt="FIPSU Union" style="width: 100%; height: 260px; object-fit: cover; transition: transform 0.4s ease;">
+                <div style="position: absolute; bottom: 0; inset-inline: 0; padding: 12px; background: linear-gradient(transparent, rgba(0,0,0,0.85)); color: #fff; font-size: 13px;">
+                    <strong>FIPSU Student Leadership</strong>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-category="development" data-caption="Handmade Traditional Black Soap (Ose Abuwe) Enterprise in Ipapo" style="cursor: pointer; border-radius: 14px; overflow: hidden; position: relative;">
+                <img src="img/black.jpg" alt="Black Soap Production" style="width: 100%; height: 260px; object-fit: cover; transition: transform 0.4s ease;">
+                <div style="position: absolute; bottom: 0; inset-inline: 0; padding: 12px; background: linear-gradient(transparent, rgba(0,0,0,0.85)); color: #fff; font-size: 13px;">
+                    <strong>Traditional Black Soap Workshop</strong>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-category="development" data-caption="Construction site of the new College of Education Campus in Ipapo" style="cursor: pointer; border-radius: 14px; overflow: hidden; position: relative;">
+                <img src="img/building.jpg" alt="Campus Construction" style="width: 100%; height: 260px; object-fit: cover; transition: transform 0.4s ease;">
+                <div style="position: absolute; bottom: 0; inset-inline: 0; padding: 12px; background: linear-gradient(transparent, rgba(0,0,0,0.85)); color: #fff; font-size: 13px;">
+                    <strong>College of Education Construction</strong>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-category="culture" data-caption="Public Affairs dialogue with Amofin Beulah Adeoye and town stakeholders" style="cursor: pointer; border-radius: 14px; overflow: hidden; position: relative;">
+                <img src="img/amofin.jpg" alt="Public Figure Dialogue" style="width: 100%; height: 260px; object-fit: cover; transition: transform 0.4s ease;">
+                <div style="position: absolute; bottom: 0; inset-inline: 0; padding: 12px; background: linear-gradient(transparent, rgba(0,0,0,0.85)); color: #fff; font-size: 13px;">
+                    <strong>Leadership & Civic Dialogue</strong>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-category="education" data-caption="Broadcasting station interview and community engagement session" style="cursor: pointer; border-radius: 14px; overflow: hidden; position: relative;">
+                <img src="img/people.jpg" alt="Community Dialogue" style="width: 100%; height: 260px; object-fit: cover; transition: transform 0.4s ease;">
+                <div style="position: absolute; bottom: 0; inset-inline: 0; padding: 12px; background: linear-gradient(transparent, rgba(0,0,0,0.85)); color: #fff; font-size: 13px;">
+                    <strong>Media Voices & Broadcast Team</strong>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div class="lightbox-modal" id="lightboxModal" aria-hidden="true" role="dialog">
+        <button class="lightbox-close" id="lightboxCloseBtn" aria-label="Close Lightbox">✕</button>
+        <div class="lightbox-content">
+            <img id="lightboxImg" src="" alt="Full view">
+            <p class="lightbox-caption" id="lightboxCaption"></p>
+        </div>
+    </div>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    IPAPO <span>Broadcast</span>
+                </a>
+                <p>Trusted Voice • Professional Media • Community First</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="news.html">News</a>
+                <a href="live.html">Live</a>
+                <a href="programs.html">Programs</a>
+                <a href="community.html">Community</a>
+                <a href="events.html">Events</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+
+            <div class="footer-links">
+                <h4>Follow Us</h4>
+                <a href="https://wa.me/08070426269" target="_blank" rel="noopener">WhatsApp</a>
+                <a href="contact.html">Instagram</a>
+                <a href="news.html">YouTube</a>
+                <a href="index.html#newsletter">Newsletter</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 Ipapo Broadcast. All Rights Reserved.</p>
+            <p>Built with ❤️ for the community.</p>
+        </div>
+
+        <div class="footer-credit">
+            <span class="credit-label">@</span>
+            <span class="builder">Ibrahim Olaniyi (Programmer)</span>
+        </div>
+    </footer>
+
+    <script src="js/news.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        const filterTabs = document.querySelectorAll('#galleryTabs .filter-pill');
+        const lightboxModal = document.getElementById('lightboxModal');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const lightboxCaption = document.getElementById('lightboxCaption');
+        const lightboxCloseBtn = document.getElementById('lightboxCloseBtn');
+
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                filterTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const filter = tab.dataset.filter;
+
+                galleryItems.forEach(item => {
+                    if (filter === 'all' || item.dataset.category === filter) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        galleryItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const img = item.querySelector('img');
+                lightboxImg.src = img.src;
+                lightboxCaption.textContent = item.dataset.caption || img.alt;
+                lightboxModal.classList.add('active');
+                lightboxModal.setAttribute('aria-hidden', 'false');
+            });
+        });
+        function closeLightbox() {
+            lightboxModal.classList.remove('active');
+            lightboxModal.setAttribute('aria-hidden', 'true');
+        }
+
+        lightboxCloseBtn.addEventListener('click', closeLightbox);
+        lightboxModal.addEventListener('click', (e) => {
+            if (e.target === lightboxModal) closeLightbox();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightboxModal.classList.contains('active')) closeLightbox();
+        });
+    </script>
+</body>
+</html>

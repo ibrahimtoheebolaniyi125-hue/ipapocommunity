@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage your Ipapo Broadcast user profile, ward location and account security.">
+    <title>Profile & Account Settings | Ipapo Broadcast</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="css/pages.css">
+
+    <script src="js/auth.js"></script>
+    <script>
+        if (window.AuthService) {
+            window.AuthService.guardProtectedPage('login.html');
+        }
+    </script>
+</head>
+<body>
+
+    <header class="header" id="header">
+        <a href="index.html" class="logo">
+            IPAPO <span>Broadcast</span>
+        </a>
+
+        <nav class="navbar" id="navbar">
+            <a href="home.html" class="nav-link">Home</a>
+            <a href="news.html" class="nav-link">News</a>
+            <a href="live.html" class="nav-link">Live</a>
+            <a href="programs.html" class="nav-link">Programs</a>
+            <a href="community.html" class="nav-link">Community</a>
+            <a href="events.html" class="nav-link">Events</a>
+            <a href="gallery.html" class="nav-link">Gallery</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </nav>
+
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+            ☰
+        </button>
+    </header>
+
+    <section class="page-hero">
+        <div class="hero-content">
+            <span class="hero-badge">ACCOUNT PREFERENCES</span>
+            <h1>Profile & <span>Settings</span></h1>
+            <p>Update your resident details, change password, or manage your notification preferences.</p>
+        </div>
+    </section>
+
+    <main style="max-width: 900px; margin: -30px auto 90px; padding: 0 20px; position:relative; z-index:5;">
+        
+        <div class="dash-card" style="display:flex; align-items:center; gap:24px; flex-wrap:wrap; padding:30px;">
+            <img id="profileAvatarImg" src="img/people.jpg" alt="Profile" style="width: 95px; height: 95px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary);">
+            <div>
+                <h2 id="profileOverviewName" style="font-size: 22px; color: #f1f5f9; margin: 0 0 4px;">Resident Name</h2>
+                <div style="font-size: 13.5px; color: #94a3b8; margin-bottom: 8px;">
+                    <span id="profileOverviewUsername">@username</span> • <span id="profileOverviewEmail">email@ipapo.ng</span>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <span class="badge-status active" id="profileOverviewRole">Resident</span>
+                    <small style="color: #94a3b8; font-size: 12px;">Member since: <span id="profileJoinedDate">2026</span></small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Profile Form -->
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <h3>Personal Information</h3>
+            </div>
+            <form id="editProfileForm">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                    <div class="form-group">
+                        <label class="form-label" for="editFirstName">First Name</label>
+                        <input type="text" id="editFirstName" class="auth-input" style="color:#e2e8f0; background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.14);" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editLastName">Last Name</label>
+                        <input type="text" id="editLastName" class="auth-input" style="color:#e2e8f0; background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.14);" required>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                    <div class="form-group">
+                        <label class="form-label" for="editPhone">Phone Number</label>
+                        <input type="tel" id="editPhone" class="auth-input" style="color:#e2e8f0; background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.14);">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editLocation">Location / Ward in Ipapo</label>
+                        <select id="editLocation" class="auth-input" style="color:#e2e8f0; background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.14);">
+                            <option value="Isale Baale, Ipapo">Isale Baale, Ipapo</option>
+                            <option value="Oke-Amu Road, Ipapo">Oke-Amu Road, Ipapo</option>
+                            <option value="Oja Titun / Market Area">Oja Titun / Market Area</option>
+                            <option value="Agunloye Compound, Ipapo">Agunloye Compound, Ipapo</option>
+                            <option value="Station Road / Civic Center">Station Road / Civic Center</option>
+                            <option value="Ipapo Descendant (Diaspora / Other)">Ipapo Descendant (Diaspora / Other)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn" style="min-height: 40px; font-size: 13px;">
+                    Save Profile Changes
+                </button>
+            </form>
+        </div>
+
+        <!-- Change Password Form -->
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <h3>Change Password</h3>
+            </div>
+            <form id="changePasswordForm">
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label class="form-label" for="oldPassword">Current Password</label>
+                    <input type="password" id="oldPassword" class="auth-input" style="color:#e2e8f0; background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.14);" required>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                    <div class="form-group">
+                        <label class="form-label" for="newPassword">New Password</label>
+                        <input type="password" id="newPassword" class="auth-input" style="color:#e2e8f0; background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.14);" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="confirmNewPassword">Confirm New Password</label>
+                        <input type="password" id="confirmNewPassword" class="auth-input" style="color:#e2e8f0; background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.14);" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn" style="min-height: 40px; font-size: 13px;">
+                    Update Password
+                </button>
+            </form>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="dash-card" style="border-color: rgba(239, 68, 68, 0.3);">
+            <div class="dash-card-header">
+                <h3 style="color: #ef4444;">Account Actions</h3>
+            </div>
+            <p style="font-size: 13px; color: #94a3b8; margin-bottom: 16px;">Log out of your active session on this device.</p>
+            <button type="button" class="admin-btn-danger" id="logoutActionBtn" style="padding: 10px 20px; font-size: 13px; border-radius: 30px;">
+                🚪 Log Out of Ipapo Broadcast
+            </button>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    IPAPO <span>Broadcast</span>
+                </a>
+                <p>Trusted Voice • Professional Media • Community First</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="news.html">News</a>
+                <a href="live.html">Live</a>
+                <a href="programs.html">Programs</a>
+                <a href="community.html">Community</a>
+                <a href="events.html">Events</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+
+            <div class="footer-links">
+                <h4>Follow Us</h4>
+                <a href="https://wa.me/08070426269" target="_blank" rel="noopener">WhatsApp</a>
+                <a href="contact.html">Instagram</a>
+                <a href="news.html">YouTube</a>
+                <a href="index.html#newsletter">Newsletter</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 Ipapo Broadcast. All Rights Reserved.</p>
+            <p>Built with ❤️ for the community.</p>
+        </div>
+
+        <div class="footer-credit">
+            <span class="credit-label">@</span>
+            <span class="builder">Ibrahim Olaniyi (Programmer)</span>
+        </div>
+    </footer>
+    <script src="js/news.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!window.AuthService) return;
+            const currentUser = window.AuthService.getCurrentUser();
+            if (!currentUser) return;
+
+            document.getElementById('profileOverviewName').textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+            document.getElementById('profileOverviewUsername').textContent = `@${currentUser.username}`;
+            document.getElementById('profileOverviewEmail').textContent = currentUser.email;
+            document.getElementById('profileOverviewRole').textContent = (currentUser.role || 'resident').toUpperCase();
+            if (currentUser.avatar) document.getElementById('profileAvatarImg').src = currentUser.avatar;
+            if (currentUser.createdAt) {
+                document.getElementById('profileJoinedDate').textContent = new Date(currentUser.createdAt).toLocaleDateString();
+            }
+
+            document.getElementById('editFirstName').value = currentUser.firstName;
+            document.getElementById('editLastName').value = currentUser.lastName;
+            document.getElementById('editPhone').value = currentUser.phone || '';
+            if (currentUser.location) {
+                document.getElementById('editLocation').value = currentUser.location;
+            }
+            document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                try {
+                    await window.AuthService.updateProfile({
+                        firstName: document.getElementById('editFirstName').value.trim(),
+                        lastName: document.getElementById('editLastName').value.trim(),
+                        phone: document.getElementById('editPhone').value.trim(),
+                        location: document.getElementById('editLocation').value
+                    });
+
+                    document.getElementById('profileOverviewName').textContent = `${document.getElementById('editFirstName').value} ${document.getElementById('editLastName').value}`;
+                    if (window.showToast) window.showToast('Profile updated successfully!', 'success');
+                } catch (err) {
+                    if (window.showToast) window.showToast(err.message, 'error');
+                }
+            });
+            document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const oldPass = document.getElementById('oldPassword').value;
+                const newPass = document.getElementById('newPassword').value;
+                const confirmPass = document.getElementById('confirmNewPassword').value;
+
+                if (newPass !== confirmPass) {
+                    if (window.showToast) window.showToast('New passwords do not match!', 'error');
+                    return;
+                }
+
+                try {
+                    await window.AuthService.changePassword(oldPass, newPass);
+                    document.getElementById('changePasswordForm').reset();
+                    if (window.showToast) window.showToast('Password updated successfully!', 'success');
+                } catch (err) {
+                    if (window.showToast) window.showToast(err.message, 'error');
+                }
+            });
+            document.getElementById('logoutActionBtn').addEventListener('click', () => {
+                window.AuthService.logout();
+                window.location.replace('login.html');
+            });
+        });
+    </script>
+</body>
+</html>

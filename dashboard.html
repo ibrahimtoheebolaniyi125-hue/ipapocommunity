@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ipapo Broadcast Resident Dashboard - View saved articles, event RSVPs, community submissions and notices.">
+    <title>User Dashboard | Ipapo Broadcast</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="css/pages.css">
+
+    <script src="js/auth.js"></script>
+    <script>
+        if (window.AuthService) {
+            window.AuthService.guardProtectedPage('login.html');
+        }
+    </script>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header" id="header">
+        <a href="index.html" class="logo">
+            IPAPO <span>Broadcast</span>
+        </a>
+
+        <nav class="navbar" id="navbar">
+            <a href="home.html" class="nav-link">Home</a>
+            <a href="news.html" class="nav-link">News</a>
+            <a href="live.html" class="nav-link">Live</a>
+            <a href="programs.html" class="nav-link">Programs</a>
+            <a href="community.html" class="nav-link">Community</a>
+            <a href="events.html" class="nav-link">Events</a>
+            <a href="gallery.html" class="nav-link">Gallery</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </nav>
+
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+            ☰
+        </button>
+    </header>
+
+    <section class="page-hero">
+        <div class="hero-content">
+            <span class="hero-badge">RESIDENT PORTAL</span>
+            <h1>Welcome Back, <span id="dashUserGreeting">Resident</span></h1>
+            <p>Your personalized command center for community updates, saved articles, event RSVPs, and story submissions.</p>
+        </div>
+    </section>
+
+    <main class="dashboard-grid">
+        <div>
+            <div class="stats-counter-row">
+                <div class="stat-card">
+                    <div class="stat-icon">🔖</div>
+                    <div class="stat-info">
+                        <strong id="statSavedCount">0</strong>
+                        <span>Saved News</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-info">
+                        <strong id="statRsvpCount">0</strong>
+                        <span>Events RSVP'd</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">✍️</div>
+                    <div class="stat-info">
+                        <strong id="statSubmissionsCount">0</strong>
+                        <span>My Submissions</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">🔔</div>
+                    <div class="stat-info">
+                        <strong id="statNotifsCount">0</strong>
+                        <span>New Alerts</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Saved News Quick Access -->
+            <div class="dash-card">
+                <div class="dash-card-header">
+                    <h3>🔖 My Saved News Articles</h3>
+                    <a href="saved-news.html" style="font-size: 13px; color: var(--primary-dark); font-weight: 600;">View All →</a>
+                </div>
+                <div id="dashSavedNewsList">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Events RSVP'd -->
+            <div class="dash-card">
+                <div class="dash-card-header">
+                    <h3>📅 My Upcoming Community Events</h3>
+                    <a href="events.html" style="font-size: 13px; color: var(--primary-dark); font-weight: 600;">Explore Events →</a>
+                </div>
+                <div id="dashEventsList">
+                </div>
+            </div>
+
+            <div class="dash-card">
+                <div class="dash-card-header">
+                    <h3>✍️ My Community Submissions</h3>
+                    <a href="submit-story.html" class="btn" style="min-height: 32px; padding: 0 14px; font-size: 12px;">+ New Submission</a>
+                </div>
+                <div id="dashSubmissionsList">
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="dash-card" style="text-align: center;">
+                <img id="dashAvatar" src="img/people.jpg" alt="Profile avatar" style="width: 85px; height: 85px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); margin: 0 auto 12px;">
+                <h3 id="dashFullName" style="font-size: 18px; margin: 0; color: #f1f5f9;">Ibrahim Olaniyi</h3>
+                <span id="dashEmail" style="font-size: 13px; color: #94a3b8; display: block; margin-bottom: 4px;">resident@ipapo.ng</span>
+                <span class="badge-status active" id="dashRoleBadge" style="margin-bottom: 18px;">Resident</span>
+
+                <div class="profile-info-box">
+                    <div style="margin-bottom: 6px;">
+                        <strong>📍 Ward:</strong> <span id="dashLocation">Isale Baale, Ipapo</span>
+                    </div>
+                    <div>
+                        <strong>📞 Phone:</strong> <span id="dashPhone">08070426269</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <a href="profile.html" class="btn" style="min-height: 38px; font-size: 13px;">Edit Profile & Password</a>
+                    <a href="notifications.html" class="btn-outline" style="min-height: 38px; font-size: 13px; background: rgba(255,255,255,0.07); color: #e2e8f0; border-color: rgba(255,255,255,0.18);">View Notifications</a>
+                    <button type="button" class="admin-btn-danger" id="dashLogoutBtn" style="min-height: 38px; font-size: 13px; border-radius: 30px; width: 100%; justify-content: center;">
+                        Log Out of Account
+                    </button>
+                </div>
+            </div>
+
+            <div class="dash-card" style="background: linear-gradient(135deg, #10141d, #080b12); color: #fff; border: 1px solid rgba(255,204,0,0.3);">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom: 10px;">
+                    <span class="pulse-dot"></span>
+                    <strong style="color:var(--primary); font-size: 12px; text-transform: uppercase;">Radio Streaming Now</strong>
+                </div>
+                <h4 style="font-size: 16px; margin: 0 0 6px;">Community Morning Brief</h4>
+                <p style="font-size: 12.5px; color: rgba(255,255,255,0.7); margin-bottom: 16px;">Listen to local news, farm updates and community interviews.</p>
+                <a href="live.html" class="btn" style="width: 100%; text-align: center; min-height: 38px; font-size: 12.5px;">
+                    ▶ Open Live Player
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    IPAPO <span>Broadcast</span>
+                </a>
+                <p>Trusted Voice • Professional Media • Community First</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="news.html">News</a>
+                <a href="live.html">Live</a>
+                <a href="programs.html">Programs</a>
+                <a href="community.html">Community</a>
+                <a href="events.html">Events</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+
+            <div class="footer-links">
+                <h4>Follow Us</h4>
+                <a href="https://wa.me/08070426269" target="_blank" rel="noopener">WhatsApp</a>
+                <a href="contact.html">Instagram</a>
+                <a href="news.html">YouTube</a>
+                <a href="index.html#newsletter">Newsletter</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 Ipapo Broadcast. All Rights Reserved.</p>
+            <p>Built with ❤️ for the community.</p>
+        </div>
+
+        <div class="footer-credit">
+            <span class="credit-label">@</span>
+            <span class="builder">Ibrahim Olaniyi (Programmer)</span>
+        </div>
+    </footer>
+
+    <script src="js/news.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!window.AuthService) return;
+            const currentUser = window.AuthService.getCurrentUser();
+            if (!currentUser) return;
+
+            document.getElementById('dashUserGreeting').textContent = currentUser.firstName;
+            document.getElementById('dashFullName').textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+            document.getElementById('dashEmail').textContent = currentUser.email;
+            document.getElementById('dashLocation').textContent = currentUser.location || 'Ipapo, Oyo State';
+            document.getElementById('dashPhone').textContent = currentUser.phone || 'Not specified';
+            document.getElementById('dashRoleBadge').textContent = (currentUser.role || 'resident').toUpperCase();
+            if (currentUser.avatar) document.getElementById('dashAvatar').src = currentUser.avatar;
+
+            // Stats
+            const stats = window.DashboardService.getUserDashboardStats(currentUser);
+            document.getElementById('statSavedCount').textContent = stats.savedCount;
+            document.getElementById('statRsvpCount').textContent = stats.rsvpCount;
+            document.getElementById('statSubmissionsCount').textContent = stats.userSubmissionsCount;
+            document.getElementById('statNotifsCount').textContent = stats.unreadNotifs;
+
+            // Saved News List Preview
+            const savedListEl = document.getElementById('dashSavedNewsList');
+            const savedArticles = window.NewsService.getSavedArticles();
+
+            if (savedArticles.length === 0) {
+                savedListEl.innerHTML = `<p style="font-size:13.5px; color:#94a3b8; font-style:italic;">No saved articles yet. Explore news and click the bookmark star!</p>`;
+            } else {
+                savedListEl.innerHTML = savedArticles.slice(0, 3).map(art => `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.07);">
+                        <div>
+                            <a href="article.html?id=${art.id}" style="font-weight:600; font-size:14px; color:#f1f5f9; text-decoration:none;">${art.title}</a>
+                            <small style="display:block; color:#94a3b8;">${art.category} • ${art.date}</small>
+                        </div>
+                        <a href="article.html?id=${art.id}" style="font-size:12px; color:var(--primary-dark); font-weight:600;">Read →</a>
+                    </div>
+                `).join('');
+            }
+
+            const eventsListEl = document.getElementById('dashEventsList');
+            const rsvpdEvents = window.DashboardService.getRsvpdEvents();
+
+            if (rsvpdEvents.length === 0) {
+                eventsListEl.innerHTML = `<p style="font-size:13.5px; color:#94a3b8; font-style:italic;">You haven't RSVP'd for any upcoming events yet.</p>`;
+            } else {
+                eventsListEl.innerHTML = rsvpdEvents.map(evt => `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.07);">
+                        <div>
+                            <strong style="font-size:14px; color:#f1f5f9;">${evt.title}</strong>
+                            <small style="display:block; color:#94a3b8;">📅 ${evt.date} • ${evt.venue}</small>
+                        </div>
+                        <span class="badge-status active">Attending</span>
+                    </div>
+                `).join('');
+            }
+            const subsListEl = document.getElementById('dashSubmissionsList');
+            const userSubmissions = window.DashboardService.getSubmissions().filter(s => 
+                s.contactEmail === currentUser.email || s.contactName === `${currentUser.firstName} ${currentUser.lastName}`
+            );
+
+            if (userSubmissions.length === 0) {
+                subsListEl.innerHTML = `<p style="font-size:13.5px; color:#94a3b8; font-style:italic;">You haven't submitted any stories yet.</p>`;
+            } else {
+                subsListEl.innerHTML = userSubmissions.map(sub => `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.07);">
+                        <div>
+                            <strong style="font-size:14px; color:#f1f5f9;">${sub.title}</strong>
+                            <small style="display:block; color:#94a3b8;">${sub.category} • ${new Date(sub.submittedAt).toLocaleDateString()}</small>
+                        </div>
+                        <span class="badge-status ${sub.status}">${sub.status}</span>
+                    </div>
+                `).join('');
+            }
+
+            document.getElementById('dashLogoutBtn').addEventListener('click', () => {
+                window.AuthService.logout();
+                window.location.replace('login.html');
+            });
+        });
+    </script>
+</body>
+</html>

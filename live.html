@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Listen Live to Ipapo Broadcast - Streaming 24/7 community radio, news analysis, youth dialogue, culture and music from Ipapo, Oyo State.">
+    <title>Live Broadcast & Radio | Ipapo Broadcast</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="css/pages.css">
+
+    <script src="js/auth.js"></script>
+    <script>
+        if (window.AuthService) {
+            window.AuthService.guardProtectedPage('login.html');
+        }
+    </script>
+</head>
+<body>
+    <header class="header" id="header">
+        <a href="index.html" class="logo">
+            IPAPO <span>Broadcast</span>
+        </a>
+
+        <nav class="navbar" id="navbar">
+            <a href="home.html" class="nav-link">Home</a>
+            <a href="news.html" class="nav-link">News</a>
+            <a href="live.html" class="nav-link active">Live</a>
+            <a href="programs.html" class="nav-link">Programs</a>
+            <a href="community.html" class="nav-link">Community</a>
+            <a href="events.html" class="nav-link">Events</a>
+            <a href="gallery.html" class="nav-link">Gallery</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </nav>
+
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+            ☰
+        </button>
+    </header>
+
+    <section class="page-hero">
+        <div class="hero-content">
+            <span class="hero-badge">📻 24/7 COMMUNITY STREAMING</span>
+            <h1>Live <span>Broadcast Studio</span></h1>
+            <p>Tune into real stories, live news bulletins, civic conversations, and the vibrant musical rhythm of Ipapo from anywhere in the world.</p>
+        </div>
+    </section>
+
+    <main class="live-stream-container">
+        <div class="live-hero-card">
+            <div>
+                <div class="live-indicator-pill">
+                    <span class="pulse-dot"></span> ON AIR NOW • IPAPO LIVE
+                </div>
+
+                <h2 style="font-size: clamp(26px, 4vw, 38px); margin-bottom: 12px; color: #fff; line-height: 1.2;">
+                    Ipapo Community Morning Brief
+                </h2>
+
+                <p style="color: rgba(255, 255, 255, 0.75); font-size: 15px; margin-bottom: 20px; line-height: 1.6;">
+                    Featuring live updates on local development projects, market prices in Itesiwaju, cultural dialogues, and exclusive resident interviews with our station hosts.
+                </p>
+                <div class="audio-visualizer" id="audioViz">
+                    <div class="viz-bar"></div>
+                    <div class="viz-bar"></div>
+                    <div class="viz-bar"></div>
+                    <div class="viz-bar"></div>
+                    <div class="viz-bar"></div>
+                    <div class="viz-bar"></div>
+                    <div class="viz-bar"></div>
+                    <div class="viz-bar"></div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-top: 25px;">
+                    <button class="btn" id="mainPlayToggle" type="button" style="min-height: 52px; padding: 0 32px; font-size: 15px;">
+                        <span id="playIcon" style="font-size: 18px; margin-right: 6px;">▶</span> 
+                        <span id="playText">Listen Live</span>
+                    </button>
+
+                    <div style="display: flex; align-items: center; gap: 8px; color: rgba(255, 255, 255, 0.7); font-size: 13px;">
+                        <span>🔊</span>
+                        <input type="range" id="volumeSlider" min="0" max="100" value="85" style="accent-color: var(--primary); cursor: pointer;">
+                    </div>
+
+                    <span style="font-size: 12.5px; color: var(--primary); background: rgba(255, 204, 0, 0.1); padding: 5px 12px; border-radius: 20px;">
+                        👥 <span id="listenerCount">348</span> Listening
+                    </span>
+                </div>
+            </div>
+
+            <div style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px; padding: 28px;">
+                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+                    <img src="img/people.jpg" alt="Presenter" style="width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
+                    <div>
+                        <small style="color: var(--primary); font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 1px;">Current Host</small>
+                        <h4 style="font-size: 18px; margin: 2px 0; color: #fff;">FIPSU Media Bureau</h4>
+                        <span style="font-size: 12.5px; color: rgba(255, 255, 255, 0.6);">Broadcasting from Station Studio 1</span>
+                    </div>
+                </div>
+
+                <h4 style="font-size: 15px; color: #fff; margin-bottom: 12px;">Next Up on Air:</h4>
+                <ul class="schedule-list" style="list-style: none; padding: 0;">
+                    <li style="display: flex; gap: 12px; margin-bottom: 10px; font-size: 13px; color: rgba(255, 255, 255, 0.8);">
+                        <span style="color: var(--primary); font-weight: 600;">08:00 AM</span>
+                        <strong>News & Public Affairs Analysis</strong>
+                    </li>
+                    <li style="display: flex; gap: 12px; margin-bottom: 10px; font-size: 13px; color: rgba(255, 255, 255, 0.8);">
+                        <span style="color: var(--primary); font-weight: 600;">11:00 AM</span>
+                        <strong>Yoruba Heritage & Royalty Hour</strong>
+                    </li>
+                    <li style="display: flex; gap: 12px; font-size: 13px; color: rgba(255, 255, 255, 0.8);">
+                        <span style="color: var(--primary); font-weight: 600;">02:00 PM</span>
+                        <strong>Ipapo Sports & Youth Grassroots</strong>
+                    </li>
+                </ul>
+
+                <a href="programs.html" class="btn-outline" style="width: 100%; text-align: center; margin-top: 20px; font-size: 13px; min-height: 42px;">
+                    View Full Weekly Schedule →
+                </a>
+            </div>
+        </div>
+
+        <section style="margin-top: 65px;">
+            <div class="section-title" style="text-align: left; margin-bottom: 30px;">
+                <span class="section-label">PODCASTS & ARCHIVES</span>
+                <h2>Recent <span>Broadcast Recordings</span></h2>
+                <p>Missed a live session? Catch up on recent community interviews, educational briefings, and discussions on demand.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px;">
+                <div class="dash-card">
+                    <span class="badge-status active">Recorded • 42 mins</span>
+                    <h3 style="font-size: 17px; margin: 12px 0 8px;">Ipapo College of Education Campus Construction Update</h3>
+                    <p style="font-size: 13px; color: #94a3b8; margin-bottom: 16px;">Comprehensive interview with site engineers and community leaders on project timelines.</p>
+                    <button class="btn archive-play-btn" type="button" style="min-height: 36px; padding: 0 16px; font-size: 12px;">
+                        ▶ Listen to Recording
+                    </button>
+                </div>
+
+                <div class="dash-card">
+                    <span class="badge-status active">Recorded • 35 mins</span>
+                    <h3 style="font-size: 17px; margin: 12px 0 8px;">Traditional Black Soap (Ose Abuwe) Trade Dialogue</h3>
+                    <p style="font-size: 13px; color: #94a3b8; margin-bottom: 16px;">Women cooperatives discuss production standards, organic ingredients, and regional exports.</p>
+                    <button class="btn archive-play-btn" type="button" style="min-height: 36px; padding: 0 16px; font-size: 12px;">
+                        ▶ Listen to Recording
+                    </button>
+                </div>
+
+                <div class="dash-card">
+                    <span class="badge-status active">Recorded • 50 mins</span>
+                    <h3 style="font-size: 17px; margin: 12px 0 8px;">Youth Empowerment & JAMB/WAEC Scholarship Forum</h3>
+                    <p style="font-size: 13px; color: #94a3b8; margin-bottom: 16px;">FIPSU leaders outline student welfare packages and tech mentorship drives.</p>
+                    <button class="btn archive-play-btn" type="button" style="min-height: 36px; padding: 0 16px; font-size: 12px;">
+                        ▶ Listen to Recording
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    IPAPO <span>Broadcast</span>
+                </a>
+                <p>Trusted Voice • Professional Media • Community First</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="news.html">News</a>
+                <a href="live.html">Live</a>
+                <a href="programs.html">Programs</a>
+                <a href="community.html">Community</a>
+                <a href="events.html">Events</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+
+            <div class="footer-links">
+                <h4>Follow Us</h4>
+                <a href="https://wa.me/08070426269" target="_blank" rel="noopener">WhatsApp</a>
+                <a href="contact.html">Instagram</a>
+                <a href="news.html">YouTube</a>
+                <a href="index.html#newsletter">Newsletter</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 Ipapo Broadcast. All Rights Reserved.</p>
+            <p>Built with ❤️ for the community.</p>
+        </div>
+
+        <div class="footer-credit">
+            <span class="credit-label">@</span>
+            <span class="builder">Ibrahim Olaniyi (Programmer)</span>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/news.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        const mainPlayToggle = document.getElementById('mainPlayToggle');
+        const playIcon = document.getElementById('playIcon');
+        const playText = document.getElementById('playText');
+        const audioViz = document.getElementById('audioViz');
+        const listenerCount = document.getElementById('listenerCount');
+
+        let isPlaying = false;
+
+        let audioCtx = null;
+        let oscillator = null;
+
+        mainPlayToggle.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+
+            if (isPlaying) {
+                playIcon.textContent = '⏸';
+                playText.textContent = 'Listening Now';
+                audioViz.classList.remove('paused');
+                mainPlayToggle.style.background = '#fff';
+                mainPlayToggle.style.color = '#111';
+
+                listenerCount.textContent = Math.floor(340 + Math.random() * 25);
+                if (window.showToast) window.showToast("Streaming Ipapo Broadcast Live (Online Feed Active)", "success");
+            } else {
+                playIcon.textContent = '▶';
+                playText.textContent = 'Listen Live';
+                audioViz.classList.add('paused');
+                mainPlayToggle.style.background = 'var(--primary)';
+                mainPlayToggle.style.color = '#111';
+                if (window.showToast) window.showToast("Broadcast stream paused.", "info");
+            }
+        });
+
+        document.querySelectorAll('.archive-play-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (window.showToast) {
+                    window.showToast("Playing archived broadcast recording...", "success");
+                }
+                mainPlayToggle.scrollIntoView({ behavior: 'smooth' });
+                if (!isPlaying) {
+                    mainPlayToggle.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ipapo Broadcast Notifications - Breaking news alerts, event reminders and announcements.">
+    <title>Notifications | Ipapo Broadcast</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="css/pages.css">
+
+    <script src="js/auth.js"></script>
+    <script>
+        if (window.AuthService) {
+            window.AuthService.guardProtectedPage('login.html');
+        }
+    </script>
+</head>
+<body>
+
+    <header class="header" id="header">
+        <a href="index.html" class="logo">
+            IPAPO <span>Broadcast</span>
+        </a>
+
+        <nav class="navbar" id="navbar">
+            <a href="home.html" class="nav-link">Home</a>
+            <a href="news.html" class="nav-link">News</a>
+            <a href="live.html" class="nav-link">Live</a>
+            <a href="programs.html" class="nav-link">Programs</a>
+            <a href="community.html" class="nav-link">Community</a>
+            <a href="events.html" class="nav-link">Events</a>
+            <a href="gallery.html" class="nav-link">Gallery</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </nav>
+
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+            ☰
+        </button>
+    </header>
+
+    <section class="page-hero">
+        <div class="hero-content">
+            <span class="hero-badge">STATION & TOWN ALERTS</span>
+            <h1>Notification <span>Center</span></h1>
+            <p>Real-time updates regarding breaking news, live broadcast sessions, royal proclamations, and upcoming community meetings.</p>
+        </div>
+    </section>
+
+    <main style="max-width: 850px; margin: -30px auto 90px; padding: 0 20px; position:relative; z-index:5;">
+        <div class="dash-card" style="padding: 30px;">
+            <div class="dash-card-header">
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <button type="button" class="filter-pill active" id="filterAllNotifs">All Alerts</button>
+                    <button type="button" class="filter-pill" id="filterUnreadNotifs">Unread Only</button>
+                </div>
+                <button type="button" class="btn-outline" id="markAllReadBtn" style="font-size:12.5px; min-height:34px; background:rgba(255,255,255,0.07); color:#e2e8f0; border-color:rgba(255,255,255,0.18);">
+                    ✓ Mark All as Read
+                </button>
+            </div>
+
+            <div id="notificationsList">
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    IPAPO <span>Broadcast</span>
+                </a>
+                <p>Trusted Voice • Professional Media • Community First</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="news.html">News</a>
+                <a href="live.html">Live</a>
+                <a href="programs.html">Programs</a>
+                <a href="community.html">Community</a>
+                <a href="events.html">Events</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+
+            <div class="footer-links">
+                <h4>Follow Us</h4>
+                <a href="https://wa.me/08070426269" target="_blank" rel="noopener">WhatsApp</a>
+                <a href="contact.html">Instagram</a>
+                <a href="news.html">YouTube</a>
+                <a href="index.html#newsletter">Newsletter</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 Ipapo Broadcast. All Rights Reserved.</p>
+            <p>Built with ❤️ for the community.</p>
+        </div>
+
+        <div class="footer-credit">
+            <span class="credit-label">@</span>
+            <span class="builder">Ibrahim Olaniyi (Programmer)</span>
+        </div>
+    </footer>
+
+    <script src="js/news.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        const notifsList = document.getElementById('notificationsList');
+        const markAllBtn = document.getElementById('markAllReadBtn');
+        let showUnreadOnly = false;
+
+        function renderNotifs() {
+            if (!window.DashboardService) return;
+            let list = window.DashboardService.getNotifications();
+
+            if (showUnreadOnly) {
+                list = list.filter(n => !n.read);
+            }
+
+            if (list.length === 0) {
+                notifsList.innerHTML = `<p style="text-align:center; padding:40px 0; color:#94a3b8; font-style:italic;">No notifications to display.</p>`;
+                return;
+            }
+
+            const icons = {
+                breaking: '🔴',
+                live: '📻',
+                event: '📅',
+                announcement: '📢'
+            };
+
+            notifsList.innerHTML = list.map(n => `
+                <div class="notification-item ${n.read ? '' : 'unread'}" data-id="${n.id}">
+                    <span class="notif-icon">${icons[n.type] || '🔔'}</span>
+                    <div class="notif-body">
+                        <h4>${n.title}</h4>
+                        <p>${n.message}</p>
+                        <small>${n.time} • <a href="${n.link}" style="color:var(--primary-dark); font-weight:600;">Open →</a></small>
+                    </div>
+                    ${!n.read ? `<button type="button" class="mark-single-read" data-id="${n.id}" style="background:none; border:none; color:var(--primary-dark); font-size:11px; font-weight:700; cursor:pointer; height:fit-content;">Mark Read</button>` : ''}
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.mark-single-read').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = btn.dataset.id;
+                    window.DashboardService.markNotificationAsRead(id);
+                    renderNotifs();
+                });
+            });
+        }
+
+        markAllBtn.addEventListener('click', () => {
+            window.DashboardService.markAllNotificationsAsRead();
+            renderNotifs();
+            if (window.showToast) window.showToast('All notifications marked as read.', 'info');
+        });
+
+        document.getElementById('filterAllNotifs').addEventListener('click', function() {
+            showUnreadOnly = false;
+            this.classList.add('active');
+            document.getElementById('filterUnreadNotifs').classList.remove('active');
+            renderNotifs();
+        });
+
+        document.getElementById('filterUnreadNotifs').addEventListener('click', function() {
+            showUnreadOnly = true;
+            this.classList.add('active');
+            document.getElementById('filterAllNotifs').classList.remove('active');
+            renderNotifs();
+        });
+
+        document.addEventListener('DOMContentLoaded', renderNotifs);
+    </script>
+</body>
+</html>

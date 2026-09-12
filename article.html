@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ipapo Broadcast - Community story and in-depth article.">
+    <title>Article | Ipapo Broadcast</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="css/pages.css">
+    <script src="js/auth.js"></script>
+    <script>
+        if (window.AuthService) {
+            window.AuthService.guardProtectedPage('login.html');
+        }
+    </script>
+</head>
+<body>
+    <header class="header" id="header">
+        <a href="index.html" class="logo">
+            IPAPO <span>Broadcast</span>
+        </a>
+
+        <nav class="navbar" id="navbar">
+            <a href="home.html" class="nav-link">Home</a>
+            <a href="news.html" class="nav-link active">News</a>
+            <a href="live.html" class="nav-link">Live</a>
+            <a href="programs.html" class="nav-link">Programs</a>
+            <a href="community.html" class="nav-link">Community</a>
+            <a href="events.html" class="nav-link">Events</a>
+            <a href="gallery.html" class="nav-link">Gallery</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </nav>
+
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+            ☰
+        </button>
+    </header>
+    <section class="page-hero" style="padding-bottom: 90px;">
+        <div class="hero-content">
+            <a href="news.html" style="color:var(--primary); font-size:13px; font-weight:600; display:inline-flex; align-items:center; gap:6px; margin-bottom:14px; text-decoration:none;">
+                ← Back to News Directory
+            </a>
+            <span class="hero-badge" id="articleCategoryBadge">COMMUNITY</span>
+            <h1 id="articleMainTitle" style="font-size:clamp(28px, 4.5vw, 44px); line-height:1.25;">
+                Loading Article...
+            </h1>
+        </div>
+    </section>
+    <main class="article-container">
+        <article class="article-main-card">
+            <div class="article-hero-img-wrap">
+                <img id="articleFeaturedImg" src="img/group.jpg" alt="Article image">
+            </div>
+            <div class="article-meta-bar">
+                <div class="meta-author-group">
+                    <img class="meta-avatar" src="img/people.jpg" alt="Author avatar" id="authorAvatar">
+                    <div class="meta-info">
+                        <h4 id="articleAuthor">Ipapo Media Desk</h4>
+                        <span id="articleDate">September 2026 • 4 min read</span>
+                    </div>
+                </div>
+
+                <div class="article-share-group">
+                    <button type="button" class="share-btn" id="saveArticleHeaderBtn">
+                        <span id="saveStarIcon">☆</span> Save Story
+                    </button>
+                    <a href="#" class="share-btn" id="shareWhatsappBtn" target="_blank" rel="noopener">
+                        <span>💬</span> WhatsApp
+                    </a>
+                    <button type="button" class="share-btn" id="copyLinkBtn">
+                        <span>🔗</span> Copy Link
+                    </button>
+                </div>
+            </div>
+            <div class="article-body" id="articleFullBody">
+            </div>
+            <section class="article-comments-section">
+                <h3 style="font-size: 22px; color: #f1f5f9; margin-bottom: 6px;">Community Discussion</h3>
+                <p style="font-size: 13.5px; color: #94a3b8;">Share your thoughts and reactions with fellow Ipapo residents.</p>
+                <div class="comments-list" id="commentsList">
+
+                </div>
+                <form class="comment-form" id="commentForm">
+                    <label for="commentTextInput" style="font-size: 13.5px; font-weight: 600; color: #e2e8f0;">
+                        Join the conversation:
+                    </label>
+                    <textarea 
+                        id="commentTextInput" 
+                        placeholder="Write your respectful comment or perspective on this story..." 
+                        required
+                    ></textarea>
+                    <button type="submit" class="btn" style="align-self: flex-start; min-height: 42px; font-size: 13.5px;">
+                        Post Comment →
+                    </button>
+                </form>
+            </section>
+        </article>
+        <section style="margin-top: 60px;">
+            <div class="section-title" style="text-align: left; margin-bottom: 25px;">
+                <span class="section-label">MORE FROM IPAPO</span>
+                <h2 style="font-size: 26px;">Related <span>Stories</span></h2>
+            </div>
+            <div class="news-grid-page" id="relatedNewsGrid" style="padding: 0; margin-bottom: 40px;">
+           
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    IPAPO <span>Broadcast</span>
+                </a>
+                <p>Trusted Voice • Professional Media • Community First</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="news.html">News</a>
+                <a href="live.html">Live</a>
+                <a href="programs.html">Programs</a>
+                <a href="community.html">Community</a>
+                <a href="events.html">Events</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+
+            <div class="footer-links">
+                <h4>Follow Us</h4>
+                <a href="https://wa.me/08070426269" target="_blank" rel="noopener">WhatsApp</a>
+                <a href="contact.html">Instagram</a>
+                <a href="news.html">YouTube</a>
+                <a href="index.html#newsletter">Newsletter</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 Ipapo Broadcast. All Rights Reserved.</p>
+            <p>Built with ❤️ for the community.</p>
+        </div>
+
+        <div class="footer-credit">
+            <span class="credit-label">@</span>
+            <span class="builder">Ibrahim Olaniyi (Programmer)</span>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/news.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const articleId = urlParams.get('id') || 'art-001';
+
+            if (!window.NewsService) return;
+
+            const article = window.NewsService.getArticleById(articleId) || window.NewsService.getAllNews()[0];
+
+            if (!article) {
+                window.location.href = 'news.html';
+                return;
+            }
+
+            document.title = `${article.title} | Ipapo Broadcast`;
+            document.getElementById('articleMainTitle').textContent = article.title;
+            document.getElementById('articleCategoryBadge').textContent = (article.category || 'COMMUNITY').toUpperCase();
+            document.getElementById('articleFeaturedImg').src = article.image;
+            document.getElementById('articleFeaturedImg').alt = article.title;
+            document.getElementById('articleAuthor').textContent = article.author || 'Ipapo Media Desk';
+            document.getElementById('articleDate').textContent = `${article.date} • ${article.readTime || '4 min read'}`;
+            document.getElementById('articleFullBody').innerHTML = article.content;
+
+            // Bookmark Button State
+            const saveBtn = document.getElementById('saveArticleHeaderBtn');
+            const starIcon = document.getElementById('saveStarIcon');
+
+            function updateSaveBtn() {
+                const isSaved = window.NewsService.isArticleSaved(article.id);
+                starIcon.textContent = isSaved ? '★' : '☆';
+                saveBtn.style.background = isSaved ? 'var(--primary)' : 'rgba(255,255,255,0.08)';
+                saveBtn.style.color = isSaved ? '#111' : '#e2e8f0';
+            }
+
+            updateSaveBtn();
+
+            saveBtn.addEventListener('click', () => {
+                const isSaved = window.NewsService.toggleSaveArticle(article.id);
+                updateSaveBtn();
+                if (window.showToast) {
+                    window.showToast(isSaved ? 'Story saved to your personal dashboard!' : 'Story removed from saved list.', 'info');
+                }
+            });
+
+            // Social Sharing
+            const shareUrl = window.location.href;
+            const shareTitle = encodeURIComponent(`${article.title} - Read on Ipapo Broadcast:`);
+            document.getElementById('shareWhatsappBtn').href = `https://api.whatsapp.com/send?text=${shareTitle}%20${encodeURIComponent(shareUrl)}`;
+
+            document.getElementById('copyLinkBtn').addEventListener('click', () => {
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    if (window.showToast) window.showToast('Article link copied to clipboard!', 'success');
+                }).catch(() => {
+                    if (window.showToast) window.showToast('Copied link: ' + shareUrl, 'info');
+                });
+            });
+            const commentsList = document.getElementById('commentsList');
+            const commentForm = document.getElementById('commentForm');
+            const commentTextInput = document.getElementById('commentTextInput');
+
+            function renderComments() {
+                const comments = window.NewsService.getComments(article.id);
+                if (comments.length === 0) {
+                    commentsList.innerHTML = `<p style="font-size:13.5px; color:#94a3b8; font-style:italic;">No comments yet. Be the first to share your thoughts!</p>`;
+                    return;
+                }
+
+                commentsList.innerHTML = comments.map(c => `
+                    <div class="comment-card">
+                        <div class="comment-card-header">
+                            <strong>${c.name}</strong>
+                            <span>${c.date}</span>
+                        </div>
+                        <p>${c.text}</p>
+                    </div>
+                `).join('');
+            }
+
+            renderComments();
+
+            commentForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const text = commentTextInput.value.trim();
+                if (!text) return;
+
+                const currentUser = window.AuthService ? window.AuthService.getCurrentUser() : null;
+                const authorName = currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : 'Ipapo Resident';
+
+                window.NewsService.addComment(article.id, {
+                    name: authorName,
+                    text: text
+                });
+
+                commentTextInput.value = '';
+                renderComments();
+                if (window.showToast) window.showToast('Your comment was posted successfully!', 'success');
+            });
+
+            const relatedGrid = document.getElementById('relatedNewsGrid');
+            const allNews = window.NewsService.getAllNews();
+            const related = allNews.filter(a => a.id !== article.id).slice(0, 3);
+
+            relatedGrid.innerHTML = related.map(rel => `
+                <article class="news-card show" style="position:relative;">
+                    <div class="news-image">
+                        <img src="${rel.image}" alt="${rel.title}">
+                        <span class="news-tag">${rel.category}</span>
+                    </div>
+                    <div class="news-content">
+                        <small>${rel.date}</small>
+                        <h4 style="font-size:16px; margin: 6px 0 10px;">${rel.title}</h4>
+                        <a href="article.html?id=${rel.id}" class="btn" style="min-height:36px; padding:0 16px; font-size:12px; display:inline-flex;">
+                            Read Story →
+                        </a>
+                    </div>
+                </article>
+            `).join('');
+        });
+    </script>
+</body>
+</html>

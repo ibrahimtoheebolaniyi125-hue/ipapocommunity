@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Ipapo Broadcast</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../css/admin.css">
+    <script src="../js/auth.js"></script>
+    <script src="../js/news.js"></script>
+    <script src="../js/dashboard.js"></script>
+    <script src="admin.js"></script>
+    <script>
+        if (window.AuthService) {
+            window.AuthService.guardAdminPage('admin-login.html');
+        }
+    </script>
+</head>
+<body class="admin-body">
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div>
+            <a href="admin-dashboard.html" class="admin-logo">
+                IPAPO <span>Admin</span>
+                <span class="admin-badge-tag">PORTAL</span>
+            </a>
+
+            <nav class="admin-nav">
+                <a href="admin-dashboard.html" class="admin-nav-item active">📊 Overview</a>
+                <a href="manage-news.html" class="admin-nav-item">📰 Manage News</a>
+                <a href="add-news.html" class="admin-nav-item">✍️ Add New Article</a>
+                <a href="manage-users.html" class="admin-nav-item">👥 Registered Users</a>
+                <a href="manage-events.html" class="admin-nav-item">📅 Manage Events</a>
+                <a href="manage-submissions.html" class="admin-nav-item">📬 Citizen Submissions</a>
+                <a href="settings.html" class="admin-nav-item">⚙️ Station Settings</a>
+            </nav>
+        </div>
+
+        <div style="border-top: 1px solid var(--admin-border); padding-top: 15px;">
+            <a href="../index.html" class="admin-nav-item" target="_blank">🌐 View Live Website ↗</a>
+            <button type="button" class="admin-nav-item text-danger" id="adminLogoutBtn" style="width:100%; border:none; background:none; cursor:pointer; text-align:left;">
+                🚪 Sign Out
+            </button>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <header class="admin-topbar">
+            <div>
+                <h1>Executive Dashboard</h1>
+                <p style="color: var(--admin-muted); font-size: 13.5px; margin: 4px 0 0;">
+                    Real-time community metrics, publication control and resident submissions review.
+                </p>
+            </div>
+
+            <div class="admin-profile-pill">
+                <img src="../img/people.jpg" alt="Admin" class="admin-avatar">
+                <div>
+                    <strong style="display:block; font-size:13px; color:#fff;" id="topbarAdminName">Editorial Director</strong>
+                    <span style="font-size:11px; color:var(--admin-primary);">Super Admin</span>
+                </div>
+            </div>
+        </header>
+        <section class="admin-metrics-grid">
+            <div class="metric-card">
+                <span>Total Registered Users</span>
+                <strong id="metricUsers">0</strong>
+            </div>
+
+            <div class="metric-card">
+                <span>Total News Articles</span>
+                <strong id="metricNews">0</strong>
+            </div>
+
+            <div class="metric-card">
+                <span>Published Stories</span>
+                <strong id="metricPublished">0</strong>
+            </div>
+
+            <div class="metric-card">
+                <span>Pending Submissions</span>
+                <strong id="metricSubmissions" style="color: var(--admin-primary);">0</strong>
+            </div>
+
+            <div class="metric-card">
+                <span>Scheduled Events</span>
+                <strong id="metricEvents">0</strong>
+            </div>
+        </section>
+        <section class="admin-card-box">
+            <div class="admin-card-header">
+                <h2>📬 Pending Citizen Submissions for Review</h2>
+                <a href="manage-submissions.html" class="admin-btn admin-btn-outline">View All Submissions →</a>
+            </div>
+
+            <div id="pendingSubmissionsQueue">
+                
+            </div>
+        </section>
+        <section class="admin-card-box">
+            <div class="admin-card-header">
+                <h2>📰 Published News Management</h2>
+                <a href="add-news.html" class="admin-btn admin-btn-primary">+ Add New Article</a>
+            </div>
+
+            <div class="admin-table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Headline</th>
+                            <th>Category</th>
+                            <th>Author</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminRecentNewsTable">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.AdminController) {
+                const stats = window.AdminController.getDashboardStats();
+                document.getElementById('metricUsers').textContent = stats.totalUsers;
+                document.getElementById('metricNews').textContent = stats.totalNews;
+                document.getElementById('metricPublished').textContent = stats.publishedArticles;
+                document.getElementById('metricSubmissions').textContent = stats.pendingSubmissions;
+                document.getElementById('metricEvents').textContent = stats.totalEvents;
+            }
+            if (window.AuthService) {
+                const cur = window.AuthService.getCurrentUser();
+                if (cur) {
+                    document.getElementById('topbarAdminName').textContent = `${cur.firstName} ${cur.lastName}`;
+                }
+            }
+            const queueEl = document.getElementById('pendingSubmissionsQueue');
+            if (window.DashboardService) {
+                const pending = window.DashboardService.getSubmissions().filter(s => s.status === 'pending');
+                if (pending.length === 0) {
+                    queueEl.innerHTML = `
+                        <div style="text-align:center; padding: 25px; color: var(--admin-muted); font-size:13.5px;">
+                            ✓ No pending citizen submissions in review queue. All caught up!
+                        </div>
+                    `;
+                } else {
+                    queueEl.innerHTML = pending.slice(0, 3).map(sub => `
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--admin-border); border-radius: 12px; padding: 18px; margin-bottom: 14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                            <div style="max-width: 65%;">
+                                <span class="badge-status pending">Pending Review</span>
+                                <h4 style="margin: 6px 0 4px; font-size:15px; color:#fff;">${sub.title}</h4>
+                                <p style="font-size:13px; color:var(--admin-muted); margin:0 0 6px;">${sub.description.substring(0, 140)}...</p>
+                                <small style="color:var(--admin-primary); font-size:11.5px;">By: ${sub.contactName} (${sub.contactPhone}) • Location: ${sub.location}</small>
+                            </div>
+                            <div class="action-btn-group">
+                                <button type="button" class="admin-btn admin-btn-success" onclick="approveSub('${sub.id}')">
+                                    ✓ Approve & Publish
+                                </button>
+                                <button type="button" class="admin-btn admin-btn-danger" onclick="rejectSub('${sub.id}')">
+                                    ✕ Decline
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+            const tableEl = document.getElementById('adminRecentNewsTable');
+            if (window.NewsService) {
+                const articles = window.NewsService.getAllNews().slice(0, 5);
+                tableEl.innerHTML = articles.map(art => `
+                    <tr>
+                        <td style="font-weight: 600; color: #fff; max-width: 320px;">${art.title}</td>
+                        <td><span class="badge-status draft">${art.category}</span></td>
+                        <td>${art.author || 'Editorial'}</td>
+                        <td>${art.date}</td>
+                        <td><span class="badge-status published">Published</span></td>
+                        <td>
+                            <div class="action-btn-group">
+                                <a href="edit-news.html?id=${art.id}" class="admin-btn admin-btn-outline">Edit</a>
+                                <button type="button" class="admin-btn admin-btn-danger" onclick="deleteArt('${art.id}')">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+            document.getElementById('adminLogoutBtn').addEventListener('click', () => {
+                window.AuthService.logout();
+                window.location.replace('admin-login.html');
+            });
+        });
+
+        window.approveSub = function(id) {
+            if (window.AdminController && window.AdminController.approveSubmission(id)) {
+                alert('Submission approved and published to the live news feed!');
+                window.location.reload();
+            }
+        };
+
+        window.rejectSub = function(id) {
+            if (window.AdminController && window.AdminController.rejectSubmission(id)) {
+                alert('Submission declined.');
+                window.location.reload();
+            }
+        };
+
+        window.deleteArt = function(id) {
+            if (confirm('Are you sure you want to delete this article?')) {
+                window.NewsService.deleteArticle(id);
+                window.location.reload();
+            }
+        };
+    </script>
+</body>
+</html>

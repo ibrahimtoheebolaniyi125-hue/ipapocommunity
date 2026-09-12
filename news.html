@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ipapo Broadcast News - Stay informed with breaking news, community updates, politics, education and sports across Ipapo, Oyo State.">
+    <title>News & Stories | Ipapo Broadcast</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="css/pages.css">
+
+    <script src="js/auth.js"></script>
+    <script>
+        if (window.AuthService) {
+            window.AuthService.guardProtectedPage('login.html');
+        }
+    </script>
+</head>
+<body>
+
+    <header class="header" id="header">
+        <a href="index.html" class="logo">
+            IPAPO <span>Broadcast</span>
+        </a>
+
+        <nav class="navbar" id="navbar">
+            <a href="home.html" class="nav-link">Home</a>
+            <a href="news.html" class="nav-link active">News</a>
+            <a href="live.html" class="nav-link">Live</a>
+            <a href="programs.html" class="nav-link">Programs</a>
+            <a href="community.html" class="nav-link">Community</a>
+            <a href="events.html" class="nav-link">Events</a>
+            <a href="gallery.html" class="nav-link">Gallery</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </nav>
+
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+            ☰
+        </button>
+    </header>
+
+    <div class="breaking-ticker" style="margin-top: 85px;">
+        <div class="ticker-label">
+            <span>🔴</span> Breaking News
+        </div>
+        <div class="ticker-track" id="tickerTrack">
+            <a href="article.html?id=art-001">Community Development: Ipapo Scholarship Award Ceremony 2026 announced</a>
+            <a href="article.html?id=art-008">Education Development: Construction of College of Education campus progresses steadily</a>
+            <a href="article.html?id=art-005">KAP Film Village & Resort: Expanding tourism and jobs in Ipapo/Itesiwaju axis</a>
+        </div>
+    </div>
+    <section class="page-hero">
+        <div class="hero-content">
+            <span class="hero-badge">STAY INFORMED • LOCAL & TIMELY</span>
+            <h1>Latest <span>News & Updates</span></h1>
+            <p>Reliable journalism, community development stories, sports coverage, and civic updates from Ipapo, Oyo State, and beyond.</p>
+        </div>
+    </section>
+
+    <div class="content-toolbar">
+        <div class="category-filter-pills" id="categoryPills">
+            <button type="button" class="filter-pill active" data-cat="all">All News</button>
+            <button type="button" class="filter-pill" data-cat="community">Community</button>
+            <button type="button" class="filter-pill" data-cat="politics">Politics</button>
+            <button type="button" class="filter-pill" data-cat="sports">Sports</button>
+            <button type="button" class="filter-pill" data-cat="education">Education</button>
+            <button type="button" class="filter-pill" data-cat="culture">Culture</button>
+            <button type="button" class="filter-pill" data-cat="media">Media</button>
+        </div>
+
+        <div class="search-box-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="newsSearchInput" placeholder="Search news articles...">
+        </div>
+    </div>
+
+    <main class="news-grid-page" id="newsGrid">
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    IPAPO <span>Broadcast</span>
+                </a>
+                <p>Trusted Voice • Professional Media • Community First</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="news.html">News</a>
+                <a href="live.html">Live</a>
+                <a href="programs.html">Programs</a>
+                <a href="community.html">Community</a>
+                <a href="events.html">Events</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+
+            <div class="footer-links">
+                <h4>Follow Us</h4>
+                <a href="https://wa.me/08070426269" target="_blank" rel="noopener">WhatsApp</a>
+                <a href="contact.html">Instagram</a>
+                <a href="news.html">YouTube</a>
+                <a href="index.html#newsletter">Newsletter</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 Ipapo Broadcast. All Rights Reserved.</p>
+            <p>Built with ❤️ for the community.</p>
+        </div>
+
+        <div class="footer-credit">
+            <span class="credit-label">@</span>
+            <span class="builder">Ibrahim Olaniyi (Programmer)</span>
+        </div>
+    </footer>
+    <script src="js/news.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        let currentCategory = 'all';
+        let currentSearch = '';
+
+        const newsGrid = document.getElementById('newsGrid');
+        const categoryPills = document.querySelectorAll('.filter-pill');
+        const searchInput = document.getElementById('newsSearchInput');
+
+        function renderArticles() {
+            if (!window.NewsService) return;
+
+            let articles = window.NewsService.getAllNews();
+
+            if (currentCategory !== 'all') {
+                articles = articles.filter(a => a.category.toLowerCase() === currentCategory.toLowerCase());
+            }
+            if (currentSearch) {
+                const q = currentSearch.toLowerCase();
+                articles = articles.filter(a => 
+                    a.title.toLowerCase().includes(q) || 
+                    a.summary.toLowerCase().includes(q) || 
+                    a.author.toLowerCase().includes(q)
+                );
+            }
+
+            if (articles.length === 0) {
+                newsGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align:center; padding: 60px 20px; background:#10141d; border-radius:16px; border:1px solid rgba(255,255,255,0.1);">
+                        <span style="font-size:40px;">📰</span>
+                        <h3 style="margin:12px 0 6px; color:#f1f5f9;">No articles found</h3>
+                        <p style="color:#94a3b8; font-size:14px;">Try searching with different keywords or choosing another category.</p>
+                        <button class="btn" style="margin-top:15px; font-size:13px;" onclick="resetFilters()">Reset All Filters</button>
+                    </div>
+                `;
+                return;
+            }
+
+            newsGrid.innerHTML = articles.map(art => {
+                const isSaved = window.NewsService.isArticleSaved(art.id);
+                return `
+                    <article class="news-card reveal show" style="opacity:1; transform:none; position:relative;">
+                        <div class="news-image">
+                            <img src="${art.image}" alt="${art.title}" loading="lazy">
+                            <span class="news-tag">${art.category}</span>
+                            <button 
+                                class="save-article-btn ${isSaved ? 'saved' : ''}" 
+                                data-id="${art.id}" 
+                                aria-label="Save article"
+                                title="${isSaved ? 'Remove from saved' : 'Save article'}"
+                            >
+                                ${isSaved ? '★' : '☆'}
+                            </button>
+                        </div>
+                        <div class="news-content">
+                            <small>${art.date} • ${art.readTime || '4 min read'}</small>
+                            <h3 style="font-size:18px; margin: 8px 0 10px; line-height:1.35;">${art.title}</h3>
+                            <p style="font-size:13.5px; color:#94a3b8; margin-bottom:18px;">${art.summary}</p>
+                            <a href="article.html?id=${art.id}" class="btn" style="min-height:38px; padding:0 18px; font-size:12.5px; display:inline-flex; align-items:center;">
+                                Read Full Story →
+                            </a>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+
+            document.querySelectorAll('.save-article-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const artId = btn.dataset.id;
+                    const savedNow = window.NewsService.toggleSaveArticle(artId);
+                    btn.classList.toggle('saved', savedNow);
+                    btn.innerHTML = savedNow ? '★' : '☆';
+                    btn.title = savedNow ? 'Remove from saved' : 'Save article';
+                    if (window.showToast) {
+                        window.showToast(savedNow ? 'Article saved to your reading list!' : 'Article removed from saved list.', 'info');
+                    }
+                });
+            });
+        }
+
+        categoryPills.forEach(pill => {
+            pill.addEventListener('click', () => {
+                categoryPills.forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                currentCategory = pill.dataset.cat;
+                renderArticles();
+            });
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            currentSearch = e.target.value.trim();
+            renderArticles();
+        });
+
+        function resetFilters() {
+            currentCategory = 'all';
+            currentSearch = '';
+            searchInput.value = '';
+            categoryPills.forEach(p => p.classList.toggle('active', p.dataset.cat === 'all'));
+            renderArticles();
+        }
+
+        document.addEventListener('DOMContentLoaded', renderArticles);
+    </script>
+</body>
+</html>

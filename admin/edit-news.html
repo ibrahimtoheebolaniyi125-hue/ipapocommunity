@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Article | Ipapo Broadcast Admin</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../css/admin.css">
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/news.js"></script>
+    <script src="admin.js"></script>
+    <script>
+        if (window.AuthService) {
+            window.AuthService.guardAdminPage('admin-login.html');
+        }
+    </script>
+</head>
+<body class="admin-body">
+    <aside class="admin-sidebar">
+        <div>
+            <a href="admin-dashboard.html" class="admin-logo">
+                IPAPO <span>Admin</span>
+                <span class="admin-badge-tag">PORTAL</span>
+            </a>
+
+            <nav class="admin-nav">
+                <a href="admin-dashboard.html" class="admin-nav-item">📊 Overview</a>
+                <a href="manage-news.html" class="admin-nav-item active">📰 Manage News</a>
+                <a href="add-news.html" class="admin-nav-item">✍️ Add New Article</a>
+                <a href="manage-users.html" class="admin-nav-item">👥 Registered Users</a>
+                <a href="manage-events.html" class="admin-nav-item">📅 Manage Events</a>
+                <a href="manage-submissions.html" class="admin-nav-item">📬 Citizen Submissions</a>
+                <a href="settings.html" class="admin-nav-item">⚙️ Station Settings</a>
+            </nav>
+        </div>
+
+        <div style="border-top: 1px solid var(--admin-border); padding-top: 15px;">
+            <a href="../index.html" class="admin-nav-item" target="_blank">🌐 View Live Website ↗</a>
+            <a href="admin-login.html" class="admin-nav-item text-danger" onclick="AuthService.logout()">🚪 Sign Out</a>
+        </div>
+    </aside>
+    <main class="admin-main">
+        <header class="admin-topbar">
+            <div>
+                <h1>Edit Article</h1>
+                <p style="color: var(--admin-muted); font-size: 13.5px; margin: 4px 0 0;">
+                    Modify article content, metadata, or breaking news status.
+                </p>
+            </div>
+            <a href="manage-news.html" class="admin-btn admin-btn-outline">← Back to News Table</a>
+        </header>
+
+        <section class="admin-card-box" style="max-width: 850px;">
+            <form id="editNewsForm">
+                <div class="admin-form-group">
+                    <label class="admin-form-label" for="editArticleTitle">Article Headline *</label>
+                    <input type="text" id="editArticleTitle" class="admin-form-control" required>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label" for="editArticleCategory">Category *</label>
+                        <select id="editArticleCategory" class="admin-form-control">
+                            <option value="Community">Community</option>
+                            <option value="Politics">Politics</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Education">Education</option>
+                            <option value="Culture">Culture</option>
+                            <option value="Media">Media</option>
+                        </select>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label class="admin-form-label" for="editArticleAuthor">Author / Reporter</label>
+                        <input type="text" id="editArticleAuthor" class="admin-form-control">
+                    </div>
+                </div>
+
+                <div class="admin-form-group">
+                    <label class="admin-form-label" for="editArticleImage">Featured Image URL</label>
+                    <input type="text" id="editArticleImage" class="admin-form-control">
+                </div>
+
+                <div class="admin-form-group">
+                    <label class="admin-form-label" for="editArticleSummary">Excerpt / Summary *</label>
+                    <textarea id="editArticleSummary" class="admin-form-control" style="min-height: 80px;" required></textarea>
+                </div>
+
+                <div class="admin-form-group">
+                    <label class="admin-form-label" for="editArticleContent">Full Article Body *</label>
+                    <textarea id="editArticleContent" class="admin-form-control" style="min-height: 200px;" required></textarea>
+                </div>
+
+                <div class="admin-form-group">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; color:#fff; font-size:13.5px;">
+                        <input type="checkbox" id="editIsBreaking" style="width:16px; height:16px; accent-color:var(--admin-primary);">
+                        <span>Flag as Breaking News</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="admin-btn admin-btn-primary" style="padding: 12px 26px; font-size: 14px;">
+                    Save Article Updates →
+                </button>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const artId = urlParams.get('id');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!artId || !window.NewsService) {
+                window.location.href = 'manage-news.html';
+                return;
+            }
+
+            const article = window.NewsService.getArticleById(artId);
+            if (!article) {
+                alert('Article not found.');
+                window.location.href = 'manage-news.html';
+                return;
+            }
+
+            document.getElementById('editArticleTitle').value = article.title;
+            document.getElementById('editArticleCategory').value = article.category || 'Community';
+            document.getElementById('editArticleAuthor').value = article.author || 'Editorial';
+            document.getElementById('editArticleImage').value = article.image || 'img/group.jpg';
+            document.getElementById('editArticleSummary').value = article.summary || '';
+            document.getElementById('editArticleContent').value = article.content || '';
+            document.getElementById('editIsBreaking').checked = Boolean(article.isBreaking);
+
+            document.getElementById('editNewsForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                window.NewsService.updateArticle(artId, {
+                    title: document.getElementById('editArticleTitle').value.trim(),
+                    category: document.getElementById('editArticleCategory').value,
+                    author: document.getElementById('editArticleAuthor').value.trim(),
+                    image: document.getElementById('editArticleImage').value.trim(),
+                    summary: document.getElementById('editArticleSummary').value.trim(),
+                    content: document.getElementById('editArticleContent').value.trim(),
+                    isBreaking: document.getElementById('editIsBreaking').checked
+                });
+
+                alert('Article updated successfully!');
+                window.location.href = 'manage-news.html';
+            });
+        });
+    </script>
+</body>
+</html>

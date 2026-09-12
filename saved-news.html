@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Your saved news stories on Ipapo Broadcast.">
+    <title>Saved News | Ipapo Broadcast</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="css/pages.css">
+
+    <script src="js/auth.js"></script>
+    <script>
+        if (window.AuthService) {
+            window.AuthService.guardProtectedPage('login.html');
+        }
+    </script>
+</head>
+<body>
+
+    <header class="header" id="header">
+        <a href="index.html" class="logo">
+            IPAPO <span>Broadcast</span>
+        </a>
+
+        <nav class="navbar" id="navbar">
+            <a href="home.html" class="nav-link">Home</a>
+            <a href="news.html" class="nav-link">News</a>
+            <a href="live.html" class="nav-link">Live</a>
+            <a href="programs.html" class="nav-link">Programs</a>
+            <a href="community.html" class="nav-link">Community</a>
+            <a href="events.html" class="nav-link">Events</a>
+            <a href="gallery.html" class="nav-link">Gallery</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </nav>
+
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+            ☰
+        </button>
+    </header>
+    <section class="page-hero">
+        <div class="hero-content">
+            <span class="hero-badge">PERSONAL READING LIST</span>
+            <h1>My Saved <span>Articles</span></h1>
+            <p>Access your bookmarked community news, political analyses, and educational reports offline and on demand.</p>
+        </div>
+    </section>
+    <main class="news-grid-page" id="savedNewsGrid" style="margin-top: 50px;">
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    IPAPO <span>Broadcast</span>
+                </a>
+                <p>Trusted Voice • Professional Media • Community First</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="news.html">News</a>
+                <a href="live.html">Live</a>
+                <a href="programs.html">Programs</a>
+                <a href="community.html">Community</a>
+                <a href="events.html">Events</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+
+            <div class="footer-links">
+                <h4>Follow Us</h4>
+                <a href="https://wa.me/08070426269" target="_blank" rel="noopener">WhatsApp</a>
+                <a href="contact.html">Instagram</a>
+                <a href="news.html">YouTube</a>
+                <a href="index.html#newsletter">Newsletter</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 Ipapo Broadcast. All Rights Reserved.</p>
+            <p>Built with ❤️ for the community.</p>
+        </div>
+
+        <div class="footer-credit">
+            <span class="credit-label">@</span>
+            <span class="builder">Ibrahim Olaniyi (Programmer)</span>
+        </div>
+    </footer>
+
+    <script src="js/news.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        const grid = document.getElementById('savedNewsGrid');
+
+        function renderSaved() {
+            if (!window.NewsService) return;
+            const articles = window.NewsService.getSavedArticles();
+
+            if (articles.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align:center; padding: 70px 20px; background:#10141d; border-radius:18px; border:1px solid rgba(255,255,255,0.1);">
+                        <span style="font-size:45px;">🔖</span>
+                        <h3 style="margin: 14px 0 6px; color:#f1f5f9;">Your Reading List is Empty</h3>
+                        <p style="color:#64748b; font-size:14px; max-width:400px; margin:0 auto 20px;">
+                            Bookmark important stories across Ipapo to read them whenever you want.
+                        </p>
+                        <a href="news.html" class="btn" style="min-height:40px; padding:0 22px; font-size:13px; text-decoration:none;">
+                            Browse News Articles →
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = articles.map(art => `
+                <article class="news-card show" style="position:relative;">
+                    <div class="news-image">
+                        <img src="${art.image}" alt="${art.title}">
+                        <span class="news-tag">${art.category}</span>
+                        <button 
+                            class="save-article-btn saved" 
+                            data-id="${art.id}"
+                            title="Remove from saved"
+                        >
+                            ★
+                        </button>
+                    </div>
+                    <div class="news-content">
+                        <small>${art.date} • ${art.readTime || '4 min read'}</small>
+                        <h3 style="font-size:18px; margin:8px 0 10px;">${art.title}</h3>
+                        <p style="font-size:13.5px; color:#666; margin-bottom:18px;">${art.summary}</p>
+                        
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <a href="article.html?id=${art.id}" class="btn" style="min-height:36px; padding:0 18px; font-size:12.5px;">
+                                Read Story →
+                            </a>
+                            <button type="button" class="remove-saved-btn" data-id="${art.id}" style="background:none; border:none; color:#ef4444; font-size:12px; font-weight:600; cursor:pointer;">
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+            document.querySelectorAll('.save-article-btn, .remove-saved-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const id = btn.dataset.id;
+                    window.NewsService.toggleSaveArticle(id);
+                    renderSaved();
+                    if (window.showToast) window.showToast('Article removed from saved list.', 'info');
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', renderSaved);
+    </script>
+</body>
+</html>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ipapo Broadcast - The official voice and media platform for the people of Ipapo, Oyo State. Local news, 24/7 live community radio, cultural heritage, and resident network.">
+    <meta name="keywords" content="Ipapo, Ipapo Broadcast, Oyo State, Itesiwaju, Yoruba culture, Eleyinpo of Ipapo, Abuwe soap, community radio">
+    <title>Ipapo Broadcast | Voice of the Community</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="css/landing.css">
+    <script src="js/auth.js"></script>
+    <script>
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            if (window.AuthService && window.AuthService.isAuthenticated() && !params.has('stay') && !params.has('preview')) {
+                window.location.replace("home.html");
+            }
+        })();
+    </script>
+</head>
+<body class="landing-page-body">
+    <div class="carousel-status-bar" id="carouselStatusBar"></div>
+    <div class="carousel-viewport" id="landingViewport" aria-hidden="true">
+        <div id="carouselContainer">
+            <div class="carousel-slide active" data-index="0">
+                <img class="carousel-slide-img" src="img/ipapo_gateway.jpg" alt="Welcome to Ipapo Monument">
+            </div>
+            <div class="carousel-slide" data-index="1">
+                <img class="carousel-slide-img" src="img/ippao.jpg" alt="Oba of Ipapo in Royal Regalia">
+            </div>
+            <div class="carousel-slide" data-index="2">
+                <img class="carousel-slide-img" src="img/ipapo_aerial.jpg" alt="Sunset Aerial View of Ipapo">
+            </div>
+            <div class="carousel-slide" data-index="3">
+                <img class="carousel-slide-img" src="img/abuwe.jpg" alt="Abuwe Black Soap Making in Ipapo">
+            </div>
+            <div class="carousel-slide" data-index="4">
+                <img class="carousel-slide-img" src="img/building.jpg" alt="Ipapo College of Education Building">
+            </div>
+            <div class="carousel-slide" data-index="5">
+                <img class="carousel-slide-img" src="img/school.jpg" alt="Ipapo Community Sports Festival">
+            </div>
+            <div class="carousel-slide" data-index="6">
+                <img class="carousel-slide-img" src="img/sport.jpg" alt="Ipapo Sports Champions">
+            </div>
+            <div class="carousel-slide" data-index="7">
+                <img class="carousel-slide-img" src="img/field.jpg" alt="Community Football Match at Ipapo Field">
+            </div>
+            <div class="carousel-slide" data-index="8">
+                <img class="carousel-slide-img" src="img/group.jpg" alt="Ipapo Scholarship Program">
+            </div>
+            <div class="carousel-slide" data-index="9">
+                <img class="carousel-slide-img" src="img/fipsupro.jpg" alt="Federation of Ipapo Students Union">
+            </div>
+        </div>
+        <div class="carousel-overlay"></div>
+    </div>
+    <button class="carousel-nav-btn prev" id="prevSlideBtn" type="button" aria-label="Previous Ipapo Scene">‹</button>
+    <button class="carousel-nav-btn next" id="nextSlideBtn" type="button" aria-label="Next Ipapo Scene">›</button>
+    <div class="carousel-caption-card" id="carouselCaptionCard">
+        <div class="caption-meta">
+            <span class="caption-tag">Town Monument</span>
+            <span class="caption-location">📍 Town Entrance, Ipapo</span>
+        </div>
+        <h4 class="caption-title">Welcome to Ipapo: The Home of Art & Culture</h4>
+        <p class="caption-desc">The historic gateway welcoming all residents, visitors, and descendants to the peaceful town of Ipapo, Oyo State.</p>
+    </div>
+
+    <nav class="carousel-thumbs-wrapper" id="carouselThumbs" aria-label="Ipapo Photo Gallery Selector">
+    </nav>
+    <header class="lp-header" id="lpHeader">
+        <a href="index.html" class="lp-logo-link">
+            <div class="lp-logo-icon">📻</div>
+            <div>
+                <div class="lp-logo-text">IPAPO <span>Broadcast</span></div>
+                <span class="lp-logo-sub">Oyo State, Nigeria</span>
+            </div>
+        </a>
+        <nav class="lp-nav-links">
+            <a href="#about-ipapo" class="lp-nav-item">About Ipapo</a>
+            <a href="#features" class="lp-nav-item">Platform Features</a>
+            <a href="#gallery-showcase" class="lp-nav-item">Town Gallery</a>
+            <a href="#faq" class="lp-nav-item">Community FAQ</a>
+        </nav>
+        <div class="lp-auth-actions">
+            <a href="login.html" class="lp-btn-login" id="topLoginBtn" data-auth-action="login">
+                <span>🔑</span> Log In
+            </a>
+            <a href="register.html" class="lp-btn-signup" id="topSignUpBtn" data-auth-action="register">
+                <span>✨</span> Sign Up
+            </a>
+        </div>
+    </header>
+    <main class="lp-content-container">
+        <div class="hero-pill-badge">
+            <span class="pulsing-dot"></span>
+            <span>VOICE OF THE COMMUNITY • IPAPO, OYO STATE</span>
+        </div>
+        <h1 class="hero-main-title">
+            The Heartbeat, Culture & News of <span class="highlight">Ipapo.</span>
+        </h1>
+        <p class="hero-lead-text">
+            Connecting our people through trusted local journalism, 24/7 live community radio, youth empowerment, cultural heritage, and civic dialogue across Ipapo and to the world.
+        </p>
+        <div class="hero-cta-group">
+            <button type="button" class="btn-hero-primary" id="heroSignUpBtn" data-auth-action="register">
+                <span>🤝 Join Community (Sign Up Free)</span>
+                <span>→</span>
+            </button>
+
+            <button type="button" class="btn-hero-secondary" id="heroLoginBtn" data-auth-action="login">
+                <span>👤 Member Log In</span>
+            </button>
+
+            <a href="#features" class="btn-hero-secondary">
+                <span>Explore Town Platform ↓</span>
+            </a>
+        </div>
+        <div class="hero-stats-ribbon">
+            <div class="stat-box">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Live Community Radio</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">10+</div>
+                <div class="stat-label">Town Quarters & Baales</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">5,000+</div>
+                <div class="stat-label">Resident Network</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Verified Local Focus</div>
+            </div>
+        </div>
+
+    </main>
+    <div class="lp-section-wrap" id="features">
+        <div class="lp-section-inner">
+            <div class="section-head">
+                <span class="sub-tag">Why Join Ipapo Broadcast</span>
+                <h2>Everything Your Community Needs in One Hub</h2>
+                <p>Designed specifically for the civic development, information, and cultural unity of Ipapo descendants everywhere.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon-bubble">📻</div>
+                    <h3>24/7 Live Radio</h3>
+                    <p>Stream live audio broadcasts, cultural music, talk shows, and morning briefs from Ipapo studio anywhere in the world.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon-bubble">📰</div>
+                    <h3>Verified Local News</h3>
+                    <p>Get real-time updates on township infrastructure, chieftaincy affairs, local politics, markets, and education.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon-bubble">👑</div>
+                    <h3>Culture & Heritage</h3>
+                    <p>Celebrate our monarch Kabiyesi Oba of Ipapo, our historic Abuwe black soap craft, masquerade festivals, and traditions.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon-bubble">🎓</div>
+                    <h3>Youth & Scholarships</h3>
+                    <p>Direct access to FLDG Ipapo scholarships, FIPSU forums, sports tournaments, and student empowerment programs.</p>
+                </div>
+            </div>
+            <div class="section-head" id="gallery-showcase" style="margin-top: 40px;">
+                <span class="sub-tag">Visual Heritage</span>
+                <h2>Captured in Ipapo</h2>
+                <p>Click any photograph to instantly project it onto the background carousel.</p>
+            </div>
+
+            <div class="photo-showcase-grid">
+                <div class="photo-card" data-slide-target="0">
+                    <img src="img/ipapo_gateway.jpg" alt="Welcome to Ipapo" loading="lazy">
+                    <div class="photo-card-overlay">
+                        <div class="photo-card-title">Welcome Gate</div>
+                        <div class="photo-card-subtitle">Town Entrance</div>
+                    </div>
+                </div>
+
+                <div class="photo-card" data-slide-target="1">
+                    <img src="img/ippao.jpg" alt="Oba of Ipapo" loading="lazy">
+                    <div class="photo-card-overlay">
+                        <div class="photo-card-title">Royal Majesty</div>
+                        <div class="photo-card-subtitle">Oba of Ipapo</div>
+                    </div>
+                </div>
+
+                <div class="photo-card" data-slide-target="2">
+                    <img src="img/ipapo_aerial.jpg" alt="Aerial Panorama" loading="lazy">
+                    <div class="photo-card-overlay">
+                        <div class="photo-card-title">Sunset Panorama</div>
+                        <div class="photo-card-subtitle">Itesiwaju Hills</div>
+                    </div>
+                </div>
+
+                <div class="photo-card" data-slide-target="3">
+                    <img src="img/abuwe.jpg" alt="Abuwe Soap Craft" loading="lazy">
+                    <div class="photo-card-overlay">
+                        <div class="photo-card-title">Abuwe Soap Craft</div>
+                        <div class="photo-card-subtitle">Isale Baale Quarters</div>
+                    </div>
+                </div>
+
+                <div class="photo-card" data-slide-target="4">
+                    <img src="img/building.jpg" alt="College of Education" loading="lazy">
+                    <div class="photo-card-overlay">
+                        <div class="photo-card-title">College of Education</div>
+                        <div class="photo-card-subtitle">Campus Development</div>
+                    </div>
+                </div>
+
+                <div class="photo-card" data-slide-target="5">
+                    <img src="img/school.jpg" alt="Youth Sports Meet" loading="lazy">
+                    <div class="photo-card-overlay">
+                        <div class="photo-card-title">Inter-House Sports</div>
+                        <div class="photo-card-subtitle">Muslim High School</div>
+                    </div>
+                </div>
+
+                <div class="photo-card" data-slide-target="6">
+                    <img src="img/sport.jpg" alt="Sports Laurels" loading="lazy">
+                    <div class="photo-card-overlay">
+                        <div class="photo-card-title">Town Champions</div>
+                        <div class="photo-card-subtitle">Football Laurels</div>
+                    </div>
+                </div>
+
+                <div class="photo-card" data-slide-target="7">
+                    <img src="img/field.jpg" alt="Community Match" loading="lazy">
+                    <div class="photo-card-overlay">
+                        <div class="photo-card-title">Community Matchday</div>
+                        <div class="photo-card-subtitle">Ipapo Central Field</div>
+                    </div>
+                </div>
+
+                <div class="photo-card" data-slide-target="8">
+                    <img src="img/group.jpg" alt="Ipapo Scholarships" loading="lazy">
+                    <div class="photo-card-overlay">
+                        <div class="photo-card-title">FLDG Scholarships</div>
+                        <div class="photo-card-subtitle">Education Fund</div>
+                    </div>
+                </div>
+
+                <div class="photo-card" data-slide-target="9">
+                    <img src="img/fipsupro.jpg" alt="FIPSU Leadership" loading="lazy">
+                    <div class="photo-card-overlay">
+                        <div class="photo-card-title">FIPSU Leadership</div>
+                        <div class="photo-card-subtitle">Students' Union</div>
+                    </div>
+                </div>
+            </div>
+            <div class="lp-cta-banner" id="about-ipapo">
+                <span style="font-size:12px; font-weight:700; color:var(--lp-primary); letter-spacing:1px;">READY TO CONNECT?</span>
+                <h2>Be Part of the Story of Ipapo</h2>
+                <p>Join thousands of residents, community elders, students, and descendants in Oyo State and abroad staying informed and united.</p>
+                <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap;">
+                    <button type="button" class="btn-hero-primary" data-auth-action="register">
+                        Create Free Resident Account →
+                    </button>
+                    <button type="button" class="btn-hero-secondary" data-auth-action="login">
+                        Log In Now
+                    </button>
+                </div>
+            </div>
+            <footer class="lp-footer" id="faq">
+                <div style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
+                    <a href="about.html">About Ipapo Broadcast</a>
+                    <a href="news.html">News Archives</a>
+                    <a href="live.html">Live Radio</a>
+                    <a href="programs.html">Program Schedule</a>
+                    <a href="contact.html">Contact Us</a>
+                </div>
+                <p>© 2026 Ipapo Broadcast • Voice of the Community • Oyo State, Nigeria</p>
+                <p style="opacity:0.75; font-size:11.5px;">Designed & Developed by Ibrahim Olaniyi (Programmer)</p>
+            </footer>
+
+        </div>
+    </div>
+    <div class="auth-modal-overlay" id="authModalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="auth-modal-container">
+            <button class="modal-close-btn" id="modalCloseBtn" type="button" aria-label="Close dialog">✕</button>
+
+            <div class="modal-header">
+                <div class="modal-header-logo">
+                    <span>📻</span> IPAPO <span>Broadcast</span>
+                </div>
+                <h3 id="modalTitle">Welcome Back</h3>
+                <p id="modalSub">Sign in to enter the Ipapo Community Home Page.</p>
+            </div>
+
+            <div class="modal-tabs">
+                <button type="button" class="modal-tab-btn active" id="tabLoginBtn">Log In</button>
+                <button type="button" class="modal-tab-btn" id="tabRegisterBtn">Create Account</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="modal-demo-bar">
+                    <span>⚡ Quick Demo:</span>
+                    <div class="demo-chip-group">
+                        <button type="button" class="demo-chip" id="demoResidentBtn">Resident Demo</button>
+                        <button type="button" class="demo-chip" id="demoAdminBtn">Admin Demo</button>
+                    </div>
+                </div>
+
+                <div class="m-global-alert" id="modalLoginAlert"></div>
+                <div id="modalLoginSection">
+                    <form id="modalLoginForm" novalidate>
+                        <div class="m-form-group">
+                            <label for="modalLoginEmail">Email or Username</label>
+                            <div class="m-input-wrapper">
+                                <span class="m-input-icon">✉️</span>
+                                <input 
+                                    type="text" 
+                                    id="modalLoginEmail" 
+                                    class="m-input" 
+                                    placeholder="resident@ipapo.ng or ibrahim_ipapo" 
+                                    required 
+                                    autocomplete="username"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="m-form-group">
+                            <label for="modalLoginPwd">Password</label>
+                            <div class="m-input-wrapper">
+                                <span class="m-input-icon">🔒</span>
+                                <input 
+                                    type="password" 
+                                    id="modalLoginPwd" 
+                                    class="m-input" 
+                                    placeholder="Enter your password" 
+                                    required 
+                                    autocomplete="current-password"
+                                >
+                                <button type="button" class="m-toggle-pwd" id="toggleModalLoginPwd" aria-label="Toggle password visibility">👁️</button>
+                            </div>
+                        </div>
+
+                        <div class="m-checkbox-row">
+                            <label class="m-checkbox-label">
+                                <input type="checkbox" id="modalRememberMe">
+                                <span>Remember me</span>
+                            </label>
+                            <a href="forgot-password.html" class="m-forgot-link">Forgot password?</a>
+                        </div>
+
+                        <button type="submit" class="m-submit-btn" id="modalLoginSubmitBtn">
+                            <span>Sign In to Home Page →</span>
+                        </button>
+
+                        <div class="m-alt-link">
+                            Don't have an account yet? 
+                            <a href="javascript:void(0)" onclick="document.getElementById('tabRegisterBtn').click()">Create One Free</a>
+                        </div>
+                    </form>
+                </div>
+                <div id="modalRegisterSection" style="display: none;">
+                    <div class="m-global-alert" id="modalRegAlert"></div>
+
+                    <form id="modalRegisterForm" novalidate>
+                        <div class="m-form-row">
+                            <div class="m-form-group">
+                                <label for="regFirstName">First Name *</label>
+                                <input type="text" id="regFirstName" class="m-input" placeholder="e.g. Tayo" required style="padding-left:14px;">
+                            </div>
+                            <div class="m-form-group">
+                                <label for="regLastName">Last Name *</label>
+                                <input type="text" id="regLastName" class="m-input" placeholder="e.g. Adeyemi" required style="padding-left:14px;">
+                            </div>
+                        </div>
+
+                        <div class="m-form-group">
+                            <label for="regUsername">Username *</label>
+                            <div class="m-input-wrapper">
+                                <span class="m-input-icon">👤</span>
+                                <input type="text" id="regUsername" class="m-input" placeholder="e.g. toheeb-ipapo" required autocomplete="username">
+                            </div>
+                        </div>
+
+                        <div class="m-form-group">
+                            <label for="regEmail">Email Address *</label>
+                            <div class="m-input-wrapper">
+                                <span class="m-input-icon">✉️</span>
+                                <input type="email" id="regEmail" class="m-input" placeholder="ibrah@example.com" required autocomplete="email">
+                            </div>
+                        </div>
+
+                        <div class="m-form-row">
+                            <div class="m-form-group">
+                                <label for="regPhone">Phone (Optional)</label>
+                                <input type="tel" id="regPhone" class="m-input" placeholder="08012345678" style="padding-left:14px;">
+                            </div>
+                           <div class="m-form-group location-search-group">
+    <label for="regLocation">Search Your Home / Location</label>
+
+    <div class="location-search-wrapper">
+        <span class="location-icon">⌖</span>
+
+        <input
+            type="text"
+            id="regLocation"
+            class="m-input"
+            placeholder="Search your street, area or ward..."
+            autocomplete="off"
+        >
+    </div>
+
+    <div class="location-suggestions" id="locationSuggestions">
+
+        <div class="location-option" data-value="Eleyinpo, Ipapo">
+            <strong>Eleyinpo</strong>
+            <span>Ipapo</span>
+        </div>
+
+        <div class="location-option" data-value="Ile Jagun, Ipapo">
+            <strong>Ile Jagun</strong>
+            <span>Ipapo</span>
+        </div>
+
+        <div class="location-option" data-value="Station Road, Ipapo">
+            <strong>Station Road</strong>
+            <span>Ipapo</span>
+        </div>
+
+        <div class="location-option" data-value="Palace Area, Ipapo">
+            <strong>Palace Area</strong>
+            <span>Ipapo</span>
+        </div>
+
+        <div class="location-option" data-value="Muslim High School Axis">
+            <strong>Muslim High School Axis</strong>
+            <span>Ipapo</span>
+        </div>
+
+        <div class="location-option" data-value="Diaspora / External Resident">
+            <strong>Diaspora / External Resident</strong>
+            <span>Outside Ipapo</span>
+        </div>
+
+    </div>
+</div>
+                        </div>
+
+                        <div class="m-form-row">
+                            <div class="m-form-group">
+                                <label for="regPassword">Password *</label>
+                                <div class="m-input-wrapper">
+                                    <span class="m-input-icon">🔒</span>
+                                    <input type="password" id="regPassword" class="m-input" placeholder="Min 8 chars" required autocomplete="new-password">
+                                    <button type="button" class="m-toggle-pwd" id="toggleRegPwd" aria-label="Toggle password visibility">👁️</button>
+                                </div>
+                            </div>
+                            <div class="m-form-group">
+                                <label for="regConfirmPassword">Confirm Password *</label>
+                                <input type="password" id="regConfirmPassword" class="m-input" placeholder="Repeat password" required style="padding-left:14px;" autocomplete="new-password">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="m-submit-btn" id="modalRegSubmitBtn">
+                            <span>Complete Sign Up & Enter →</span>
+                        </button>
+
+                        <div class="m-alt-link">
+                            Already have an account? 
+                            <a href="javascript:void(0)" onclick="document.getElementById('tabLoginBtn').click()">Log In Here</a>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <script src="js/landing.js"></script>
+
+</body>
+</html>

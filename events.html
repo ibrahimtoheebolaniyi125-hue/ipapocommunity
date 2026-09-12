@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ipapo Community Events - Upcoming festivals, town hall summits, youth athletic championships and civic meetings.">
+    <title>Community Events | Ipapo Broadcast</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="css/pages.css">
+
+    <script src="js/auth.js"></script>
+    <script>
+        if (window.AuthService) {
+            window.AuthService.guardProtectedPage('login.html');
+        }
+    </script>
+</head>
+<body>
+
+    <header class="header" id="header">
+        <a href="index.html" class="logo">
+            IPAPO <span>Broadcast</span>
+        </a>
+
+        <nav class="navbar" id="navbar">
+            <a href="home.html" class="nav-link">Home</a>
+            <a href="news.html" class="nav-link">News</a>
+            <a href="live.html" class="nav-link">Live</a>
+            <a href="programs.html" class="nav-link">Programs</a>
+            <a href="community.html" class="nav-link">Community</a>
+            <a href="events.html" class="nav-link active">Events</a>
+            <a href="gallery.html" class="nav-link">Gallery</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </nav>
+
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+            ☰
+        </button>
+    </header>
+
+    <section class="page-hero">
+        <div class="hero-content">
+            <span class="hero-badge">COMMUNITY CALENDAR</span>
+            <h1>Upcoming <span>Events in Ipapo</span></h1>
+            <p>Stay connected with cultural festivals, sports tournaments, town summits, and youth educational workshops happening in Ipapo.</p>
+        </div>
+    </section>
+
+    <main class="news-grid-page" id="eventsGrid" style="margin-top: 40px;">
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    IPAPO <span>Broadcast</span>
+                </a>
+                <p>Trusted Voice • Professional Media • Community First</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="news.html">News</a>
+                <a href="live.html">Live</a>
+                <a href="programs.html">Programs</a>
+                <a href="community.html">Community</a>
+                <a href="events.html">Events</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+
+            <div class="footer-links">
+                <h4>Follow Us</h4>
+                <a href="https://wa.me/08070426269" target="_blank" rel="noopener">WhatsApp</a>
+                <a href="contact.html">Instagram</a>
+                <a href="news.html">YouTube</a>
+                <a href="index.html#newsletter">Newsletter</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 Ipapo Broadcast. All Rights Reserved.</p>
+            <p>Built with ❤️ for the community.</p>
+        </div>
+
+        <div class="footer-credit">
+            <span class="credit-label">@</span>
+            <span class="builder">Ibrahim Olaniyi (Programmer)</span>
+        </div>
+    </footer>
+
+    <script src="js/news.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        const eventsGrid = document.getElementById('eventsGrid');
+
+        function renderEvents() {
+            if (!window.DashboardService) return;
+            const events = window.DashboardService.getAllEvents();
+
+            eventsGrid.innerHTML = events.map(evt => {
+                const hasRsvpd = window.DashboardService.isRsvpd(evt.id);
+                return `
+                    <article class="news-card show" style="position:relative;">
+                        <div class="news-image">
+                            <img src="${evt.image}" alt="${evt.title}">
+                            <span class="news-tag">${evt.category}</span>
+                        </div>
+                        <div class="news-content">
+                            <small style="color:var(--primary); font-weight:700;">📅 ${evt.date}</small>
+                            <h3 style="font-size:18px; margin: 6px 0 8px;">${evt.title}</h3>
+                            <div style="font-size:13px; color:#94a3b8; margin-bottom:12px;">
+                                <div><strong>⏰ Time:</strong> ${evt.time}</div>
+                                <div><strong>📍 Venue:</strong> ${evt.venue}</div>
+                            </div>
+                            <p style="font-size:13.5px; color:#94a3b8; margin-bottom:20px;">${evt.description}</p>
+                            
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.07); padding-top:14px;">
+                                <span style="font-size:12px; color:#94a3b8;">
+                                    👥 <strong style="color:#f1f5f9;" id="count-${evt.id}">${evt.attendees}</strong> Attending
+                                </span>
+                                <button 
+                                    type="button" 
+                                    class="rsvp-btn ${hasRsvpd ? 'attending' : ''}" 
+                                    data-id="${evt.id}"
+                                >
+                                    ${hasRsvpd ? '✓ RSVP Confirmed' : 'RSVP for Event'}
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+            document.querySelectorAll('.rsvp-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const evtId = btn.dataset.id;
+                    const isAttending = window.DashboardService.toggleRsvp(evtId);
+                    btn.classList.toggle('attending', isAttending);
+                    btn.textContent = isAttending ? '✓ RSVP Confirmed' : 'RSVP for Event';
+                    const countEl = document.getElementById(`count-${evtId}`);
+                    if (countEl) {
+                        let cur = parseInt(countEl.textContent, 10) || 0;
+                        countEl.textContent = isAttending ? cur + 1 : Math.max(0, cur - 1);
+                    }
+
+                    if (window.showToast) {
+                        window.showToast(isAttending ? 'Your attendance has been confirmed!' : 'RSVP cancelled.', 'info');
+                    }
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', renderEvents);
+    </script>
+</body>
+</html>

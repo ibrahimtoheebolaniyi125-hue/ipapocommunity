@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Log in to Ipapo Broadcast - Your community news, live radio, programs, and media platform.">
+    <title>Log In | Ipapo Broadcast</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="css/auth.css">
+
+    <script src="js/auth.js"></script>
+    <script>
+        if (window.AuthService && window.AuthService.isAuthenticated()) {
+            window.location.replace("home.html");
+        }
+    </script>
+</head>
+<body class="auth-page">
+
+    <div class="auth-container">
+
+        <aside class="auth-brand-panel">
+            <div class="brand-header">
+                <a href="index.html" class="logo">
+                    IPAPO <span>Broadcast</span>
+                </a>
+            </div>
+
+            <div class="brand-hero">
+                <span class="brand-badge">📻 Voice of the Community</span>
+                <h1>Your Community. <span>Your Voice.</span></h1>
+                <p>Bringing trusted local news, educational opportunities, cultural heritage, live broadcasts, and civic conversations to the people of Ipapo, Oyo State, and the world.</p>
+
+                <div class="brand-highlights">
+                    <div class="highlight-item">
+                        <strong>24/7</strong>
+                        <span>Live Broadcast & News</span>
+                    </div>
+                    <div class="highlight-item">
+                        <strong>100%</strong>
+                        <span>Local Community Focus</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="brand-footer">
+                <p>© 2026 Ipapo Broadcast • Oyo State, Nigeria • Built for the Community</p>
+            </div>
+        </aside>
+
+        <main class="auth-form-panel">
+            <div class="auth-card">
+
+                <div class="auth-header">
+                    <h2>Welcome Back</h2>
+                    <p>Log in to access your news feed, live stream, and community hub.</p>
+                </div> 
+                <div class="demo-helper-box">
+                    <span>⚡ Quick Demo:</span>
+                    <div class="demo-btn-group">
+                        <button type="button" class="demo-chip-btn" id="demoResidentBtn">Resident Demo</button>
+                        <button type="button" class="demo-chip-btn" id="demoAdminBtn">Admin Demo</button>
+                    </div>
+                </div>
+
+                <form class="auth-form" id="loginForm" novalidate>
+                    <div class="form-group">
+                        <label class="form-label" for="loginIdentifier">Email or Username</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">✉️</span>
+                            <input 
+                                type="text" 
+                                class="auth-input" 
+                                id="loginIdentifier" 
+                                placeholder="name@ipapo.ng or username"
+                                required
+                                autocomplete="username"
+                            >
+                        </div>
+                        <span class="error-message" id="identifierError">Please enter your email or username.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="loginPassword">
+                            <span>Password</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔒</span>
+                            <input 
+                                type="password" 
+                                class="auth-input" 
+                                id="loginPassword" 
+                                placeholder="Enter your password"
+                                required
+                                autocomplete="current-password"
+                            >
+                            <button type="button" class="toggle-password" id="togglePasswordBtn" aria-label="Show or hide password">
+                                👁️
+                            </button>
+                        </div>
+                        <span class="error-message" id="passwordError">Please enter your password.</span>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="rememberMe">
+                            <span>Remember me</span>
+                        </label>
+                        <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
+                    </div>
+
+                    <div class="error-message" id="globalError" style="font-size:13px; text-align:center; padding:6px; background:rgba(239,68,68,0.1); border-radius:6px;"></div>
+
+                    <button type="submit" class="auth-submit-btn" id="loginSubmitBtn">
+                        <span class="btn-text">Sign In →</span>
+                        <div class="spinner"></div>
+                    </button>
+
+                    <div class="auth-divider">
+                        <span>Or continue with</span>
+                    </div>
+
+                    <div class="social-login-grid">
+                        <button type="button" class="social-btn" onclick="showToast('Google login will connect with your production OAuth provider.', 'info')">
+                            <span>🌐</span> Google
+                        </button>
+                        <button type="button" class="social-btn" onclick="showToast('Phone OTP login will connect with SMS gateway in production.', 'info')">
+                            <span>📱</span> Phone OTP
+                        </button>
+                    </div>
+
+                    <div class="auth-switch">
+                        Don't have an account yet? 
+                        <a href="register.html">Create Account</a>
+                    </div>
+                </form>
+
+            </div>
+        </main>
+
+    </div>
+
+    <div id="ipapoToast" class="auth-toast" role="alert" aria-live="assertive"></div>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const loginIdentifier = document.getElementById('loginIdentifier');
+        const loginPassword = document.getElementById('loginPassword');
+        const rememberMe = document.getElementById('rememberMe');
+        const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+        const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+        const globalError = document.getElementById('globalError');
+        const identifierError = document.getElementById('identifierError');
+        const passwordError = document.getElementById('passwordError');
+
+        // Toggle Password Visibility
+        togglePasswordBtn.addEventListener('click', () => {
+            const isPassword = loginPassword.type === 'password';
+            loginPassword.type = isPassword ? 'text' : 'password';
+            togglePasswordBtn.textContent = isPassword ? '🙈' : '👁️';
+        });
+
+        // Quick Demo Fillers
+        document.getElementById('demoResidentBtn').addEventListener('click', () => {
+            loginIdentifier.value = 'resident@ipapo.ng';
+            loginPassword.value = 'Ipapo@2026!';
+            clearErrors();
+        });
+
+        document.getElementById('demoAdminBtn').addEventListener('click', () => {
+            loginIdentifier.value = 'admin@ipapo.ng';
+            loginPassword.value = 'Admin@2026!';
+            clearErrors();
+        });
+
+        function clearErrors() {
+            globalError.classList.remove('visible');
+            globalError.style.display = 'none';
+            identifierError.classList.remove('visible');
+            passwordError.classList.remove('visible');
+            loginIdentifier.classList.remove('has-error');
+            loginPassword.classList.remove('has-error');
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById("ipapoToast");
+            toast.className = `auth-toast ${type === 'error' ? 'toast-error' : type === 'success' ? 'toast-success' : ''}`;
+            toast.innerHTML = `<span>${type === 'error' ? '⚠️' : type === 'success' ? '✓' : 'ℹ️'}</span> <div>${message}</div>`;
+            toast.classList.add("show");
+            setTimeout(() => { toast.classList.remove("show"); }, 4000);
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearErrors();
+
+            let hasError = false;
+            const identifierVal = loginIdentifier.value.trim();
+            const passwordVal = loginPassword.value;
+
+            if (!identifierVal) {
+                identifierError.classList.add('visible');
+                loginIdentifier.classList.add('has-error');
+                hasError = true;
+            }
+
+            if (!passwordVal) {
+                passwordError.classList.add('visible');
+                loginPassword.classList.add('has-error');
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            loginSubmitBtn.classList.add('loading');
+            loginSubmitBtn.disabled = true;
+
+            try {
+                const user = await window.AuthService.login(identifierVal, passwordVal, rememberMe.checked);
+                showToast(`Welcome back, ${user.firstName}! Redirecting...`, 'success');
+                const urlParams = new URLSearchParams(window.location.search);
+                const redirect = urlParams.get('redirect');
+
+                setTimeout(() => {
+                    if (redirect) {
+                        window.location.replace(decodeURIComponent(redirect));
+                    } else {
+                        window.location.replace('home.html');
+                    }
+                }, 750);
+            } catch (err) {
+                loginSubmitBtn.classList.remove('loading');
+                loginSubmitBtn.disabled = false;
+                globalError.textContent = err.message || 'Login failed. Please verify credentials.';
+                globalError.classList.add('visible');
+                globalError.style.display = 'block';
+                showToast(err.message, 'error');
+            }
+        });
+    </script>
+</body>
+</html>
