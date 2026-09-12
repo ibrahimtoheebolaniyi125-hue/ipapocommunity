@@ -1,16 +1,11 @@
 
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    scroll-behavior: smooth;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+html {
     scroll-behavior: smooth;
 }
 
@@ -19,28 +14,23 @@
     --primary-dark: #e5b800;
     --dark: #080b12;
     --dark-2: #10141d;
-    --text: #333;
-    --muted: #777;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
     --white: #ffffff;
     --light: #f7f8fa;
     --border: rgba(255, 255, 255, 0.1);
     --shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+    --danger: #ef4444;
+    --success: #10b981;
 }
 
 body {
     font-family: "Poppins", sans-serif;
-    background: var(--light);
+    background: var(--dark);
     color: var(--text);
     line-height: 1.7;
     overflow-x: hidden;
 }
-body, p, ul, ol, li, a, h1, h2, h3, h4, h5, h6, span, small, strong, label, input, textarea, button {
-    color: var(--text);
-}
-.section-dark, .section-dark * {
-    color: rgba(255,255,255,0.95) !important;
-}
-.hero, .hero * { color: #fff !important; }
 
 a {
     text-decoration: none;
@@ -267,7 +257,7 @@ textarea {
     border: none;
 
     background: var(--primary);
-    color: #111 !important;
+    color: #111;
 
     box-shadow: 0 10px 30px rgba(255, 204, 0, 0.18);
 }
@@ -279,11 +269,11 @@ textarea {
 }
 
 .btn-outline {
-    border: 1px solid rgba(255, 255, 255, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.4);
 
     color: white;
 
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
 
     backdrop-filter: blur(10px);
 }
@@ -355,11 +345,9 @@ textarea {
     opacity: 1;
     transform: translateY(0) scale(1);
 }
-
 .hero-content {
     transition: transform 0.8s cubic-bezier(.2,.9,.3,1);
 }
-
 .assistant {
     position: fixed;
     right: 22px;
@@ -383,11 +371,10 @@ textarea {
 .assistant-panel {
     width: 320px;
     max-width: calc(100vw - 88px);
-    background: #10141d;
-    color: #e2e8f0;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #fff;
+    color: #111;
     border-radius: 14px;
-    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.18);
     padding: 14px;
     margin-bottom: 12px;
     transform-origin: bottom right;
@@ -404,7 +391,6 @@ textarea {
 .assistant-panel h4 {
     margin-bottom: 8px;
     font-size: 15px;
-    color: #f1f5f9;
 }
 .assistant-options {
     display: flex;
@@ -414,20 +400,16 @@ textarea {
 .assistant-option {
     padding: 10px 12px;
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(17,17,17,0.03);
     cursor: pointer;
     font-weight: 600;
     font-size: 13px;
-    color: #cbd5e1;
     transition: background 0.18s ease, transform 0.12s ease;
 }
 .assistant-option:hover {
-    background: rgba(255, 204, 0, 0.12);
-    color: var(--primary);
+    background: rgba(0,0,0,0.05);
     transform: translateX(6px);
 }
-
-/* Small responsive tweak */
 @media (max-width: 560px) {
     .assistant-panel { width: 280px; }
 }
@@ -449,7 +431,7 @@ textarea {
 
     margin-bottom: 10px;
 
-    color: var(--primary);
+    color: #b28d00;
 
     font-size: 11px;
     font-weight: 700;
@@ -468,7 +450,7 @@ textarea {
 }
 
 .section-title h2 span {
-    color: var(--primary);
+    color: #c29b00;
 }
 
 .section-title p {
@@ -592,13 +574,13 @@ textarea {
 }
 
 .about-text h3 span {
-    color: var(--primary);
+    color: #c29b00;
 }
 
 .about-text > p {
     margin-bottom: 17px;
 
-    color: #555;
+    color: #666;
 
     font-size: 15px;
 }
@@ -636,11 +618,10 @@ textarea {
 
 .feature h4 {
     font-size: 14px;
-    color: #111;
 }
 
 .feature p {
-    color: #666;
+    color: #888;
     font-size: 12px;
 }
 
@@ -664,10 +645,10 @@ textarea {
 
     overflow: hidden;
 
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border);
     border-radius: 20px;
 
-    background: #10141d;
+    background: rgba(255, 255, 255, 0.035);
 
     transition:
         transform 0.4s ease,
@@ -698,7 +679,7 @@ textarea {
 
     border-color: rgba(255, 204, 0, 0.4);
 
-    background: #161e2e;
+    background: rgba(255, 255, 255, 0.06);
 }
 
 .service-card:hover::before {
@@ -807,9 +788,9 @@ textarea {
 
     border-radius: 20px;
 
-    background: #10141d;
+    background: white;
 
-    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.06);
 
     transition:
         transform 0.4s ease,
@@ -866,7 +847,7 @@ textarea {
 }
 
 .news-content small {
-    color: var(--primary);
+    color: #b28d00;
 
     font-size: 10px;
     font-weight: 600;
@@ -875,7 +856,7 @@ textarea {
 .news-content h3 {
     margin: 7px 0 10px;
 
-    color: #f1f5f9;
+    color: #151515;
 
     font-size: 18px;
 
@@ -883,7 +864,7 @@ textarea {
 }
 
 .news-content p {
-    color: #94a3b8;
+    color: #777;
 
     font-size: 13px;
 }
@@ -893,7 +874,7 @@ textarea {
 
     margin-top: 18px;
 
-    color: var(--primary);
+    color: #9a7800;
 
     font-size: 12px;
     font-weight: 700;
@@ -903,7 +884,7 @@ textarea {
     margin-top: 18px;
     border: none;
     background: transparent;
-    color: var(--primary);
+    color: #9a7800;
     font-size: 12px;
     font-weight: 700;
     cursor: pointer;
@@ -951,11 +932,10 @@ textarea {
     position: relative;
     z-index: 1;
     width: min(680px, 100%);
-    background: #10141d;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #fff;
     border-radius: 22px;
     padding: 30px 28px 26px;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
 }
 
 .story-tag {
@@ -963,7 +943,7 @@ textarea {
     padding: 8px 12px;
     border-radius: 999px;
     background: rgba(255, 204, 0, 0.14);
-    color: var(--primary);
+    color: #8d6c00;
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 1.4px;
@@ -972,14 +952,14 @@ textarea {
 
 .story-modal-panel h3 {
     margin-top: 18px;
-    color: #f1f5f9;
+    color: #111;
     font-size: clamp(26px, 4vw, 34px);
     line-height: 1.2;
 }
 
 .story-meta {
     margin-top: 10px;
-    color: var(--primary);
+    color: #a87a00;
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.6px;
@@ -987,7 +967,7 @@ textarea {
 
 .story-modal-panel p:last-of-type {
     margin-top: 16px;
-    color: #94a3b8;
+    color: #555;
     line-height: 1.8;
     font-size: 14px;
 }
@@ -1000,8 +980,8 @@ textarea {
     height: 36px;
     border: none;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.08);
-    color: #e2e8f0;
+    background: rgba(0, 0, 0, 0.05);
+    color: #111;
     font-size: 24px;
     cursor: pointer;
 }
@@ -1083,12 +1063,12 @@ textarea {
 
 .schedule-panel {
     padding: 30px 28px;
-    background: #10141d;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #fff;
+    border: 1px solid rgba(10, 10, 10, 0.05);
 }
 
 .schedule-panel h3 {
-    color: #f1f5f9;
+    color: #111;
     font-size: 24px;
     margin-bottom: 20px;
 }
@@ -1106,7 +1086,7 @@ textarea {
     align-items: center;
     gap: 14px;
     padding: 10px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .schedule-list span {
@@ -1114,27 +1094,26 @@ textarea {
     padding: 7px 8px;
     border-radius: 10px;
     background: rgba(255, 204, 0, 0.12);
-    color: var(--primary);
+    color: #8d6c00;
     font-size: 11px;
     font-weight: 700;
     text-align: center;
 }
 
 .schedule-list strong {
-    color: #e2e8f0;
+    color: #1b1b1b;
     font-size: 13px;
 }
 
 .dark-btn {
-    border-color: rgba(255, 255, 255, 0.15);
-    color: #e2e8f0;
-    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(17, 17, 17, 0.15);
+    color: #111;
+    background: rgba(255, 255, 255, 0.8);
 }
 
 .dark-btn:hover {
-    background: var(--primary);
-    color: #111;
-    border-color: var(--primary);
+    background: #111;
+    color: #fff;
 }
 
 .team-grid {
@@ -1146,8 +1125,8 @@ textarea {
 }
 
 .team-card {
-    background: #10141d;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #fff;
+    border: 1px solid rgba(17, 17, 17, 0.05);
     transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
 
@@ -1175,7 +1154,7 @@ textarea {
 
 .team-card-content span {
     display: inline-block;
-    color: var(--primary);
+    color: #b28d00;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 1.4px;
@@ -1219,21 +1198,14 @@ textarea {
     grid-template-columns: 1.1fr 1fr;
     align-items: center;
     gap: 25px;
-    background: linear-gradient(135deg, rgba(255, 204, 0, 0.1), rgba(16, 20, 29, 0.95)),
-                #10141d;
-    border: 1px solid rgba(255, 204, 0, 0.25);
+    background: linear-gradient(135deg, rgba(255, 204, 0, 0.12), rgba(255, 255, 255, 0.05));
+    border: 1px solid rgba(255, 204, 0, 0.15);
 }
 
 .newsletter-copy h2 {
-    color: #ffffff;
+    color: #111;
     font-size: clamp(28px, 4vw, 42px);
     line-height: 1.2;
-}
-
-.newsletter-copy p {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 14px;
-    margin-top: 8px;
 }
 
 .newsletter-form {
@@ -1247,15 +1219,11 @@ textarea {
     flex: 1;
     min-height: 52px;
     border-radius: 50px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(17, 17, 17, 0.1);
     padding: 0 18px;
-    background: rgba(255, 255, 255, 0.06);
-    color: #f1f5f9;
+    background: rgba(255, 255, 255, 0.8);
+    color: #111;
     outline: none;
-}
-
-.newsletter-form input::placeholder {
-    color: #64748b;
 }
 
 .newsletter-form input:focus {
@@ -1266,7 +1234,7 @@ textarea {
 .newsletter-success {
     display: none;
     margin-top: 14px;
-    color: #6ee7b7;
+    color: #188a47;
     font-weight: 600;
     font-size: 13px;
 }
@@ -2017,14 +1985,11 @@ footer {
 @media (max-width: 450px) {
 
     .hero-content h1 {
-        font-size: 38px;
-        letter-spacing: -1.5px;
+        font-size: 43px;
     }
 
     .hero-stats {
         gap: 18px;
-        flex-wrap: wrap;
-        justify-content: center;
     }
 
     .hero-stats strong {
@@ -2032,7 +1997,7 @@ footer {
     }
 
     .hero-stats span {
-        font-size: 9px;
+        font-size: 8px;
     }
 
     .image-frame img {
@@ -2045,11 +2010,11 @@ footer {
     }
 
     .newsletter-copy h2 {
-        font-size: 26px;
+        font-size: 28px;
     }
 
     .location-info h3 {
-        font-size: 22px;
+        font-size: 24px;
     }
 
     .footer-content {
@@ -2060,33 +2025,4 @@ footer {
         grid-column: auto;
     }
 
-    .section {
-        padding: 60px 5%;
-    }
-
-    .btn, .btn-outline {
-        min-height: 46px;
-        font-size: 13px;
-        padding: 0 20px;
-    }
-
-    .culture-banner h3 {
-        font-size: 22px;
-    }
-
-}
-
-@media (max-width: 360px) {
-    .header {
-        padding: 11px 14px;
-    }
-    .logo {
-        font-size: 16px;
-    }
-    .hero-content h1 {
-        font-size: 32px;
-    }
-    .section {
-        padding: 50px 4%;
-    }
 }
