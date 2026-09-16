@@ -1,8 +1,8 @@
-{
+﻿{
   "private": true,
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node dev-server.js",
+    "dev": "node dev-server.js"
   },
   "engines": {
     "node": ">=18"
@@ -11,3 +11,4 @@
     "web-push": "^3.6.7"
   }
 }
+
