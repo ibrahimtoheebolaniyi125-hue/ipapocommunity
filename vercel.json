@@ -16,6 +16,7 @@
     { "src": "/api/push/(config|subscribe|unsubscribe)", "dest": "/api/push?action=$1" },
     { "src": "/api/activity/log", "dest": "/api/activity?action=log" },
     { "src": "/api/cron/daily-fetch", "dest": "/api/cron?action=daily-fetch" },
+    { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/(.*)", "dest": "/$1" }
   ],
   "crons": [
