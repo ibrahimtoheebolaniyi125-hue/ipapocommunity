@@ -22,13 +22,34 @@ function sendJson(res, code, payload) {
   res.writeHead(code, { 'Content-Type': 'application/json; charset=utf-8' });
   res.end(JSON.stringify(payload));
 }
+const API_ROUTE_MAP = {
+  'news/story': { route: 'news', action: 'story' },
+  'news/seen': { route: 'news', action: 'seen' },
+  'news/unseen': { route: 'news', action: 'unseen' },
+  'admin/dashboard': { route: 'admin', action: 'dashboard' },
+  'admin/approve': { route: 'admin', action: 'approve' },
+  'admin/reject': { route: 'admin', action: 'reject' },
+  'push/config': { route: 'push', action: 'config' },
+  'push/subscribe': { route: 'push', action: 'subscribe' },
+  'push/unsubscribe': { route: 'push', action: 'unsubscribe' },
+  'activity/log': { route: 'activity', action: 'log' },
+  'cron/daily-fetch': { route: 'cron', action: 'daily-fetch' }
+};
 
 async function invokeApi(req, res) {
   const url = new URL(req.url, 'http://localhost');
-  const route = url.pathname.replace(/^\/api\//, '').replace(/^\//, '');
+  let route = url.pathname.replace(/^\/api\//, '').replace(/^\//, '');
 
   if (!route) {
     return sendJson(res, 404, { success: false, error: 'API route not found' });
+  }
+
+  const mapped = API_ROUTE_MAP[route];
+  if (mapped) {
+    route = mapped.route;
+    if (!url.searchParams.has('action')) {
+      url.searchParams.set('action', mapped.action);
+    }
   }
 
   const candidates = [
@@ -41,7 +62,13 @@ async function invokeApi(req, res) {
   if (apiEntry) {
     try {
       const handler = require(apiEntry);
-      const request = { ...req, query: Object.fromEntries(url.searchParams.entries()), method: req.method || 'GET' };
+      const request = {
+        ...req,
+        query: Object.fromEntries(url.searchParams.entries()),
+        method: req.method || 'GET',
+        headers: req.headers || {},
+        body: req.body
+      };
       const apiRes = {
         ...res,
         statusCode: 200,
@@ -89,10 +116,30 @@ function serveFile(res, filePath) {
   });
 }
 
+function readBody(req) {
+  return new Promise((resolve) => {
+    const chunks = [];
+    req.on('data', (chunk) => chunks.push(chunk));
+    req.on('end', () => {
+      const raw = Buffer.concat(chunks).toString('utf8');
+      if (!raw) return resolve(undefined);
+      try {
+        resolve(JSON.parse(raw));
+      } catch {
+        resolve(undefined);
+      }
+    });
+    req.on('error', () => resolve(undefined));
+  });
+}
+
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://localhost');
 
   if (url.pathname.startsWith('/api/')) {
+    if (!['GET', 'HEAD'].includes(req.method)) {
+      req.body = await readBody(req);
+    }
     return invokeApi(req, res);
   }
 

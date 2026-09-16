@@ -1,6 +1,6 @@
-const { fetchDailyStories, getScheduledGreeting } = require('../_lib/news');
-const { readState, logActivity } = require('../_lib/store');
-const { sendDailyStoryNotifications } = require('../_lib/push');
+const { fetchDailyStories, getScheduledGreeting } = require('./_lib/news');
+const { readState, logActivity } = require('./_lib/store');
+const { sendDailyStoryNotifications } = require('./_lib/push');
 
 module.exports = async function handler(req, res) {
   const authorization = req.headers.authorization || '';

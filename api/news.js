@@ -1,4 +1,5 @@
-const { getStory } = require('../_lib/store');
+const { getDailyNewsForUser, markNewsSeenForUser } = require('./_lib/news');
+const { getStory } = require('./_lib/store');
 
 const fallbackStories = [
   {
@@ -42,9 +43,7 @@ const fallbackStories = [
   }
 ];
 
-module.exports = async function handler(req, res) {
-  if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
-
+async function handleStory(req, res) {
   const storyId = String(req.query && req.query.id || '').trim();
   if (!storyId) return res.status(400).json({ error: 'id is required' });
 
@@ -56,4 +55,41 @@ module.exports = async function handler(req, res) {
     const story = fallbackStories.find((item) => item.id === storyId) || fallbackStories[0];
     return res.status(200).json({ success: true, story });
   }
+}
+
+async function handleUnseen(req, res) {
+  const email = String(req.query && req.query.email || '').trim().toLowerCase();
+  if (!email) return res.status(400).json({ error: 'email is required' });
+
+  try {
+    const stories = await getDailyNewsForUser(email).catch(() => fallbackStories);
+    return res.status(200).json({ success: true, stories });
+  } catch (error) {
+    return res.status(200).json({ success: true, stories: fallbackStories, warning: 'Using local fallback data' });
+  }
+}
+
+async function handleSeen(req, res) {
+  const { email, storyId } = req.body || {};
+  if (!email || !storyId) return res.status(400).json({ error: 'email and storyId are required' });
+
+  try {
+    await markNewsSeenForUser(String(email).trim().toLowerCase(), storyId);
+    return res.status(200).json({ success: true, storyId });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message || 'Could not mark story as seen' });
+  }
+}
+
+module.exports = async function handler(req, res) {
+  const action = String((req.query && req.query.action) || '').trim();
+
+  if (action === 'story') return handleStory(req, res);
+  if (action === 'unseen') return handleUnseen(req, res);
+  if (action === 'seen') {
+    if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+    return handleSeen(req, res);
+  }
+
+  return res.status(404).json({ error: 'Unknown news action. Use ?action=story|unseen|seen' });
 };

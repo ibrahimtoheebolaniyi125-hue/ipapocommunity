@@ -1,5 +1,5 @@
-const { getAuthenticatedUser } = require('../_lib/user-auth');
-const { logActivity } = require('../_lib/store');
+const { getAuthenticatedUser } = require('./_lib/user-auth');
+const { logActivity } = require('./_lib/store');
 
 const allowedEvents = new Set(['submission_created', 'comment_created']);
 
