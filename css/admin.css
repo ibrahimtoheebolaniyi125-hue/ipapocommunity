@@ -131,6 +131,130 @@ body.admin-body {
     border: 1px solid var(--admin-border);
 }
 
+.admin-topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.admin-notification-wrap {
+    position: relative;
+}
+
+.admin-notification-btn {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--admin-border);
+    border-radius: 12px;
+    background: var(--admin-card);
+    color: var(--admin-text);
+    cursor: pointer;
+    font-size: 17px;
+}
+
+.admin-notification-btn b {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: var(--admin-danger);
+    color: #fff;
+    font-size: 10px;
+    line-height: 17px;
+}
+
+.admin-notification-panel {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    z-index: 20;
+    width: min(360px, calc(100vw - 40px));
+    padding: 14px;
+    border: 1px solid var(--admin-border);
+    border-radius: 14px;
+    background: #111827;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+}
+
+.admin-notification-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--admin-border);
+    color: #fff;
+}
+
+.admin-notification-panel-head button {
+    border: 0;
+    background: none;
+    color: var(--admin-primary);
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.admin-notification-item {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: 8px;
+    padding: 11px 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.admin-notification-item.is-unread {
+    background: rgba(255, 204, 0, 0.07);
+}
+
+.admin-notification-item strong,
+.admin-notification-item small,
+.admin-notification-item em {
+    display: block;
+}
+
+.admin-notification-item strong {
+    color: #fff;
+    font-size: 12px;
+}
+
+.admin-notification-item small {
+    margin-top: 3px;
+    color: var(--admin-muted);
+    font-size: 11px;
+    line-height: 1.35;
+}
+
+.admin-notification-item em {
+    margin-top: 4px;
+    color: #64748b;
+    font-size: 10px;
+    font-style: normal;
+}
+
+.admin-notification-empty,
+#adminPushStatus {
+    display: block;
+    padding: 12px 4px;
+    color: var(--admin-muted);
+    font-size: 11px;
+}
+
+.admin-push-btn {
+    width: 100%;
+    margin-top: 12px;
+    padding: 9px 12px;
+    border: 1px solid rgba(255, 204, 0, 0.35);
+    border-radius: 8px;
+    background: rgba(255, 204, 0, 0.1);
+    color: var(--admin-primary);
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+}
+
 .admin-avatar {
     width: 32px;
     height: 32px;

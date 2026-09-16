@@ -7,6 +7,7 @@
     const RSVP_KEY = 'ipapo_user_rsvps';
     const SUBMISSIONS_KEY = 'ipapo_community_submissions';
     const NOTIFICATIONS_KEY = 'ipapo_user_notifications';
+    const USER_DEVICE_NOTICES_KEY = 'ipapo_device_notices';
 
     const SEED_EVENTS = [
         {
@@ -211,7 +212,22 @@
 
             submissions.unshift(newSub);
             localStorage.setItem(SUBMISSIONS_KEY, JSON.stringify(submissions));
+            this._logRemoteActivity('submission_created', 'New citizen story submitted', newSub.title, { submissionId: newSub.id });
             return newSub;
+        }
+
+        async _logRemoteActivity(eventType, title, message, metadata = {}) {
+            const token = localStorage.getItem('ipapo_supabase_access_token');
+            if (!token) return;
+            try {
+                await fetch('/api/activity/log', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    body: JSON.stringify({ eventType, title, message, metadata })
+                });
+            } catch (error) {
+                console.warn('Activity log unavailable:', error);
+            }
         }
 
         updateSubmissionStatus(submissionId, status) {
@@ -268,6 +284,39 @@
             localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(list));
             window.dispatchEvent(new CustomEvent('ipapo:notifications-changed'));
             return newN;
+        }
+
+        async broadcastDailyDigestToUser(userEmail) {
+            const digestItems = window.NewsService ? await window.NewsService.getDailyNewsForUser(userEmail) : [];
+            if (!digestItems.length) return [];
+
+            const current = JSON.parse(localStorage.getItem(USER_DEVICE_NOTICES_KEY) || '{}');
+            const sent = current[userEmail] || [];
+            const toSend = digestItems.filter(item => !sent.includes(item.id));
+
+            toSend.forEach(item => {
+                this.addNotification({
+                    type: 'breaking',
+                    title: `Daily update: ${item.title}`,
+                    message: `${item.summary || 'Fresh community update is now available on Ipapo Broadcast.'}`,
+                    link: `article.html?id=${item.id}`
+                });
+            });
+
+            current[userEmail] = Array.from(new Set(sent.concat(toSend.map(item => item.id))));
+            localStorage.setItem(USER_DEVICE_NOTICES_KEY, JSON.stringify(current));
+            return toSend;
+        }
+
+        getDailyUserNews(userEmail) {
+            if (!window.NewsService) return [];
+            return window.NewsService.getDailyNewsForUser(userEmail);
+        }
+
+        getUserNotificationsForDevice(userEmail) {
+            const all = this.getNotifications();
+            if (!userEmail) return all;
+            return all.filter(n => n.link && n.link.includes('article.html') || true);
         }
 
         // Summary Stats

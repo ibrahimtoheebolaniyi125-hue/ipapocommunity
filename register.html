@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="css/auth.css">
 
+    <script src="js/supabase-config.js"></script>
     <script src="js/auth.js"></script>
     <script>
         if (window.AuthService && window.AuthService.isAuthenticated()) {
@@ -301,6 +302,12 @@
                 });
 
                 showToast("Account created successfully! Signing you in...", "success");
+
+                if (newUser.requiresEmailConfirmation) {
+                    showToast('Account created. Check your email to confirm your account before signing in.', 'success');
+                    setTimeout(() => window.location.replace('login.html'), 1200);
+                    return;
+                }
 
                 await window.AuthService.login(newUser.email, passwordVal, true);
 

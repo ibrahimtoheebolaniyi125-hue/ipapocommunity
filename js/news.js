@@ -6,6 +6,9 @@
     const NEWS_KEY = 'ipapo_news_db';
     const SAVED_KEY = 'ipapo_saved_news_ids';
     const COMMENTS_KEY = 'ipapo_article_comments';
+    const DAILY_DIGEST_KEY = 'ipapo_daily_news_digest';
+    const SCAM_ALERTS_KEY = 'ipapo_scam_alerts';
+    const USER_NEWS_SEEN_KEY = 'ipapo_seen_news_by_user';
 
     const SEED_NEWS = [
         {
@@ -199,6 +202,25 @@
             localStorage.setItem(NEWS_KEY, JSON.stringify(articles));
         }
 
+        async syncFromApi() {
+            try {
+                const response = await fetch('/api/fetch-news');
+                if (!response.ok) {
+                    return this.getAllNews();
+                }
+                const payload = await response.json();
+                const stories = Array.isArray(payload.stories) ? payload.stories : [];
+                if (stories.length) {
+                    this._saveNews(stories);
+                    return stories;
+                }
+                return this.getAllNews();
+            } catch (error) {
+                console.warn('Could not sync news from API:', error);
+                return this.getAllNews();
+            }
+        }
+
         getArticleById(id) {
             const list = this.getAllNews();
             return list.find(a => a.id === id) || null;
@@ -288,6 +310,19 @@
             
             map[articleId].unshift(comment);
             localStorage.setItem(COMMENTS_KEY, JSON.stringify(map));
+            const token = localStorage.getItem('ipapo_supabase_access_token');
+            if (token) {
+                fetch('/api/activity/log', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    body: JSON.stringify({
+                        eventType: 'comment_created',
+                        title: 'New community comment posted',
+                        message: comment.text,
+                        metadata: { articleId }
+                    })
+                }).catch(() => {});
+            }
             return comment;
         }
 
@@ -327,6 +362,121 @@
             list = list.filter(a => a.id !== id);
             this._saveNews(list);
             return true;
+        }
+
+        getDailyDigest() {
+            const todayKey = new Date().toISOString().slice(0, 10);
+            const existing = JSON.parse(localStorage.getItem(DAILY_DIGEST_KEY) || '{}');
+            if (existing.date === todayKey && Array.isArray(existing.items) && existing.items.length) {
+                return existing.items;
+            }
+
+            const digest = this.getAllNews().slice(0, 5).map((article, index) => ({
+                ...article,
+                digestDate: todayKey,
+                rank: index + 1,
+                isDailyDigest: true
+            }));
+
+            localStorage.setItem(DAILY_DIGEST_KEY, JSON.stringify({ date: todayKey, items: digest }));
+            return digest;
+        }
+
+        getDailyNewsForUser(userEmail = 'all') {
+            const digest = this.getDailyDigest();
+            const seenMap = JSON.parse(localStorage.getItem(USER_NEWS_SEEN_KEY) || '{}');
+            const seen = new Set((seenMap[userEmail] || []).concat(userEmail === 'all' ? [] : seenMap.all || []));
+            return digest.filter(item => !seen.has(item.id));
+        }
+
+        getUnseenNewsForUser(userEmail = 'all') {
+            return this.getDailyNewsForUser(userEmail);
+        }
+
+        markNewsSeenForUser(userEmail, itemId) {
+            if (!userEmail || !itemId) return [];
+            const seenMap = JSON.parse(localStorage.getItem(USER_NEWS_SEEN_KEY) || '{}');
+            const userSeen = new Set(seenMap[userEmail] || []);
+            userSeen.add(itemId);
+            seenMap[userEmail] = Array.from(userSeen);
+            localStorage.setItem(USER_NEWS_SEEN_KEY, JSON.stringify(seenMap));
+            return seenMap[userEmail];
+        }
+
+        getScamAlerts() {
+            try {
+                return JSON.parse(localStorage.getItem(SCAM_ALERTS_KEY)) || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        evaluateScamAlert(text) {
+            const raw = String(text || '').trim();
+            if (!raw) {
+                return { score: 0, label: 'No alert', severity: 'low', risk: 'none', reasons: [] };
+            }
+
+            const lower = raw.toLowerCase();
+            const flaggedPatterns = [
+                ['urgent', 'Immediate action required to avoid missing out'],
+                ['send money', 'Money transfer requested before verification'],
+                ['fake prize', 'Prize or reward claim wording detected'],
+                ['bitcoin', 'Cryptocurrency or untraceable payment requested'],
+                ['wire transfer', 'Unusual payment method demanded'],
+                ['click this link', 'Direct link bait used to push users into a trap'],
+                ['guaranteed return', 'Guaranteed profit claims are not credible'],
+                ['claim your refund', 'Refund solicitation pattern often used in scams'],
+                ['crypto', 'Crypto-based payment demand'],
+                ['login to verify', 'Urgent account verification scam technique'],
+                ['pay before approval', 'Payment demanded before legitimate review']
+            ];
+
+            const reasons = flaggedPatterns
+                .filter(([pattern]) => lower.includes(pattern))
+                .map(([, reason]) => reason);
+
+            const score = Math.min(100, reasons.length * 18 + (/(?:cash|crypto|bitcoin|transfer|urgent|today|now)/.test(lower) ? 12 : 0));
+
+            let label = 'Likely safe';
+            let severity = 'low';
+            let risk = 'safe';
+
+            if (score >= 75) {
+                label = 'Scam alert';
+                severity = 'critical';
+                risk = 'high';
+            } else if (score >= 45) {
+                label = 'Suspicious notice';
+                severity = 'medium';
+                risk = 'medium';
+            } else if (score > 0) {
+                label = 'Needs verification';
+                severity = 'low';
+                risk = 'low';
+            }
+
+            return { score, label, severity, risk, reasons };
+        }
+
+        addScamAlert(rawText, source = 'community') {
+            const analysis = this.evaluateScamAlert(rawText);
+            const alerts = this.getScamAlerts();
+            const newAlert = {
+                id: 'scam-' + Date.now().toString(36),
+                source,
+                text: rawText,
+                risk: analysis.risk,
+                severity: analysis.severity,
+                label: analysis.label,
+                score: analysis.score,
+                reasons: analysis.reasons,
+                createdAt: new Date().toISOString()
+            };
+
+            alerts.unshift(newAlert);
+            localStorage.setItem(SCAM_ALERTS_KEY, JSON.stringify(alerts.slice(0, 20)));
+            return newAlert;
         }
     }
 

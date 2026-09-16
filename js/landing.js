@@ -93,6 +93,22 @@
     const prevBtn = document.getElementById('prevSlideBtn');
     const nextBtn = document.getElementById('nextSlideBtn');
     const statusBar = document.getElementById('carouselStatusBar');
+    const lpMenuBtn = document.getElementById('lpMenuBtn');
+    const lpMobileMenu = document.getElementById('lpMobileMenu');
+    if (lpMenuBtn && lpMobileMenu) {
+        lpMenuBtn.addEventListener('click', () => {
+            const isOpen = lpMobileMenu.classList.toggle('is-open');
+            lpMenuBtn.setAttribute('aria-expanded', String(isOpen));
+            lpMobileMenu.setAttribute('aria-hidden', String(!isOpen));
+            lpMenuBtn.textContent = isOpen ? '✕' : '☰';
+        });
+        lpMobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+            lpMobileMenu.classList.remove('is-open');
+            lpMenuBtn.setAttribute('aria-expanded', 'false');
+            lpMobileMenu.setAttribute('aria-hidden', 'true');
+            lpMenuBtn.textContent = '☰';
+        }));
+    }
     function initCarousel() {
         if (!carouselContainer) return;
         carouselContainer.innerHTML = '';

@@ -108,19 +108,62 @@ if (latestNewsBtn) {
 
 const audioToggle = document.getElementById("audioToggle");
 if (audioToggle) {
-    audioToggle.addEventListener("click", () => {
-        const isLive = audioToggle.dataset.live === "true";
-        audioToggle.dataset.live = String(!isLive);
-        audioToggle.innerHTML = isLive
-            ? '<span>▶</span> Listen Live'
-            : '<span>⏸</span> Listening Now';
-        audioToggle.classList.toggle("is-live", !isLive);
+    const homeLiveAudio = document.getElementById("homeLiveAudio");
+    const homeStreamUrl = 'https://stream.zeno.fm/8rbamh3bkg0uv';
 
-        const visualizer = document.querySelector('.audio-visualizer');
-        if (visualizer) {
-            visualizer.classList.toggle('paused', isLive);
+    if (homeLiveAudio) {
+        let stationSettings = {};
+        try {
+            stationSettings = JSON.parse(localStorage.getItem('ipapo_station_settings') || '{}');
+        } catch (error) {
+            console.warn('Could not read station settings:', error);
         }
-    });
+
+        homeLiveAudio.src = stationSettings.streamUrl && stationSettings.streamUrl !== 'https://stream.zeno.fm/f3wvbbqmdg8uv'
+            ? stationSettings.streamUrl
+            : homeStreamUrl;
+        homeLiveAudio.volume = 0.85;
+
+        homeLiveAudio.addEventListener('play', () => {
+            audioToggle.innerHTML = '<span>⏸</span> Listening Now';
+            audioToggle.classList.add('is-live');
+        });
+        homeLiveAudio.addEventListener('pause', () => {
+            audioToggle.innerHTML = '<span>▶</span> Listen Live';
+            audioToggle.classList.remove('is-live');
+        });
+        homeLiveAudio.addEventListener('error', () => {
+            audioToggle.innerHTML = '<span>▶</span> Listen Live';
+            audioToggle.classList.remove('is-live');
+            if (window.showToast) window.showToast('The FM stream is unavailable right now.', 'error');
+        });
+
+        audioToggle.addEventListener("click", async () => {
+            if (!homeLiveAudio.paused) {
+                homeLiveAudio.pause();
+                return;
+            }
+
+            try {
+                await homeLiveAudio.play();
+                if (window.showToast) window.showToast('Connected to Oke-Ogun FM 96.3 regional radio.', 'success');
+            } catch (error) {
+                if (window.showToast) window.showToast('The FM stream could not be started. Open Live Radio to try again.', 'error');
+                console.error('Homepage radio playback failed:', error);
+            }
+        });
+    } else {
+        audioToggle.addEventListener("click", () => {
+            window.location.href = "live.html";
+        });
+    }
+
+    const homeLiveAudioVolume = document.getElementById('volumeSlider');
+    if (homeLiveAudio && homeLiveAudioVolume) {
+        homeLiveAudioVolume.addEventListener('input', () => {
+            homeLiveAudio.volume = Number(homeLiveAudioVolume.value) / 100;
+        });
+    }
 }
 
 const scrollTop = document.getElementById("scrollTop");
@@ -310,6 +353,8 @@ if (hero && heroContent) {
 }
 
 function initUserNavbar() {
+    // Removed user authentication features for Version 1 public access
+    // Admin access available through separate admin portal
     const header = document.getElementById("header");
     if (!header) return;
 
@@ -326,70 +371,13 @@ function initUserNavbar() {
         }
     }
 
-    const currentUser = window.AuthService ? window.AuthService.getCurrentUser() : null;
-    const unreadCount = window.DashboardService ? window.DashboardService.getUnreadCount() : 0;
-
-    if (currentUser) {
-        const isAdmin = currentUser.role === 'admin' || currentUser.role === 'superadmin';
-        userWrap.innerHTML = `
-            <button class="user-pill-btn" id="userPillBtn" type="button" aria-expanded="false" aria-label="User account menu">
-                <img class="user-pill-avatar" src="${currentUser.avatar || 'img/people.jpg'}" alt="${currentUser.firstName}">
-                <span>${currentUser.firstName}</span>
-                ${unreadCount > 0 ? `<span style="background:var(--primary);color:#111;border-radius:10px;padding:1px 6px;font-size:10px;font-weight:700;">${unreadCount}</span>` : ''}
-                <small style="font-size:10px;opacity:0.7;">▼</small>
-            </button>
-            <div class="user-dropdown" id="userDropdown" role="menu">
-                <div class="dropdown-user-info">
-                    <strong>${currentUser.firstName} ${currentUser.lastName}</strong>
-                    <span>${currentUser.email}</span>
-                </div>
-                <a href="dashboard.html" role="menuitem">📊 Dashboard</a>
-                <a href="profile.html" role="menuitem">⚙️ Profile & Settings</a>
-                <a href="saved-news.html" role="menuitem">🔖 Saved News</a>
-                <a href="notifications.html" role="menuitem">🔔 Notifications ${unreadCount > 0 ? `(${unreadCount})` : ''}</a>
-                ${isAdmin ? `<a href="admin/admin-dashboard.html" role="menuitem" style="color:var(--primary);font-weight:700;">👑 Admin Portal</a>` : ''}
-                <button class="logout-item" id="logoutBtn" type="button" role="menuitem">🚪 Log Out</button>
-            </div>
-        `;
-
-        const pillBtn = document.getElementById("userPillBtn");
-        const dropdown = document.getElementById("userDropdown");
-        const logoutBtn = document.getElementById("logoutBtn");
-
-        if (pillBtn && dropdown) {
-            pillBtn.addEventListener("click", (e) => {
-                e.stopPropagation();
-                dropdown.classList.toggle("open");
-                pillBtn.setAttribute("aria-expanded", String(dropdown.classList.contains("open")));
-            });
-
-            document.addEventListener("click", (e) => {
-                if (!userWrap.contains(e.target)) {
-                    dropdown.classList.remove("open");
-                    pillBtn.setAttribute("aria-expanded", "false");
-                }
-            });
-        }
-
-        if (logoutBtn) {
-            logoutBtn.addEventListener("click", () => {
-                if (window.AuthService) {
-                    window.AuthService.logout();
-                }
-                window.location.replace("index.html");
-            });
-        }
-    } else {
-        userWrap.innerHTML = `
-            <a href="login.html" class="btn-outline" style="min-height:36px;padding:0 16px;font-size:12.5px;border-radius:30px;text-decoration:none;">
-                Log In
-            </a>
-        `;
-    }
+    // Simple admin link for public access
+    userWrap.innerHTML = `
+        <a href="admin/admin-login.html" class="btn-outline" style="min-height:36px;padding:0 16px;font-size:12.5px;border-radius:30px;text-decoration:none; opacity:0.6;">
+            🔐 Admin
+        </a>
+    `;
 }
-
-window.addEventListener('ipapo:auth-changed', initUserNavbar);
-window.addEventListener('ipapo:notifications-changed', initUserNavbar);
 
 // Global Toast Notification Helper
 window.showToast = function (message, type = 'info') {

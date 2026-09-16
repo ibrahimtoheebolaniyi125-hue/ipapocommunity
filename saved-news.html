@@ -125,7 +125,7 @@
             grid.innerHTML = articles.map(art => `
                 <article class="news-card show" style="position:relative;">
                     <div class="news-image">
-                        <img src="${art.image}" alt="${art.title}">
+                        <img src="${art.image || 'img/group.jpg'}" alt="${art.title}">
                         <span class="news-tag">${art.category}</span>
                         <button 
                             class="save-article-btn saved" 

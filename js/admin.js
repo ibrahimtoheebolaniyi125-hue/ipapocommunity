@@ -7,8 +7,8 @@
 
     const DEFAULT_SETTINGS = {
         stationName: 'Ipapo Broadcast',
-        frequencyTag: 'Online & 98.5 FM Community Relay',
-        streamUrl: 'https://stream.zeno.fm/f3wvbbqmdg8uv',
+        frequencyTag: '96.3 FM • Oke-Ogun / Itesiwaju Regional Relay',
+        streamUrl: 'https://stream.zeno.fm/8rbamh3bkg0uv',
         studioPhone: '08070426269',
         studioEmail: 'contact@ipapo.ng',
         studioAddress: 'Broadcasting House, Center Road, Ipapo, Oyo State',

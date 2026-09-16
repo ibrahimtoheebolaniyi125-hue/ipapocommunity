@@ -11,6 +11,7 @@
     
     <link rel="stylesheet" href="../css/admin.css">
 
+    <script src="../js/supabase-config.js"></script>
     <script src="../js/auth.js"></script>
     <script src="admin.js"></script>
     <script>
@@ -113,8 +114,10 @@
             const settings = window.AdminController.getSettings();
 
             document.getElementById('stationName').value = settings.stationName || 'Ipapo Broadcast';
-            document.getElementById('frequencyTag').value = settings.frequencyTag || 'Online & 98.5 FM Community Relay';
-            document.getElementById('streamUrl').value = settings.streamUrl || 'https://stream.zeno.fm/f3wvbbqmdg8uv';
+            document.getElementById('frequencyTag').value = settings.frequencyTag || '96.3 FM • Oke-Ogun / Itesiwaju Regional Relay';
+            document.getElementById('streamUrl').value = settings.streamUrl && settings.streamUrl !== 'https://stream.zeno.fm/f3wvbbqmdg8uv'
+                ? settings.streamUrl
+                : 'https://stream.zeno.fm/8rbamh3bkg0uv';
             document.getElementById('studioPhone').value = settings.studioPhone || '08070426269';
             document.getElementById('studioEmail').value = settings.studioEmail || 'contact@ipapo.ng';
             document.getElementById('studioAddress').value = settings.studioAddress || 'Broadcasting House, Center Road, Ipapo, Oyo State';

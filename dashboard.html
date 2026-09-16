@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="css/pages.css">
 
+    <script src="js/supabase-config.js"></script>
     <script src="js/auth.js"></script>
     <script>
         if (window.AuthService) {
@@ -89,6 +90,19 @@
                 </div>
             </div>
 
+            <div class="dash-card dash-today-card">
+                <div class="dash-card-header">
+                    <div>
+                        <span class="dash-eyebrow">TODAY IN IPAPO</span>
+                        <h3>Fresh stories for you</h3>
+                    </div>
+                    <a href="news.html" class="dash-text-link">Open News →</a>
+                </div>
+                <div id="dashTodayNewsList" class="dash-today-list">
+                    <p class="dash-empty-state">Loading today’s approved stories...</p>
+                </div>
+            </div>
+
             <!-- Saved News Quick Access -->
             <div class="dash-card">
                 <div class="dash-card-header">
@@ -143,6 +157,15 @@
                         Log Out of Account
                     </button>
                 </div>
+            </div>
+
+            <div class="dash-card" style="border: 1px solid rgba(255,204,0,0.3);">
+                <div class="dash-card-header">
+                    <h3>Device Alerts</h3>
+                </div>
+                <p style="font-size:13px; color:#94a3b8; margin-bottom:14px;">Get a notification when approved Ipapo news is published.</p>
+                <button type="button" class="btn" id="enablePushBtn" style="width:100%; min-height:40px; font-size:13px;">Enable Device Notifications</button>
+                <small id="pushStatus" style="display:block; color:#94a3b8; margin-top:10px;"></small>
             </div>
 
             <div class="dash-card" style="background: linear-gradient(135deg, #10141d, #080b12); color: #fff; border: 1px solid rgba(255,204,0,0.3);">
@@ -204,13 +227,46 @@
 
     <script src="js/news.js"></script>
     <script src="js/dashboard.js"></script>
+    <script src="js/push.js"></script>
     <script src="script.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             if (!window.AuthService) return;
             const currentUser = window.AuthService.getCurrentUser();
             if (!currentUser) return;
+
+            const todayNewsList = document.getElementById('dashTodayNewsList');
+            try {
+                const response = await fetch(`/api/news/unseen?email=${encodeURIComponent(currentUser.email)}`);
+                if (!response.ok) throw new Error('Today news unavailable');
+                const payload = await response.json();
+                const todayStories = payload.stories || [];
+                todayNewsList.innerHTML = todayStories.length ? todayStories.slice(0, 4).map(story => `
+                    <a class="dash-story-row" href="article.html?id=${encodeURIComponent(story.id)}">
+                        <span class="dash-story-category">${story.category || 'NEWS'}</span>
+                        <span class="dash-story-title">${story.title}</span>
+                        <span class="dash-story-arrow">↗</span>
+                    </a>
+                `).join('') : '<p class="dash-empty-state">You are caught up. New approved stories will appear here today.</p>';
+            } catch (error) {
+                todayNewsList.innerHTML = '<p class="dash-empty-state">Connect to the news service to load today’s stories.</p>';
+            }
+
+            const enablePushBtn = document.getElementById('enablePushBtn');
+            const pushStatus = document.getElementById('pushStatus');
+            enablePushBtn.addEventListener('click', async () => {
+                enablePushBtn.disabled = true;
+                pushStatus.textContent = 'Requesting permission...';
+                try {
+                    await window.IpapoPush.enablePushNotifications();
+                    pushStatus.textContent = 'This device is subscribed to Ipapo Broadcast alerts.';
+                    enablePushBtn.textContent = 'Notifications Enabled';
+                } catch (error) {
+                    pushStatus.textContent = error.message;
+                    enablePushBtn.disabled = false;
+                }
+            });
 
             document.getElementById('dashUserGreeting').textContent = currentUser.firstName;
             document.getElementById('dashFullName').textContent = `${currentUser.firstName} ${currentUser.lastName}`;

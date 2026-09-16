@@ -12,13 +12,6 @@
     
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="css/pages.css">
-
-    <script src="js/auth.js"></script>
-    <script>
-        if (window.AuthService) {
-            window.AuthService.guardProtectedPage('login.html');
-        }
-    </script>
 </head>
 <body>
     <header class="header" id="header">
@@ -27,7 +20,7 @@
         </a>
 
         <nav class="navbar" id="navbar">
-            <a href="home.html" class="nav-link">Home</a>
+            <a href="index.html" class="nav-link">Home</a>
             <a href="news.html" class="nav-link">News</a>
             <a href="live.html" class="nav-link active">Live</a>
             <a href="programs.html" class="nav-link">Programs</a>
@@ -59,11 +52,11 @@
                 </div>
 
                 <h2 style="font-size: clamp(26px, 4vw, 38px); margin-bottom: 12px; color: #fff; line-height: 1.2;">
-                    Ipapo Community Morning Brief
+                    Oke-Ogun FM 96.3 Regional Relay
                 </h2>
 
                 <p style="color: rgba(255, 255, 255, 0.75); font-size: 15px; margin-bottom: 20px; line-height: 1.6;">
-                    Featuring live updates on local development projects, market prices in Itesiwaju, cultural dialogues, and exclusive resident interviews with our station hosts.
+                    Regional radio for Oke-Ogun, Itesiwaju and Ipapo, carrying local news, Yoruba programming, music and community conversations.
                 </p>
                 <div class="audio-visualizer" id="audioViz">
                     <div class="viz-bar"></div>
@@ -82,6 +75,8 @@
                         <span id="playText">Listen Live</span>
                     </button>
 
+                    <audio id="liveAudio" preload="none"></audio>
+
                     <div style="display: flex; align-items: center; gap: 8px; color: rgba(255, 255, 255, 0.7); font-size: 13px;">
                         <span>🔊</span>
                         <input type="range" id="volumeSlider" min="0" max="100" value="85" style="accent-color: var(--primary); cursor: pointer;">
@@ -98,8 +93,8 @@
                     <img src="img/people.jpg" alt="Presenter" style="width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
                     <div>
                         <small style="color: var(--primary); font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 1px;">Current Host</small>
-                        <h4 style="font-size: 18px; margin: 2px 0; color: #fff;">FIPSU Media Bureau</h4>
-                        <span style="font-size: 12.5px; color: rgba(255, 255, 255, 0.6);">Broadcasting from Station Studio 1</span>
+                        <h4 style="font-size: 18px; margin: 2px 0; color: #fff;">Oke-Ogun FM 96.3</h4>
+                        <span style="font-size: 12.5px; color: rgba(255, 255, 255, 0.6);">Regional broadcast from Alaga, Oyo State</span>
                     </div>
                 </div>
 
@@ -174,30 +169,34 @@
             </div>
 
             <div class="footer-links">
-                <h4>Quick Links</h4>
-                <a href="index.html">Home</a>
-                <a href="news.html">News</a>
-                <a href="live.html">Live</a>
-                <a href="programs.html">Programs</a>
-                <a href="community.html">Community</a>
-                <a href="events.html">Events</a>
-                <a href="gallery.html">Gallery</a>
-                <a href="about.html">About</a>
-                <a href="contact.html">Contact</a>
+                <h4>Platform</h4>
+                <a href="index.html">🏠 Home</a>
+                <a href="news.html">📰 News</a>
+                <a href="live.html">📻 Live Radio</a>
+                <a href="programs.html">📺 Programs</a>
+                <a href="events.html">🎉 Events</a>
             </div>
 
             <div class="footer-links">
-                <h4>Follow Us</h4>
-                <a href="https://wa.me/08070426269" target="_blank" rel="noopener">WhatsApp</a>
-                <a href="contact.html">Instagram</a>
-                <a href="news.html">YouTube</a>
-                <a href="index.html#newsletter">Newsletter</a>
+                <h4>Community</h4>
+                <a href="community.html">🤝 Community Hub</a>
+                <a href="gallery.html">🖼️ Photo Gallery</a>
+                <a href="submit-story.html">✍️ Submit Story</a>
+                <a href="contact.html">📞 Contact</a>
+            </div>
+
+            <div class="footer-links">
+                <h4>About</h4>
+                <a href="about.html">👑 About Ipapo</a>
+                <a href="about.html#heritage">🏛️ Royal Heritage</a>
+                <a href="about.html#culture">🎭 Culture & Traditions</a>
             </div>
         </div>
 
         <div class="footer-bottom">
             <p>© 2026 Ipapo Broadcast. All Rights Reserved.</p>
             <p>Built with ❤️ for the community.</p>
+            <a href="admin/admin-login.html" style="color:rgba(255,255,255,0.3); font-size:11px; text-decoration:none; margin-top:10px; display:inline-block;">🔐 Admin Portal</a>
         </div>
 
         <div class="footer-credit">
@@ -209,6 +208,7 @@
     <!-- Scripts -->
     <script src="js/news.js"></script>
     <script src="js/dashboard.js"></script>
+    <script src="js/admin.js"></script>
     <script src="script.js"></script>
 
     <script>
@@ -217,32 +217,55 @@
         const playText = document.getElementById('playText');
         const audioViz = document.getElementById('audioViz');
         const listenerCount = document.getElementById('listenerCount');
+        const liveAudio = document.getElementById('liveAudio');
+        const volumeSlider = document.getElementById('volumeSlider');
 
-        let isPlaying = false;
+        const defaultStreamUrl = 'https://stream.zeno.fm/8rbamh3bkg0uv';
+        const stationSettings = window.AdminController ? window.AdminController.getSettings() : {};
+        liveAudio.src = stationSettings.streamUrl && stationSettings.streamUrl !== 'https://stream.zeno.fm/f3wvbbqmdg8uv'
+            ? stationSettings.streamUrl
+            : defaultStreamUrl;
+        liveAudio.volume = Number(volumeSlider.value) / 100;
 
-        let audioCtx = null;
-        let oscillator = null;
+        const setPlayerState = (playing) => {
+            playIcon.textContent = playing ? '⏸' : '▶';
+            playText.textContent = playing ? 'Listening Now' : 'Listen Live';
+            audioViz.classList.toggle('paused', !playing);
+            mainPlayToggle.style.background = playing ? '#fff' : 'var(--primary)';
+            mainPlayToggle.style.color = '#111';
+        };
 
-        mainPlayToggle.addEventListener('click', () => {
-            isPlaying = !isPlaying;
-
-            if (isPlaying) {
-                playIcon.textContent = '⏸';
-                playText.textContent = 'Listening Now';
-                audioViz.classList.remove('paused');
-                mainPlayToggle.style.background = '#fff';
-                mainPlayToggle.style.color = '#111';
-
-                listenerCount.textContent = Math.floor(340 + Math.random() * 25);
-                if (window.showToast) window.showToast("Streaming Ipapo Broadcast Live (Online Feed Active)", "success");
-            } else {
-                playIcon.textContent = '▶';
-                playText.textContent = 'Listen Live';
-                audioViz.classList.add('paused');
-                mainPlayToggle.style.background = 'var(--primary)';
-                mainPlayToggle.style.color = '#111';
-                if (window.showToast) window.showToast("Broadcast stream paused.", "info");
+        mainPlayToggle.addEventListener('click', async () => {
+            if (!liveAudio.src) {
+                if (window.showToast) window.showToast('Add a live stream URL in Admin > Station Settings first.', 'info');
+                return;
             }
+
+            if (!liveAudio.paused) {
+                liveAudio.pause();
+                return;
+            }
+
+            try {
+                await liveAudio.play();
+                listenerCount.textContent = 'Live';
+                if (window.showToast) window.showToast('Connected to Ipapo Broadcast Live.', 'success');
+            } catch (error) {
+                setPlayerState(false);
+                if (window.showToast) window.showToast('The radio stream could not be reached. Check the station stream URL.', 'error');
+                console.error('Live radio playback failed:', error);
+            }
+        });
+
+        liveAudio.addEventListener('play', () => setPlayerState(true));
+        liveAudio.addEventListener('pause', () => setPlayerState(false));
+        liveAudio.addEventListener('error', () => {
+            setPlayerState(false);
+            if (window.showToast) window.showToast('Radio stream unavailable right now.', 'error');
+        });
+
+        volumeSlider.addEventListener('input', () => {
+            liveAudio.volume = Number(volumeSlider.value) / 100;
         });
 
         document.querySelectorAll('.archive-play-btn').forEach(btn => {

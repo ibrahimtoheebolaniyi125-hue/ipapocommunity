@@ -12,12 +12,6 @@
     
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="css/pages.css">
-    <script src="js/auth.js"></script>
-    <script>
-        if (window.AuthService) {
-            window.AuthService.guardProtectedPage('login.html');
-        }
-    </script>
 </head>
 <body>
     <header class="header" id="header">
@@ -26,7 +20,7 @@
         </a>
 
         <nav class="navbar" id="navbar">
-            <a href="home.html" class="nav-link">Home</a>
+            <a href="index.html" class="nav-link">Home</a>
             <a href="news.html" class="nav-link active">News</a>
             <a href="live.html" class="nav-link">Live</a>
             <a href="programs.html" class="nav-link">Programs</a>
@@ -157,26 +151,51 @@
     <!-- Scripts -->
     <script src="js/news.js"></script>
     <script src="js/dashboard.js"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
     <script src="script.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
             const articleId = urlParams.get('id') || 'art-001';
 
             if (!window.NewsService) return;
 
-            const article = window.NewsService.getArticleById(articleId) || window.NewsService.getAllNews()[0];
+            await window.NewsService.syncFromApi();
+            let article = window.NewsService.getArticleById(articleId);
+            try {
+                const response = await fetch(`/api/news/story?id=${encodeURIComponent(articleId)}`);
+                if (response.ok) {
+                    const payload = await response.json();
+                    article = payload.story || article;
+                }
+            } catch (error) {
+                console.warn('Using local article fallback:', error);
+            }
+
+            article = article || window.NewsService.getAllNews()[0];
 
             if (!article) {
                 window.location.href = 'news.html';
                 return;
             }
 
+            const currentUser = window.AuthService ? window.AuthService.getCurrentUser() : null;
+            if (currentUser) {
+                fetch('/api/news/seen', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: currentUser.email, storyId: article.id })
+                }).catch(() => {
+                    window.NewsService.markNewsSeenForUser(currentUser.email, article.id);
+                });
+            }
+
             document.title = `${article.title} | Ipapo Broadcast`;
             document.getElementById('articleMainTitle').textContent = article.title;
             document.getElementById('articleCategoryBadge').textContent = (article.category || 'COMMUNITY').toUpperCase();
-            document.getElementById('articleFeaturedImg').src = article.image;
+            document.getElementById('articleFeaturedImg').src = article.image || 'img/group.jpg';
             document.getElementById('articleFeaturedImg').alt = article.title;
             document.getElementById('articleAuthor').textContent = article.author || 'Ipapo Media Desk';
             document.getElementById('articleDate').textContent = `${article.date} • ${article.readTime || '4 min read'}`;
@@ -264,7 +283,7 @@
             relatedGrid.innerHTML = related.map(rel => `
                 <article class="news-card show" style="position:relative;">
                     <div class="news-image">
-                        <img src="${rel.image}" alt="${rel.title}">
+                        <img src="${rel.image || 'img/group.jpg'}" alt="${rel.title}">
                         <span class="news-tag">${rel.category}</span>
                     </div>
                     <div class="news-content">

@@ -16,13 +16,6 @@
     >
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="css/pages.css">
-
-    <script src="js/auth.js"></script>
-    <script>
-        if (window.AuthService && !window.AuthService.isAuthenticated()) {
-            window.location.replace("index.html");
-        }
-    </script>
 </head>
 <body>
     <header class="header" id="header">
@@ -32,7 +25,7 @@
         </a>
 
         <nav class="navbar" id="navbar">
-            <a href="home.html" class="nav-link active">Home</a>
+            <a href="index.html" class="nav-link active">Home</a>
             <a href="news.html" class="nav-link">News</a>
             <a href="live.html" class="nav-link">Live</a>
             <a href="programs.html" class="nav-link">Programs</a>
@@ -141,16 +134,17 @@
                         <span>Streaming Live</span>
                     </div>
 
-                    <h3>Ipapo Community Morning Brief</h3>
+                    <h3>Oke-Ogun FM 96.3 Regional Relay</h3>
 
                     <p>
-                        A lively mix of community news, interviews, cultural updates, sports and voice-of-the-people stories.
+                        Regional radio serving Oke-Ogun, Itesiwaju and Ipapo with news, music, culture and community voices.
                     </p>
 
                     <div class="player-controls">
                         <button class="btn live-toggle" id="audioToggle" type="button">
                             <span>▶</span> Listen Live
                         </button>
+                        <audio id="homeLiveAudio" preload="none"></audio>
                         <span class="live-time">06:30 AM • Daily</span>
                     </div>
 
@@ -457,7 +451,6 @@
             </div>
 
         </section>
-        <!-- Local business: Black Soap (added for community spotlight) -->
         <section class="business section" id="business">
 
             <div class="section-title reveal">
@@ -514,7 +507,6 @@
 
         </section>
 
-        <!-- Education development: College of Education building -->
         <section class="college section" id="college">
 
             <div class="section-title reveal">
@@ -671,219 +663,7 @@
 
             </div>
 
-
-            <div class="news-container">
-
-                <article class="news-card reveal">
-
-                    <div class="news-image">
-
-                        <img
-                            src="img/group.jpg"
-                            alt="Community development"
-                        >
-
-                        <span class="news-tag">
-                            Community
-                        </span>
-
-                    </div>
-
-                    <div class="news-content">
-
-                        <small>September 2026</small>
-
-                        <h3>
-                            Community Development Program
-                        </h3>
-
-                        <p>celebrating excellence: future leaders development initiatives ipapo schorlarship award ceremony 2024
-                        </p>
-                        <p>Ipapo community programs focus on educational support, youth empowerment, infrastructure development, and local cultural promotion in the Itesiwaju Local Government Area of Oyo State</p>
-
-                        <button class="card-link news-link" type="button" data-title="Community Development Program" data-tag="Community" data-meta="September 2026 • Local development" data-text="Ipapo community programs focus on educational support, youth empowerment, infrastructure development and cultural promotion, creating stronger opportunities for families and local growth.">
-                            Read Story →
-                        </button>
-
-                    </div>
-
-                </article>
-
-
-                <article class="news-card reveal">
-
-                    <div class="news-image">
-
-                        <img
-                            src="img/amofin.jpg"
-                            alt="Amofin Beulah Adeoye"
-                        >
-
-                        <span class="news-tag">
-                            Politics
-                        </span>
-
-                    </div>
-
-                    <div class="news-content">
-
-                        <small>Latest Update</small>
-
-                        <h3>
-                            News & Updates - Ipapo Media
-                        </h3>
-
-                        <p>  Amofin Beulah Adeoye is a Nigerian legal professional, financial expert, and a prominent 2027 gubernatorial aspirant in Oyo State under the Peoples Democratic Party (PDP)
-                        </p>
-
-                        <a href="article.html?id=art-002" class="btn" style="min-height:40px; padding:0 20px; font-size:13px; text-decoration:none; display:inline-flex;">
-                            Read Full Story →
-                        </a>
-                    </div>
-
-                </article>
-
-
-                <article class="news-card reveal">
-
-                    <div class="news-image">
-
-                        <img
-                            src="img/school.jpg"
-                            alt="Football match"
-                        >
-
-                        <span class="news-tag">
-                            Sports
-                        </span>
-
-                    </div>
-
-                    <div class="news-content">
-
-                        <small>Sports Desk</small>
-
-                        <h3>
-                            Sports Festival Coverage
-                        </h3>
-
-                        <p>Ipapo sports news and community highlights are featured on local information platforms like Ipapo Media, which covers events such as inter-house sports competitions at Muslim High School Ipapo and historical spotlights on local football teams like the Ipapo Community Grammar School 1982 squad
-                        </p>
-
-                        <button class="card-link news-link" type="button" data-title="Sports Festival Coverage" data-tag="Sports" data-meta="Sports desk • Community highlights" data-text="From school competitions to local football stories, our sports coverage keeps the spirit of Ipapo alive and celebrates community achievement and talent.">
-                            Read Story →
-                        </button>
-
-                    </div>
-
-                </article>
-
-
-                <article class="news-card reveal">
-
-                    <div class="news-image">
-
-                        <img
-                            src="img/people.jpg"
-                            alt="Students and education"
-                        >
-
-                        <span class="news-tag">
-                            Education
-                        </span>
-
-                    </div>
-
-                    <div class="news-content">
-
-                        <small>FIPSU Group</small>
-
-                        <h3>
-                            FIPSU Group Updates
-                        </h3>
-
-                        <p>Educational Support & Youth Empowerment: Organizations like the Ipapo Descendants' Union and National Youth Service Corps (NYSC) Community Development Service (CDS) projects run programs providing notebooks, paying WAEC/JAMB and school fees, and offering mentorship and skill acquisition for young people
-                        </p>
-
-                        <button class="card-link news-link" type="button" data-title="FIPSU Group Updates" data-tag="Education" data-meta="Youth empowerment • Learning support" data-text="The FIPSU group and related community support networks continue to help young people with mentorship, education assistance, skill-building and life-changing opportunities.">
-                            Read Story →
-                        </button>
-
-                    </div>
-
-                </article>
-
-
-                <article class="news-card reveal">
-
-                    <div class="news-image">
-
-                        <img
-                            src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=900&q=80"
-                            alt="Modern broadcasting studio"
-                        >
-
-                        <span class="news-tag">
-                            Media
-                        </span>
-
-                    </div>
-
-                    <div class="news-content">
-
-                        <small>Station Update</small>
-
-                        <h3>
-                           KAP Film Village & Resort:
-                        </h3>
-
-                        <p>  Located in the Ipapo/Itesiwaju region of Oyo State, Kunle Afolayan’s massive film studio and resort project has been a major regional development
-                        </p>
-
-                        <button class="card-link news-link" type="button" data-title="KAP Film Village & Resort" data-tag="Media" data-meta="Station update • Regional development" data-text="The KAP Film Village & Resort is a major regional development drawing attention to the wider creative and economic potential of the Ipapo and Itesiwaju area.">
-                            Read Story →
-                        </button>
-
-                    </div>
-
-                </article>
-
-                 <article class="news-card reveal">
-
-                    <div class="news-image">
-
-                        <img
-                            src="img/ippao.jpg"
-                            alt="Modern broadcasting studio"
-                        >
-
-                        <span class="news-tag">
-                            Media
-                        </span>
-
-                    </div>
-
-                    <div class="news-content">
-
-                        <small>Aafin Oba Ipapo (The king Palace)</small>
-
-                        <h3>
-                           The King
-                        </h3>
-
-                        <p>
-                          The traditional ruler and king of Ipapo is the Eleyinpo of Ipapo, currently HRM Oba Yekini Ademola Abioye II.
-                        </p>
-                        <p>The royal stool of the Eleyinpo of Ipapo received status as a beaded crown-wearing monarchy, a historic milestone facilitated by the late Alaafin of Oyo, Oba Lamidi Olayiwola Adeyemi III.</p>
-
-                        <button class="card-link news-link" type="button" data-title="The King" data-tag="Culture" data-meta="Aafin Oba Ipapo • Heritage story" data-text="The royal stool of Ipapo carries deep cultural significance, and the story of the Eleyinpo of Ipapo reflects centuries of tradition, leadership and community identity.">
-                            Read Story →
-                        </button>
-                    </div>
-
-                </article>
-
-            </div>
+            <div class="news-container" id="homeNewsContainer"></div>
 
         </section>
 
@@ -1137,29 +917,35 @@
 
             <div class="footer-links">
 
-                <h4>Quick Links</h4>
+                <h4>Platform</h4>
 
-                <a href="home.html">Home</a>
-                <a href="news.html">News</a>
-                <a href="live.html">Live</a>
-                <a href="programs.html">Programs</a>
-                <a href="community.html">Community</a>
-                <a href="events.html">Events</a>
-                <a href="gallery.html">Gallery</a>
-                <a href="about.html">About</a>
-                <a href="contact.html">Contact</a>
+                <a href="index.html">🏠 Home</a>
+                <a href="news.html">📰 News</a>
+                <a href="live.html">📻 Live Radio</a>
+                <a href="programs.html">📺 Programs</a>
+                <a href="events.html">🎉 Events</a>
 
             </div>
 
 
             <div class="footer-links">
 
-                <h4>Follow Us</h4>
+                <h4>Community</h4>
 
-                <a href="https://wa.me/08070426269" target="_blank" rel="noopener">WhatsApp</a>
-                <a href="#contact">Instagram</a>
-                <a href="#news">YouTube</a>
-                <a href="#newsletter">Newsletter</a>
+                <a href="community.html">🤝 Community Hub</a>
+                <a href="gallery.html">🖼️ Photo Gallery</a>
+                <a href="submit-story.html">✍️ Submit Story</a>
+                <a href="contact.html">📞 Contact</a>
+
+            </div>
+
+            <div class="footer-links">
+
+                <h4>About</h4>
+
+                <a href="about.html">👑 About Ipapo</a>
+                <a href="about.html#heritage">🏛️ Royal Heritage</a>
+                <a href="about.html#culture">🎭 Culture & Traditions</a>
 
             </div>
 
@@ -1175,6 +961,8 @@
             <p>
                 Built with ❤️ for the community.
             </p>
+
+            <a href="admin/admin-login.html" style="color:rgba(255,255,255,0.3); font-size:11px; text-decoration:none; margin-top:10px; display:inline-block;">🔐 Admin Portal</a>
 
         </div>
 
@@ -1212,6 +1000,69 @@
     <script src="js/news.js"></script>
     <script src="js/dashboard.js"></script>
     <script src="script.js"></script>
+
+    <script>
+        function getStoryImage(image) {
+            if (!image) return 'img/group.jpg';
+            if (!/^https?:\/\//i.test(image)) return image;
+            return `https://images.weserv.nl/?url=${encodeURIComponent(image)}`;
+        }
+
+        async function loadHomeNews() {
+            const container = document.getElementById('homeNewsContainer');
+            if (!container || !window.NewsService) return;
+
+            try {
+                const response = await fetch('/api/fetch-news');
+                if (!response.ok) throw new Error('Home news fetch failed');
+                const payload = await response.json();
+                const stories = Array.isArray(payload.stories) ? payload.stories : [];
+
+                if (!stories.length) {
+                    container.innerHTML = '<div style="grid-column:1 / -1; text-align:center; padding:40px; color:#94a3b8;">No fresh stories available right now. Please check again soon.</div>';
+                    return;
+                }
+
+                container.innerHTML = stories.slice(0, 6).map((story) => `
+                    <article class="news-card reveal show">
+                        <div class="news-image">
+                            <img src="${getStoryImage(story.image)}" alt="${story.title}" loading="lazy" onerror="this.onerror=null;this.src='img/group.jpg';">
+                            <span class="news-tag">${story.category || 'Community'}</span>
+                        </div>
+                        <div class="news-content">
+                            <small>${story.date || (story.publishedAt ? new Date(story.publishedAt).toLocaleDateString() : 'Latest Update')}</small>
+                            <h3>${story.title}</h3>
+                            <p>${story.summary || story.content || 'Fresh community update from Ipapo.'}</p>
+                            <a href="article.html?id=${story.id}" class="btn" style="min-height:40px; padding:0 20px; font-size:13px; text-decoration:none; display:inline-flex;">
+                                Read Full Story →
+                            </a>
+                        </div>
+                    </article>
+                `).join('');
+            } catch (error) {
+                console.warn('Home news fallback used:', error);
+                const fallback = window.NewsService.getAllNews().slice(0, 6);
+                container.innerHTML = fallback.map((story) => `
+                    <article class="news-card reveal show">
+                        <div class="news-image">
+                            <img src="${getStoryImage(story.image)}" alt="${story.title}" loading="lazy" onerror="this.onerror=null;this.src='img/group.jpg';">
+                            <span class="news-tag">${story.category || 'Community'}</span>
+                        </div>
+                        <div class="news-content">
+                            <small>${story.date || 'Latest Update'}</small>
+                            <h3>${story.title}</h3>
+                            <p>${story.summary || 'Fresh community update from Ipapo.'}</p>
+                            <a href="article.html?id=${story.id}" class="btn" style="min-height:40px; padding:0 20px; font-size:13px; text-decoration:none; display:inline-flex;">
+                                Read Full Story →
+                            </a>
+                        </div>
+                    </article>
+                `).join('');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadHomeNews);
+    </script>
 
 </body>
 </html>

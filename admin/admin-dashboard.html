@@ -10,9 +10,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="../css/admin.css">
+    <script src="../js/supabase-config.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/news.js"></script>
     <script src="../js/dashboard.js"></script>
+    <script src="../js/push.js"></script>
     <script src="admin.js"></script>
     <script>
         if (window.AuthService) {
@@ -56,11 +58,28 @@
                 </p>
             </div>
 
-            <div class="admin-profile-pill">
+            <div class="admin-topbar-actions">
+                <div class="admin-notification-wrap">
+                    <button type="button" class="admin-notification-btn" id="adminNotificationBtn" aria-label="Open admin notifications" aria-expanded="false">
+                        <span>🔔</span>
+                        <b id="adminNotificationCount">0</b>
+                    </button>
+                    <div class="admin-notification-panel" id="adminNotificationPanel" hidden>
+                        <div class="admin-notification-panel-head">
+                            <strong>Station Activity</strong>
+                            <button type="button" id="adminMarkNotificationsRead">Mark read</button>
+                        </div>
+                        <div id="adminNotificationsList"></div>
+                        <button type="button" class="admin-push-btn" id="adminEnablePushBtn">Enable admin device alerts</button>
+                        <small id="adminPushStatus"></small>
+                    </div>
+                </div>
+                <div class="admin-profile-pill">
                 <img src="../img/people.jpg" alt="Admin" class="admin-avatar">
                 <div>
                     <strong style="display:block; font-size:13px; color:#fff;" id="topbarAdminName">Editorial Director</strong>
                     <span style="font-size:11px; color:var(--admin-primary);">Super Admin</span>
+                </div>
                 </div>
             </div>
         </header>
@@ -92,7 +111,30 @@
         </section>
         <section class="admin-card-box">
             <div class="admin-card-header">
-                <h2>📬 Pending Citizen Submissions for Review</h2>
+                <h2>📡 Daily Operations</h2>
+                <span class="badge-status published" id="activityHealthBadge">Checking</span>
+            </div>
+            <div class="admin-metrics-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); margin:0;">
+                <div class="metric-card"><span>Last Fetch</span><strong id="activityLastFetch" style="font-size:14px;">Waiting</strong></div>
+                <div class="metric-card"><span>Fetched Today</span><strong id="activityFetchedToday">0</strong></div>
+                <div class="metric-card"><span>Awaiting Review</span><strong id="activityPending">0</strong></div>
+                <div class="metric-card"><span>Approved Today</span><strong id="activityApproved">0</strong></div>
+                <div class="metric-card"><span>Scam Alerts</span><strong id="activityScamAlerts">0</strong></div>
+                <div class="metric-card"><span>Subscribed Devices</span><strong id="activityDevices">0</strong></div>
+            </div>
+        </section>
+        <section class="admin-card-box">
+            <div class="admin-card-header">
+                <h2>� Scam & Risk Alerts</h2>
+                <span class="badge-status draft" id="scamAlertBadge">Monitoring</span>
+            </div>
+
+            <div id="scamAlertsQueue">
+            </div>
+        </section>
+        <section class="admin-card-box">
+            <div class="admin-card-header">
+                <h2>�📬 Pending Citizen Submissions for Review</h2>
                 <a href="manage-submissions.html" class="admin-btn admin-btn-outline">View All Submissions →</a>
             </div>
 
@@ -126,7 +168,47 @@
     </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            const adminHeaders = () => ({
+                Authorization: `Bearer ${localStorage.getItem('ipapo_supabase_access_token') || ''}`
+            });
+            const adminReadKey = 'ipapo_admin_read_notifications';
+            const readNotifications = () => JSON.parse(localStorage.getItem(adminReadKey) || '[]');
+            const renderAdminNotifications = (notifications) => {
+                window.__ipapoAdminNotifications = notifications;
+                const list = document.getElementById('adminNotificationsList');
+                const read = new Set(readNotifications());
+                const unread = notifications.filter(item => !read.has(item.id));
+                const count = document.getElementById('adminNotificationCount');
+                count.textContent = unread.length;
+                count.hidden = unread.length === 0;
+                list.innerHTML = notifications.length ? notifications.slice(0, 8).map(item => `
+                    <div class="admin-notification-item ${read.has(item.id) ? '' : 'is-unread'}">
+                        <span>${item.type === 'scam' ? '⚠️' : '📰'}</span>
+                        <div><strong>${item.title}</strong><small>${item.message}</small><em>${new Date(item.createdAt).toLocaleString()}</em></div>
+                    </div>
+                `).join('') : '<p class="admin-notification-empty">No new station activity.</p>';
+            };
+            document.getElementById('adminNotificationBtn').addEventListener('click', () => {
+                const panel = document.getElementById('adminNotificationPanel');
+                panel.hidden = !panel.hidden;
+                document.getElementById('adminNotificationBtn').setAttribute('aria-expanded', String(!panel.hidden));
+            });
+            document.getElementById('adminMarkNotificationsRead').addEventListener('click', () => {
+                const ids = (window.__ipapoAdminNotifications || []).map(item => item.id);
+                localStorage.setItem(adminReadKey, JSON.stringify(ids));
+                document.getElementById('adminNotificationCount').hidden = true;
+                document.querySelectorAll('.admin-notification-item').forEach(item => item.classList.remove('is-unread'));
+            });
+            document.getElementById('adminEnablePushBtn').addEventListener('click', async () => {
+                const status = document.getElementById('adminPushStatus');
+                try {
+                    await window.IpapoPush.enablePushNotifications();
+                    status.textContent = 'This admin device is subscribed.';
+                } catch (error) {
+                    status.textContent = error.message;
+                }
+            });
             if (window.AdminController) {
                 const stats = window.AdminController.getDashboardStats();
                 document.getElementById('metricUsers').textContent = stats.totalUsers;
@@ -141,8 +223,96 @@
                     document.getElementById('topbarAdminName').textContent = `${cur.firstName} ${cur.lastName}`;
                 }
             }
+
+            let loadedRemoteNews = false;
+            try {
+                const response = await fetch('/api/admin/dashboard', { headers: adminHeaders() });
+                const payload = response.ok ? await response.json() : null;
+                loadedRemoteNews = Boolean(payload && payload.success);
+                if (payload && payload.notifications) renderAdminNotifications(payload.notifications);
+                if (payload && payload.activity) {
+                    const activity = payload.activity;
+                    document.getElementById('activityLastFetch').textContent = activity.lastFetch ? new Date(activity.lastFetch).toLocaleString() : 'Not yet';
+                    document.getElementById('activityFetchedToday').textContent = activity.fetchedToday;
+                    document.getElementById('activityPending').textContent = activity.pending;
+                    document.getElementById('activityApproved').textContent = activity.approved;
+                    document.getElementById('activityScamAlerts').textContent = activity.scamAlerts;
+                    document.getElementById('activityDevices').textContent = activity.subscribedDevices;
+                    document.getElementById('activityHealthBadge').textContent = 'Live';
+                }
+                const scamQueueEl = document.getElementById('scamAlertsQueue');
+                const scamBadge = document.getElementById('scamAlertBadge');
+
+                if (payload && payload.alerts && payload.alerts.length > 0) {
+                    const highest = payload.alerts[0];
+                    scamBadge.textContent = highest.risk === 'high' ? 'High Risk' : 'Monitoring';
+                    scamQueueEl.innerHTML = payload.alerts.slice(0, 3).map((alert) => `
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--admin-border); border-radius: 12px; padding: 18px; margin-bottom: 14px;">
+                            <div style="display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:8px;">
+                                <span class="badge-status ${alert.risk === 'high' ? 'pending' : 'draft'}">${alert.risk === 'high' ? 'Scam alert' : 'Needs review'}</span>
+                                <small style="color: var(--admin-muted);">Score: ${alert.score}/100</small>
+                            </div>
+                            <p style="margin:0 0 8px; color: #fff; font-size:14px; font-weight:600;">${alert.title}</p>
+                            <small style="color: var(--admin-muted); display:block; margin-bottom:6px;">Source: ${alert.source} • ${new Date(alert.createdAt).toLocaleString()}</small>
+                            <small style="color: var(--admin-primary);">${alert.reasons && alert.reasons.length ? alert.reasons.join(' • ') : 'Warning pattern identified.'}</small>
+                        </div>
+                    `).join('');
+                } else {
+                    scamBadge.textContent = 'Clear';
+                    scamQueueEl.innerHTML = `<div style="text-align:center; padding: 25px; color: var(--admin-muted); font-size:13.5px;">✓ No scam or suspicious alerts logged yet.</div>`;
+                }
+
+                if (payload && payload.newsQueue && payload.newsQueue.length > 0) {
+                    const fetchedQueue = document.getElementById('pendingSubmissionsQueue');
+                    fetchedQueue.innerHTML = payload.newsQueue.slice(0, 3).map((story) => `
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--admin-border); border-radius: 12px; padding: 18px; margin-bottom: 14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                            <div style="max-width: 65%;">
+                                <span class="badge-status pending">Fetched News</span>
+                                <h4 style="margin: 6px 0 4px; font-size:15px; color:#fff;">${story.title}</h4>
+                                <p style="font-size:13px; color:var(--admin-muted); margin:0 0 6px;">${story.summary.substring(0, 140)}...</p>
+                                <small style="color:var(--admin-primary); font-size:11.5px;">Source: ${story.source} • Scam score: ${story.scamScore}</small>
+                            </div>
+                            <div class="action-btn-group">
+                                <button type="button" class="admin-btn admin-btn-success" onclick="approveFetchedStory('${story.id}')">✓ Approve</button>
+                                <button type="button" class="admin-btn admin-btn-danger" onclick="rejectFetchedStory('${story.id}')">✕ Reject</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Failed to load fetched news queue:', error);
+            }
+
+            const scamQueueEl = document.getElementById('scamAlertsQueue');
+            const scamBadge = document.getElementById('scamAlertBadge');
+            if (!loadedRemoteNews && window.NewsService) {
+                const alerts = window.NewsService.getScamAlerts();
+                if (alerts.length === 0) {
+                    scamQueueEl.innerHTML = `
+                        <div style="text-align:center; padding: 25px; color: var(--admin-muted); font-size:13.5px;">
+                            ✓ No scam or suspicious alerts logged yet.
+                        </div>
+                    `;
+                    scamBadge.textContent = 'Clear';
+                } else {
+                    const highest = alerts[0];
+                    scamBadge.textContent = highest.label || 'Monitoring';
+                    scamQueueEl.innerHTML = alerts.slice(0, 3).map(alert => `
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--admin-border); border-radius: 12px; padding: 18px; margin-bottom: 14px;">
+                            <div style="display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:8px;">
+                                <span class="badge-status ${alert.risk === 'high' ? 'pending' : alert.risk === 'medium' ? 'draft' : 'published'}">${alert.label}</span>
+                                <small style="color: var(--admin-muted);">Score: ${alert.score}/100</small>
+                            </div>
+                            <p style="margin:0 0 8px; color: #fff; font-size:14px; font-weight:600;">${alert.text}</p>
+                            <small style="color: var(--admin-muted); display:block; margin-bottom:6px;">Source: ${alert.source} • ${new Date(alert.createdAt).toLocaleString()}</small>
+                            <small style="color: var(--admin-primary);">${alert.reasons.length ? alert.reasons.join(' • ') : 'No high-risk patterns detected.'}</small>
+                        </div>
+                    `).join('');
+                }
+            }
+
             const queueEl = document.getElementById('pendingSubmissionsQueue');
-            if (window.DashboardService) {
+            if (!loadedRemoteNews && window.DashboardService) {
                 const pending = window.DashboardService.getSubmissions().filter(s => s.status === 'pending');
                 if (pending.length === 0) {
                     queueEl.innerHTML = `
@@ -206,6 +376,30 @@
         window.rejectSub = function(id) {
             if (window.AdminController && window.AdminController.rejectSubmission(id)) {
                 alert('Submission declined.');
+                window.location.reload();
+            }
+        };
+
+        window.approveFetchedStory = async function(id) {
+            const response = await fetch('/api/admin/approve', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('ipapo_supabase_access_token') || ''}` },
+                body: JSON.stringify({ storyId: id })
+            });
+            if (response.ok) {
+                alert('Fetched story approved.');
+                window.location.reload();
+            }
+        };
+
+        window.rejectFetchedStory = async function(id) {
+            const response = await fetch('/api/admin/reject', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('ipapo_supabase_access_token') || ''}` },
+                body: JSON.stringify({ storyId: id })
+            });
+            if (response.ok) {
+                alert('Fetched story rejected.');
                 window.location.reload();
             }
         };
