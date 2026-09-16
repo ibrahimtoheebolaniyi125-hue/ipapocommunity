@@ -1,10 +1,22 @@
 {
-  "rewrites": [
-    { "source": "/api/news/(story|seen|unseen)", "destination": "/api/news?action=$1" },
-    { "source": "/api/admin/(dashboard|approve|reject)", "destination": "/api/admin?action=$1" },
-    { "source": "/api/push/(config|subscribe|unsubscribe)", "destination": "/api/push?action=$1" },
-    { "source": "/api/activity/log", "destination": "/api/activity?action=log" },
-    { "source": "/api/cron/daily-fetch", "destination": "/api/cron?action=daily-fetch" }
+  "version": 2,
+  "builds": [
+    { "src": "api/*.js", "use": "@vercel/node" },
+    { "src": "*.html", "use": "@vercel/static" },
+    { "src": "admin/*.html", "use": "@vercel/static" },
+    { "src": "*.js", "use": "@vercel/static" },
+    { "src": "js/*.js", "use": "@vercel/static" },
+    { "src": "css/*.css", "use": "@vercel/static" },
+    { "src": "img/*", "use": "@vercel/static" },
+    { "src": "supabase/*.sql", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/news/(story|seen|unseen)", "dest": "/api/news?action=$1" },
+    { "src": "/api/admin/(dashboard|approve|reject)", "dest": "/api/admin?action=$1" },
+    { "src": "/api/push/(config|subscribe|unsubscribe)", "dest": "/api/push?action=$1" },
+    { "src": "/api/activity/log", "dest": "/api/activity?action=log" },
+    { "src": "/api/cron/daily-fetch", "dest": "/api/cron?action=daily-fetch" },
+    { "src": "/(.*)", "dest": "/$1" }
   ],
   "crons": [
     { "path": "/api/cron/daily-fetch", "schedule": "0 0 * * *" }
