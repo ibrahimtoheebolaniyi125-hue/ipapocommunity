@@ -231,7 +231,6 @@ if (contactForm && formSuccess && submitBtn) {
     });
 }
 
-// Newsletter Form
 const newsletterForm = document.getElementById("newsletterForm");
 const newsletterSuccess = document.getElementById("newsletterSuccess");
 
