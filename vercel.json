@@ -1,4 +1,6 @@
 {
+  "framework": null,
+  "buildCommand": null,
   "outputDirectory": ".",
   "rewrites": [
     { "source": "/api/news/(story|seen|unseen)", "destination": "/api/news?action=$1" },
