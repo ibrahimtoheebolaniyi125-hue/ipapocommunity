@@ -1,5 +1,8 @@
-const { getDailyNewsForUser, markNewsSeenForUser } = require('./_lib/news');
-const { getStory } = require('./_lib/store');
+const {
+  getUnseenAnonymousStories,
+  markAnonymousStorySeen,
+  getStory
+} = require('./_lib/store');
 
 const fallbackStories = [
   {
@@ -44,52 +47,138 @@ const fallbackStories = [
 ];
 
 async function handleStory(req, res) {
-  const storyId = String(req.query && req.query.id || '').trim();
-  if (!storyId) return res.status(400).json({ error: 'id is required' });
+  const storyId = String(
+    req.query && req.query.id || ''
+  ).trim();
+
+  if (!storyId) {
+    return res.status(400).json({
+      error: 'id is required'
+    });
+  }
 
   try {
-    const story = await getStory(storyId).catch(() => null) || fallbackStories.find((item) => item.id === storyId) || null;
-    if (!story) return res.status(404).json({ error: 'Story not found' });
-    return res.status(200).json({ success: true, story });
+    const story =
+      await getStory(storyId).catch(() => null) ||
+      fallbackStories.find((item) => item.id === storyId) ||
+      null;
+
+    if (!story) {
+      return res.status(404).json({
+        error: 'Story not found'
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      story
+    });
+
   } catch (error) {
-    const story = fallbackStories.find((item) => item.id === storyId) || fallbackStories[0];
-    return res.status(200).json({ success: true, story });
+    const story =
+      fallbackStories.find((item) => item.id === storyId) ||
+      fallbackStories[0];
+
+    return res.status(200).json({
+      success: true,
+      story
+    });
   }
 }
 
 async function handleUnseen(req, res) {
-  const email = String(req.query && req.query.email || '').trim().toLowerCase();
-  if (!email) return res.status(400).json({ error: 'email is required' });
+  const visitorId = String(
+    req.query && req.query.visitorId || ''
+  ).trim();
+
+  if (!visitorId) {
+    return res.status(400).json({
+      error: 'visitorId is required'
+    });
+  }
 
   try {
-    const stories = await getDailyNewsForUser(email).catch(() => fallbackStories);
-    return res.status(200).json({ success: true, stories });
+    const stories = await getUnseenAnonymousStories(visitorId);
+
+    return res.status(200).json({
+      success: true,
+      stories: stories || []
+    });
+
   } catch (error) {
-    return res.status(200).json({ success: true, stories: fallbackStories, warning: 'Using local fallback data' });
+    console.error(
+      'Anonymous unseen news error:',
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      error: error.message || 'Could not load unseen news',
+      stack: error.stack || null
+    });
   }
 }
 
 async function handleSeen(req, res) {
-  const { email, storyId } = req.body || {};
-  if (!email || !storyId) return res.status(400).json({ error: 'email and storyId are required' });
+  const {
+    visitorId,
+    storyId
+  } = req.body || {};
+
+  if (!visitorId || !storyId) {
+    return res.status(400).json({
+      error: 'visitorId and storyId are required'
+    });
+  }
 
   try {
-    await markNewsSeenForUser(String(email).trim().toLowerCase(), storyId);
-    return res.status(200).json({ success: true, storyId });
+    await markAnonymousStorySeen(
+      String(visitorId).trim(),
+      String(storyId).trim()
+    );
+
+    return res.status(200).json({
+      success: true,
+      storyId: String(storyId).trim()
+    });
+
   } catch (error) {
-    return res.status(500).json({ success: false, error: error.message || 'Could not mark story as seen' });
+    console.error(
+      'Mark anonymous story seen error:',
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      error: error.message || 'Could not mark story as seen'
+    });
   }
 }
 
 module.exports = async function handler(req, res) {
-  const action = String((req.query && req.query.action) || '').trim();
+  const action = String(
+    (req.query && req.query.action) || ''
+  ).trim();
 
-  if (action === 'story') return handleStory(req, res);
-  if (action === 'unseen') return handleUnseen(req, res);
+  if (action === 'story') {
+    return handleStory(req, res);
+  }
+
+  if (action === 'unseen') {
+    return handleUnseen(req, res);
+  }
+
   if (action === 'seen') {
-    if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+    if (req.method !== 'POST') {
+      return res.status(405).json({
+        error: 'Method not allowed'
+      });
+    }
+
     return handleSeen(req, res);
   }
 
-  return res.status(404).json({ error: 'Unknown news action. Use ?action=story|unseen|seen' });
+  return res.status(404).json({
+    error: 'Unknown news action. Use ?action=story|unseen|seen'
+  });
 };

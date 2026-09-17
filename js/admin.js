@@ -8,12 +8,33 @@
     const DEFAULT_SETTINGS = {
         stationName: 'Ipapo Broadcast',
         frequencyTag: '96.3 FM • Oke-Ogun / Itesiwaju Regional Relay',
-        streamUrl: 'https://stream.zeno.fm/8rbamh3bkg0uv',
+        streamUrl: 'https://stream.zeno.fm/8dxamh3bkg0uv',
         studioPhone: '08070426269',
         studioEmail: 'contact@ipapo.ng',
         studioAddress: 'Broadcasting House, Center Road, Ipapo, Oyo State',
         maintenanceMode: false
     };
+
+    const SUCCESSFUL_RESIDENTS = [
+        {
+            name: 'Mrs. Adebisi Ojo',
+            title: 'Agribusiness Mentor',
+            highlight: 'Built a 12-acre cassava and poultry enterprise that now provides jobs to 28 households in Ipapo.',
+            location: 'Ipapo Central'
+        },
+        {
+            name: 'Mr. Tunde Ajibola',
+            title: 'Tech & Youth Advocate',
+            highlight: 'Launched a digital skills academy that has trained 140 youths in coding, media, and entrepreneurship.',
+            location: 'Eleyinpo Ward'
+        },
+        {
+            name: 'Hajia Rukayat Lawal',
+            title: 'Community Health Champion',
+            highlight: 'Coordinates maternal health outreach and school nutrition support across four communities in Itesiwaju.',
+            location: 'Oke-Ogun Axis'
+        }
+    ];
 
     class AdminController {
         constructor() {
@@ -54,6 +75,10 @@
                 pendingSubmissions: submissions.filter(s => s.status === 'pending').length,
                 totalEvents: events.length
             };
+        }
+
+        getSuccessfulResidents() {
+            return SUCCESSFUL_RESIDENTS;
         }
 
         getAllUsers() {

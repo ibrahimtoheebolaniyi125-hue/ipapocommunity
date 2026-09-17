@@ -1,6 +1,6 @@
 const { getDailyStories, getCache, updateStoryStatus } = require('./_lib/news');
 const { sendDailyStoryNotifications } = require('./_lib/push');
-const { getPushSubscriptions, getActivityEvents, logActivity } = require('./_lib/store');
+const { getPushSubscriptions, getActivityEvents, getRegisteredUsers, logActivity } = require('./_lib/store');
 const { requireAdmin } = require('./_lib/admin-auth');
 
 async function handleDashboard(req, res) {
@@ -11,6 +11,7 @@ async function handleDashboard(req, res) {
     const approved = stories.filter((story) => story.status === 'approved');
     const subscriptions = await getPushSubscriptions();
     const activityEvents = await getActivityEvents(30);
+    const users = await getRegisteredUsers();
     const notifications = [
       ...cache.alerts.slice(0, 8).map((alert) => ({
         id: alert.id,
@@ -32,6 +33,13 @@ async function handleDashboard(req, res) {
         title: event.title,
         message: event.message,
         createdAt: event.created_at
+      })),
+      ...users.slice(0, 8).map((user) => ({
+        id: `user-${user.id}`,
+        type: 'resident',
+        title: 'Resident account registered',
+        message: `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.email,
+        createdAt: user.created_at
       }))
     ];
 
@@ -54,6 +62,7 @@ async function handleDashboard(req, res) {
       },
       notifications,
       activityEvents,
+      users,
       stories: pending,
       alerts: cache.alerts,
       newsQueue: pending,

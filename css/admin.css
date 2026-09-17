@@ -21,6 +21,56 @@ body.admin-body {
     min-height: 100vh;
 }
 
+.admin-feedback-item {
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid var(--admin-border);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.admin-feedback-item h4 {
+    margin: 8px 0 5px;
+    color: #fff;
+    font-size: 14px;
+}
+
+.admin-feedback-item p {
+    margin: 0 0 8px;
+    color: var(--admin-muted);
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.admin-feedback-item small {
+    color: var(--admin-muted);
+    font-size: 11px;
+}
+
+.admin-feedback-form {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.admin-feedback-form input {
+    flex: 1;
+    min-width: 0;
+    padding: 9px 11px;
+    border: 1px solid var(--admin-border);
+    border-radius: 7px;
+    background: rgba(0, 0, 0, 0.2);
+    color: #fff;
+}
+
+.admin-feedback-reply {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-left: 3px solid var(--admin-success);
+    color: #bbf7d0;
+    font-size: 12px;
+}
+
 .admin-sidebar {
     width: 260px;
     background: var(--admin-surface);

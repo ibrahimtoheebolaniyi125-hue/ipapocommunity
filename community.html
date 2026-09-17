@@ -109,6 +109,38 @@
             </div>
         </section>
 
+        <section class="dash-card" style="margin-top: 28px;" aria-labelledby="community-ideas-title">
+            <div class="dash-card-header">
+                <div>
+                    <h3 id="community-ideas-title">💡 Share a Community Idea</h3>
+                    <p style="font-size:13px; color:#94a3b8; margin:6px 0 0;">Suggest a practical improvement, programme, event or service for Ipapo.</p>
+                </div>
+                <span class="badge-status active">Resident Voice</span>
+            </div>
+            <form id="communityIdeaForm" style="display:grid; gap:14px; max-width:760px;">
+                <label style="display:grid; gap:6px; font-size:13px; color:#e2e8f0;">
+                    Idea title
+                    <input id="communityIdeaTitle" required maxlength="120" placeholder="Example: Create a monthly youth skills clinic">
+                </label>
+                <label style="display:grid; gap:6px; font-size:13px; color:#e2e8f0;">
+                    Category
+                    <select id="communityIdeaCategory">
+                        <option>Community improvement</option>
+                        <option>Education and youth</option>
+                        <option>Culture and heritage</option>
+                        <option>Health and welfare</option>
+                        <option>Business and jobs</option>
+                    </select>
+                </label>
+                <label style="display:grid; gap:6px; font-size:13px; color:#e2e8f0;">
+                    Your idea
+                    <textarea id="communityIdeaDescription" required maxlength="1200" rows="5" placeholder="Explain the change you would like to see and how it could help the community."></textarea>
+                </label>
+                <button type="submit" class="btn" style="justify-self:start; min-height:42px; padding:0 22px;">Submit Idea</button>
+                <p id="communityIdeaStatus" style="display:none; color:#86efac; font-size:13px; margin:0;" role="status"></p>
+            </form>
+        </section>
+
     </main>
     <footer>
         <div class="footer-content">
@@ -177,6 +209,26 @@
                     </div>
                 `).join('');
             }
+
+            const ideaForm = document.getElementById('communityIdeaForm');
+            ideaForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const user = window.AuthService ? window.AuthService.getCurrentUser() : null;
+                if (window.DashboardService) {
+                    window.DashboardService.submitIdea({
+                        title: document.getElementById('communityIdeaTitle').value.trim(),
+                        category: document.getElementById('communityIdeaCategory').value,
+                        description: document.getElementById('communityIdeaDescription').value.trim(),
+                        authorName: user ? `${user.firstName} ${user.lastName}` : 'Ipapo Resident',
+                        authorEmail: user ? user.email : ''
+                    });
+                    ideaForm.reset();
+                    const status = document.getElementById('communityIdeaStatus');
+                    status.textContent = 'Thank you. Your idea has been sent for community review.';
+                    status.style.display = 'block';
+                    if (window.showToast) window.showToast('Community idea submitted successfully!', 'success');
+                }
+            });
         });
     </script>
 </body>

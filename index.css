@@ -940,6 +940,46 @@ textarea {
     font-size: 13px;
 }
 
+.culture-image-slot,
+.culture-history-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 92px;
+    margin-top: 18px;
+    padding: 14px;
+    border: 1px dashed rgba(255, 204, 0, 0.45);
+    border-radius: 10px;
+    background: rgba(255, 204, 0, 0.06);
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 11px;
+    text-align: center;
+}
+
+.culture-history-slot {
+    min-height: 300px;
+    margin-top: 0;
+}
+
+.culture-image-slot img,
+.culture-history-slot img {
+    display: block;
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.culture-history-slot img {
+    height: 100%;
+    min-height: 280px;
+}
+
+.culture-image-slot.missing-image,
+.culture-history-slot.missing-image {
+    font-size: 11px;
+}
+
 .news-container {
     max-width: 1200px;
 

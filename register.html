@@ -63,7 +63,7 @@
                     <p>Fill in your details to register as a member of Ipapo Broadcast.</p>
                 </div>
 
-                <form class="auth-form" id="registerForm" novalidate>
+                <form class="auth-form" id="registerForm" novalidate autocomplete="on">
 
                     <!-- Names Row -->
                     <div class="form-row">
@@ -198,6 +198,42 @@
         const termsCheck = document.getElementById('termsCheck');
         const regSubmitBtn = document.getElementById('regSubmitBtn');
         const regGlobalError = document.getElementById('regGlobalError');
+        const registrationDraftKey = 'ipapo_registration_draft';
+
+        function saveRegistrationDraft() {
+            localStorage.setItem(registrationDraftKey, JSON.stringify({
+                firstName: firstName.value,
+                lastName: lastName.value,
+                username: username.value,
+                email: email.value,
+                phone: phone.value,
+                location: locationSelect.value,
+                termsAccepted: termsCheck.checked
+            }));
+        }
+
+        function restoreRegistrationDraft() {
+            try {
+                const draft = JSON.parse(localStorage.getItem(registrationDraftKey) || 'null');
+                if (!draft) return;
+                firstName.value = draft.firstName || '';
+                lastName.value = draft.lastName || '';
+                username.value = draft.username || '';
+                email.value = draft.email || '';
+                phone.value = draft.phone || '';
+                locationSelect.value = draft.location || locationSelect.value;
+                termsCheck.checked = Boolean(draft.termsAccepted);
+                regPassword.dispatchEvent(new Event('input'));
+            } catch (error) {
+                localStorage.removeItem(registrationDraftKey);
+            }
+        }
+
+        [firstName, lastName, username, email, phone, locationSelect, termsCheck].forEach(field => {
+            field.addEventListener('input', saveRegistrationDraft);
+            field.addEventListener('change', saveRegistrationDraft);
+        });
+        restoreRegistrationDraft();
 
         document.getElementById('toggleRegPassword').addEventListener('click', () => {
             const isPass = regPassword.type === 'password';
@@ -300,6 +336,7 @@
                     location: locationSelect.value,
                     password: passwordVal
                 });
+                localStorage.removeItem(registrationDraftKey);
 
                 showToast("Account created successfully! Signing you in...", "success");
 
@@ -316,12 +353,16 @@
                 }, 800);
 
             } catch (err) {
-                regSubmitBtn.classList.remove('loading');
-                regSubmitBtn.disabled = false;
-                regGlobalError.textContent = err.message || 'Registration failed.';
+                const message = err.name === 'AbortError'
+                    ? 'Registration timed out. Check your Supabase settings or internet connection and try again.'
+                    : (err.message || 'Registration failed.');
+                regGlobalError.textContent = message;
                 regGlobalError.classList.add('visible');
                 regGlobalError.style.display = 'block';
-                showToast(err.message, 'error');
+                showToast(message, 'error');
+            } finally {
+                regSubmitBtn.classList.remove('loading');
+                regSubmitBtn.disabled = false;
             }
         });
     </script>

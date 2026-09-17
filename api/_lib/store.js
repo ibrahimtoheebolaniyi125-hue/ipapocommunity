@@ -8,6 +8,7 @@ const defaultState = {
   generatedAt: null,
   stories: [],
   alerts: [],
+  activityEvents: [],
   seenByUser: {},
   approvedIds: [],
   rejectedIds: []
@@ -222,6 +223,39 @@ const markStorySeen = async (userEmail, storyId) => {
   });
 };
 
+const getUnseenAnonymousStories = async (visitorId) => {
+  const state = await readState();
+
+  const seenRows = await request(
+    `anonymous_seen_news?visitor_id=eq.${encodeURIComponent(visitorId)}&select=story_id`,
+    { method: 'GET' }
+  );
+
+  const seen = new Set(seenRows.map((row) => row.story_id));
+
+  const startOfToday = new Date();
+  startOfToday.setUTCHours(0, 0, 0, 0);
+
+  return state.stories.filter((story) => (
+    story.status === 'approved' &&
+    new Date(story.fetchedAt).getTime() >= startOfToday.getTime() &&
+    !seen.has(story.id)
+  ));
+};
+
+const markAnonymousStorySeen = async (visitorId, storyId) => {
+  await request('anonymous_seen_news?on_conflict=visitor_id,story_id', {
+    method: 'POST',
+    headers: {
+      Prefer: 'resolution=merge-duplicates,return=minimal'
+    },
+    body: JSON.stringify({
+      visitor_id: visitorId,
+      story_id: storyId
+    })
+  });
+};
+
 const savePushSubscription = async (userEmail, subscription) => {
   const rows = await request('push_subscriptions?on_conflict=endpoint', {
     method: 'POST',
@@ -240,7 +274,10 @@ const removePushSubscription = async (endpoint) => {
   await request(`push_subscriptions?endpoint=eq.${encodeURIComponent(endpoint)}`, { method: 'DELETE' });
 };
 
-const getPushSubscriptions = async () => request('push_subscriptions?select=*', { method: 'GET' });
+const getPushSubscriptions = async () => {
+  if (useLocalStore) return [];
+  return request('push_subscriptions?select=*', { method: 'GET' });
+};
 
 const claimPushDelivery = async (subscriptionId, storyId) => {
   const rows = await request('push_deliveries?on_conflict=subscription_id,story_id', {
@@ -252,6 +289,22 @@ const claimPushDelivery = async (subscriptionId, storyId) => {
 };
 
 const logActivity = async ({ eventType, title, message = '', actorEmail = null, metadata = {} }) => {
+  if (useLocalStore) {
+    const state = readLocalState();
+    const event = {
+      id: `activity-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      event_type: eventType,
+      title,
+      message,
+      actor_email: actorEmail,
+      metadata,
+      created_at: new Date().toISOString()
+    };
+    const activityEvents = [event, ...(state.activityEvents || [])].slice(0, 100);
+    writeLocalState({ ...state, activityEvents });
+    return event;
+  }
+
   const rows = await request('activity_events', {
     method: 'POST',
     headers: { Prefer: 'return=representation' },
@@ -266,7 +319,15 @@ const logActivity = async ({ eventType, title, message = '', actorEmail = null, 
   return rows[0];
 };
 
-const getActivityEvents = async (limit = 30) => request(`activity_events?select=*&order=created_at.desc&limit=${Math.min(limit, 100)}`, { method: 'GET' });
+const getActivityEvents = async (limit = 30) => {
+  if (useLocalStore) return (readLocalState().activityEvents || []).slice(0, Math.min(limit, 100));
+  return request(`activity_events?select=*&order=created_at.desc&limit=${Math.min(limit, 100)}`, { method: 'GET' });
+};
+
+const getRegisteredUsers = async () => {
+  if (useLocalStore) return [];
+  return request('profiles?select=id,email,first_name,last_name,username,phone,location,role,status,created_at&order=created_at.desc', { method: 'GET' });
+};
 
 module.exports = {
   readState,
@@ -276,11 +337,16 @@ module.exports = {
   getStory,
   getUnseenStories,
   markStorySeen,
+
+  getUnseenAnonymousStories,
+  markAnonymousStorySeen,
+
   savePushSubscription,
   removePushSubscription,
   getPushSubscriptions,
   claimPushDelivery,
   logActivity,
   getActivityEvents,
+  getRegisteredUsers,
   mapStoryFromDb
 };

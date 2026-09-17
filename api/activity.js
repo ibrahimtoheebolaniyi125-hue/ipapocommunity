@@ -1,7 +1,7 @@
 const { getAuthenticatedUser } = require('./_lib/user-auth');
 const { logActivity } = require('./_lib/store');
 
-const allowedEvents = new Set(['submission_created', 'comment_created']);
+const allowedEvents = new Set(['submission_created', 'comment_created', 'user_registered', 'idea_submitted']);
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });

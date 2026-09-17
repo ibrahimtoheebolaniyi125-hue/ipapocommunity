@@ -120,6 +120,22 @@
             </div>
         </div>
 
+        <section class="dash-card" style="margin-top: 32px;" aria-labelledby="local-bulletin-title">
+            <div class="dash-card-header">
+                <div>
+                    <span class="section-label">IPAPO & ITESIWAJU NEWS DESK</span>
+                    <h2 id="local-bulletin-title" style="margin: 6px 0 0;">Daily Local News & Music Desk</h2>
+                </div>
+                <span class="badge-status active" id="bulletinStatus">Ready</span>
+            </div>
+            <p style="color:#94a3b8; font-size:13.5px; line-height:1.6;">The station stream carries music when available. If it is offline, this desk reads the latest fetched Ipapo, Itesiwaju and Oyo headlines aloud.</p>
+            <div id="bulletinStories" style="display:grid; gap:10px; margin:18px 0;"></div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn" id="playBulletinBtn" type="button">▶ Play Daily Bulletin</button>
+                <button class="btn-outline" id="stopBulletinBtn" type="button">■ Stop Bulletin</button>
+            </div>
+        </section>
+
         <section style="margin-top: 65px;">
             <div class="section-title" style="text-align: left; margin-bottom: 30px;">
                 <span class="section-label">PODCASTS & ARCHIVES</span>
@@ -206,6 +222,7 @@
     </footer>
 
     <!-- Scripts -->
+    <script src="js/api-config.js"></script>
     <script src="js/news.js"></script>
     <script src="js/dashboard.js"></script>
     <script src="js/admin.js"></script>
@@ -219,10 +236,65 @@
         const listenerCount = document.getElementById('listenerCount');
         const liveAudio = document.getElementById('liveAudio');
         const volumeSlider = document.getElementById('volumeSlider');
+        const bulletinStatus = document.getElementById('bulletinStatus');
+        const bulletinStories = document.getElementById('bulletinStories');
+        const playBulletinBtn = document.getElementById('playBulletinBtn');
+        const stopBulletinBtn = document.getElementById('stopBulletinBtn');
+        let bulletinItems = [];
+        let bulletinIndex = 0;
 
-        const defaultStreamUrl = 'https://stream.zeno.fm/8rbamh3bkg0uv';
+        const loadLocalBulletin = async () => {
+            try {
+                const response = await fetch((window.ipapoApiUrl || (path => path))('/api/fetch-news'), { cache: 'no-store' });
+                if (!response.ok) throw new Error('News feed unavailable');
+                const payload = await response.json();
+                bulletinItems = (payload.stories || []).filter(story => /ipapo|itesiwaju|oyo/i.test(`${story.title} ${story.summary || ''}`)).slice(0, 5);
+                bulletinStories.innerHTML = bulletinItems.length ? bulletinItems.map((story, index) => `
+                    <div style="padding:12px 14px; border-left:3px solid var(--primary); background:rgba(255,204,0,.06); color:#e2e8f0; font-size:13px;">
+                        <strong>${index + 1}. ${story.title}</strong>
+                        <small style="display:block; color:#94a3b8; margin-top:4px;">${story.source || 'Local news desk'}</small>
+                    </div>
+                `).join('') : '<p style="color:#94a3b8; font-size:13px;">No local bulletin stories are available right now.</p>';
+            } catch (error) {
+                bulletinStatus.textContent = 'Unavailable';
+                bulletinStories.innerHTML = '<p style="color:#fca5a5; font-size:13px;">The local news feed could not be reached.</p>';
+            }
+        };
+
+        const speakNextBulletin = () => {
+            if (bulletinIndex >= bulletinItems.length) {
+                bulletinStatus.textContent = 'Ready';
+                return;
+            }
+            const story = bulletinItems[bulletinIndex++];
+            const utterance = new SpeechSynthesisUtterance(`Ipapo and Itesiwaju news. ${story.title}. ${story.summary || ''}`);
+            utterance.rate = 0.92;
+            utterance.onstart = () => { bulletinStatus.textContent = `Reading ${bulletinIndex} of ${bulletinItems.length}`; };
+            utterance.onend = speakNextBulletin;
+            utterance.onerror = () => { bulletinStatus.textContent = 'Bulletin stopped'; };
+            window.speechSynthesis.speak(utterance);
+        };
+
+        const startBulletinFallback = async () => {
+            if (!bulletinItems.length) await loadLocalBulletin();
+            if (!('speechSynthesis' in window) || !bulletinItems.length) return;
+            window.speechSynthesis.cancel();
+            bulletinIndex = 0;
+            speakNextBulletin();
+        };
+
+        playBulletinBtn.addEventListener('click', async () => {
+            await startBulletinFallback();
+        });
+        stopBulletinBtn.addEventListener('click', () => {
+            window.speechSynthesis.cancel();
+            bulletinStatus.textContent = 'Stopped';
+        });
+        loadLocalBulletin();
+
+        const defaultStreamUrl = 'https://stream.zeno.fm/8dxamh3bkg0uv';
         const stationSettings = window.AdminController ? window.AdminController.getSettings() : {};
-        liveAudio.src = stationSettings.streamUrl && stationSettings.streamUrl !== 'https://stream.zeno.fm/f3wvbbqmdg8uv'
+        liveAudio.src = stationSettings.streamUrl && stationSettings.streamUrl !== 'https://stream.zeno.fm/f3wvbbqmdg8uv' && stationSettings.streamUrl !== 'https://stream.zeno.fm/8rbamh3bkg0uv'
             ? stationSettings.streamUrl
             : defaultStreamUrl;
         liveAudio.volume = Number(volumeSlider.value) / 100;
@@ -252,7 +324,9 @@
                 if (window.showToast) window.showToast('Connected to Ipapo Broadcast Live.', 'success');
             } catch (error) {
                 setPlayerState(false);
-                if (window.showToast) window.showToast('The radio stream could not be reached. Check the station stream URL.', 'error');
+                bulletinStatus.textContent = 'Radio unavailable — local bulletin ready';
+                if (window.showToast) window.showToast('Radio stream unavailable. Starting the local daily bulletin.', 'info');
+                await startBulletinFallback();
                 console.error('Live radio playback failed:', error);
             }
         });
@@ -261,7 +335,8 @@
         liveAudio.addEventListener('pause', () => setPlayerState(false));
         liveAudio.addEventListener('error', () => {
             setPlayerState(false);
-            if (window.showToast) window.showToast('Radio stream unavailable right now.', 'error');
+            bulletinStatus.textContent = 'Radio unavailable — local bulletin ready';
+            if (window.showToast) window.showToast('Radio stream unavailable. Use the daily local bulletin.', 'info');
         });
 
         volumeSlider.addEventListener('input', () => {
@@ -274,7 +349,7 @@
                     window.showToast("Playing archived broadcast recording...", "success");
                 }
                 mainPlayToggle.scrollIntoView({ behavior: 'smooth' });
-                if (!isPlaying) {
+                if (liveAudio.paused) {
                     mainPlayToggle.click();
                 }
             });

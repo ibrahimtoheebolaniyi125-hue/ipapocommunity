@@ -204,7 +204,7 @@
 
         async syncFromApi() {
             try {
-                const response = await fetch('/api/fetch-news');
+                const response = await fetch(global.ipapoApiUrl('/api/fetch-news'));
                 if (!response.ok) {
                     return this.getAllNews();
                 }
@@ -324,6 +324,34 @@
                 }).catch(() => {});
             }
             return comment;
+        }
+
+        getAllComments() {
+            try {
+                const map = JSON.parse(localStorage.getItem(COMMENTS_KEY)) || {};
+                return Object.entries(map).flatMap(([articleId, comments]) => comments.map(comment => ({
+                    ...comment,
+                    articleId,
+                    articleTitle: this.getArticleById(articleId)?.title || articleId
+                })));
+            } catch (e) {
+                return [];
+            }
+        }
+
+        addCommentReply(articleId, commentId, text) {
+            const map = JSON.parse(localStorage.getItem(COMMENTS_KEY) || '{}');
+            const comments = map[articleId] || [];
+            const comment = comments.find(item => item.id === commentId);
+            if (!comment) return null;
+            comment.reply = {
+                name: 'Ipapo Broadcast Admin',
+                text: text.trim(),
+                date: 'Just now',
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem(COMMENTS_KEY, JSON.stringify(map));
+            return comment.reply;
         }
 
         // Admin Management

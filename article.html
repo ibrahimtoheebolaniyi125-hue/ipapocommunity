@@ -252,6 +252,7 @@
                             <span>${c.date}</span>
                         </div>
                         <p>${c.text}</p>
+                        ${c.reply ? `<div class="comment-reply"><strong>${c.reply.name}</strong><span>${c.reply.date}</span><p>${c.reply.text}</p></div>` : ''}
                     </div>
                 `).join('');
             }

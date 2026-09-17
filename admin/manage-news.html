@@ -77,8 +77,9 @@
     </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const tableBody = document.getElementById('newsTableBody');
+            if (window.NewsService) await window.NewsService.syncFromApi();
             const articles = window.NewsService ? window.NewsService.getAllNews() : [];
 
             tableBody.innerHTML = articles.map(art => `

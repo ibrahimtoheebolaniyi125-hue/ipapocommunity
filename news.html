@@ -120,114 +120,275 @@
             <span class="builder">Ibrahim Olaniyi (Programmer)</span>
         </div>
     </footer>
+    <script src="js/api-config.js"></script>
     <script src="js/news.js"></script>
     <script src="js/dashboard.js"></script>
     <script src="js/supabase-config.js"></script>
     <script src="js/auth.js"></script>
     <script src="script.js"></script>
 
-    <script>
-        let currentCategory = 'all';
-        let currentSearch = '';
+<script>
+    let currentCategory = 'all';
+    let currentSearch = '';
 
-        function getStoryImage(image) {
-            if (!image) return 'img/group.jpg';
-            if (!/^https?:\/\//i.test(image)) return image;
-            return `https://images.weserv.nl/?url=${encodeURIComponent(image)}`;
+    function getStoryImage(image) {
+        if (!image) return 'img/group.jpg';
+        if (!/^https?:\/\//i.test(image)) return image;
+        return `${image}${image.includes('?') ? '&' : '?'}v=${Date.now()}`;
+    }
+
+    const newsGrid = document.getElementById('newsGrid');
+    const categoryPills = document.querySelectorAll('.filter-pill');
+    const searchInput = document.getElementById('newsSearchInput');
+
+    function formatNewsDate(article) {
+        const date = article.fetchedAt || article.publishedAt;
+
+        if (!date) return 'Latest update';
+
+        const parsed = new Date(date);
+
+        return Number.isNaN(parsed.getTime())
+            ? 'Latest update'
+            : `Updated ${parsed.toLocaleDateString(undefined, {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            })}`;
+    }
+
+    // Create or retrieve a unique anonymous visitor ID.
+    // This allows Ipapo Broadcast to remember which stories
+    // this browser has already viewed without requiring login.
+    function getVisitorId() {
+        let visitorId = localStorage.getItem('ipapo_visitor_id');
+
+        if (!visitorId) {
+            if (window.crypto && typeof crypto.randomUUID === 'function') {
+                visitorId = crypto.randomUUID();
+            } else {
+                visitorId =
+                    'visitor-' +
+                    Date.now() +
+                    '-' +
+                    Math.random().toString(36).slice(2);
+            }
+
+            localStorage.setItem('ipapo_visitor_id', visitorId);
         }
 
-        const newsGrid = document.getElementById('newsGrid');
-        const categoryPills = document.querySelectorAll('.filter-pill');
-        const searchInput = document.getElementById('newsSearchInput');
+        return visitorId;
+    }
 
-        async function renderArticles() {
-            if (!window.NewsService) return;
+    async function renderArticles() {
+        if (!window.NewsService) return;
 
+        let articles = [];
+
+        try {
+            // Keep the local NewsService synchronized.
             await window.NewsService.syncFromApi();
 
-            let articles = window.NewsService.getAllNews();
-            const currentUser = window.AuthService ? window.AuthService.getCurrentUser() : null;
+            // Get this browser's anonymous ID.
+            const visitorId = getVisitorId();
 
-            if (currentUser) {
-                try {
-                    const response = await fetch(`/api/news/unseen?email=${encodeURIComponent(currentUser.email)}`);
-                    if (!response.ok) throw new Error('Unseen news request failed');
-                    const payload = await response.json();
-                    articles = payload.stories || [];
-                } catch (error) {
-                    const unseen = window.NewsService.getDailyNewsForUser(currentUser.email);
-                    if (unseen.length) articles = unseen;
-                }
+            // Ask the backend for stories this visitor has not seen.
+            const response = await fetch(
+                `/api/news?action=unseen&visitorId=${encodeURIComponent(visitorId)}`
+            );
+
+            if (!response.ok) {
+                throw new Error('Unseen news request failed');
             }
 
-            if (currentCategory !== 'all') {
-                articles = articles.filter(a => a.category.toLowerCase() === currentCategory.toLowerCase());
-            }
-            if (currentSearch) {
-                const q = currentSearch.toLowerCase();
-                articles = articles.filter(a => 
-                    a.title.toLowerCase().includes(q) || 
-                    a.summary.toLowerCase().includes(q) || 
-                    a.author.toLowerCase().includes(q)
-                );
+            const payload = await response.json();
+
+            articles = Array.isArray(payload.stories)
+                ? payload.stories
+                : [];
+
+            // If the API has no stories, use the local NewsService data.
+            if (!articles.length) {
+                articles = window.NewsService.getAllNews();
             }
 
-            if (articles.length === 0) {
-                newsGrid.innerHTML = `
-                    <div style="grid-column: 1 / -1; text-align:center; padding: 60px 20px; background:#10141d; border-radius:16px; border:1px solid rgba(255,255,255,0.1);">
-                        <span style="font-size:40px;">📰</span>
-                        <h3 style="margin:12px 0 6px; color:#f1f5f9;">No articles found</h3>
-                        <p style="color:#94a3b8; font-size:14px;">Try searching with different keywords or choosing another category.</p>
-                        <button class="btn" style="margin-top:15px; font-size:13px;" onclick="resetFilters()">Reset All Filters</button>
+        } catch (error) {
+            console.error('Could not load unseen news:', error);
+
+            // Safe fallback to locally available news.
+            articles = window.NewsService.getAllNews();
+        }
+
+        // Category filter
+        if (currentCategory !== 'all') {
+            articles = articles.filter(article =>
+                String(article.category || '').toLowerCase() ===
+                currentCategory.toLowerCase()
+            );
+        }
+
+        // Search filter
+        if (currentSearch) {
+            const q = currentSearch.toLowerCase();
+
+            articles = articles.filter(article =>
+                String(article.title || '').toLowerCase().includes(q) ||
+                String(article.summary || '').toLowerCase().includes(q) ||
+                String(article.author || '').toLowerCase().includes(q)
+            );
+        }
+
+        // No articles found
+        if (articles.length === 0) {
+            newsGrid.innerHTML = `
+                <div style="
+                    grid-column: 1 / -1;
+                    text-align:center;
+                    padding:60px 20px;
+                    background:#10141d;
+                    border-radius:16px;
+                    border:1px solid rgba(255,255,255,0.1);
+                ">
+                    <span style="font-size:40px;">📰</span>
+
+                    <h3 style="
+                        margin:12px 0 6px;
+                        color:#f1f5f9;
+                    ">
+                        No articles found
+                    </h3>
+
+                    <p style="
+                        color:#94a3b8;
+                        font-size:14px;
+                    ">
+                        Try searching with different keywords or choosing another category.
+                    </p>
+
+                    <button
+                        class="btn"
+                        style="margin-top:15px; font-size:13px;"
+                        onclick="resetFilters()"
+                    >
+                        Reset All Filters
+                    </button>
+                </div>
+            `;
+
+            return;
+        }
+
+        // Render articles
+        newsGrid.innerHTML = articles.map(article => {
+            const displayDate = formatNewsDate(article);
+
+            return `
+                <article
+                    class="news-card reveal show"
+                    style="
+                        opacity:1;
+                        transform:none;
+                        position:relative;
+                    "
+                >
+                    <div class="news-image">
+                        <img
+                            src="${getStoryImage(article.image)}"
+                            alt="${article.title || 'Ipapo Broadcast news'}"
+                            loading="lazy"
+                            onerror="this.onerror=null;this.src='img/group.jpg';"
+                        >
+
+                        <span class="news-tag">
+                            ${article.category || 'News'}
+                        </span>
                     </div>
-                `;
-                return;
-            }
 
-            newsGrid.innerHTML = articles.map(art => {
-                const displayDate = art.date || (art.publishedAt ? new Date(art.publishedAt).toLocaleDateString() : 'Latest Update');
-                return `
-                    <article class="news-card reveal show" style="opacity:1; transform:none; position:relative;">
-                        <div class="news-image">
-                            <img src="${getStoryImage(art.image)}" alt="${art.title}" loading="lazy" onerror="this.onerror=null;this.src='img/group.jpg';">
-                            <span class="news-tag">${art.category}</span>
-                        </div>
-                        <div class="news-content">
-                            <small>${displayDate} • ${art.readTime || '4 min read'}</small>
-                            <h3 style="font-size:18px; margin: 8px 0 10px; line-height:1.35;">${art.title}</h3>
-                            <p style="font-size:13.5px; color:#94a3b8; margin-bottom:18px;">${art.summary}</p>
-                            <a href="article.html?id=${art.id}" class="btn" style="min-height:38px; padding:0 18px; font-size:12.5px; display:inline-flex; align-items:center;">
-                                Read Full Story →
-                            </a>
-                        </div>
-                    </article>
-                `;
-            }).join('');
+                    <div class="news-content">
+                        <small>
+                            ${displayDate} • ${article.readTime || '4 min read'}
+                        </small>
+
+                        <h3 style="
+                            font-size:18px;
+                            margin:8px 0 10px;
+                            line-height:1.35;
+                        ">
+                            ${article.title || 'Untitled Story'}
+                        </h3>
+
+                        <p style="
+                            font-size:13.5px;
+                            color:#94a3b8;
+                            margin-bottom:18px;
+                        ">
+                            ${article.summary || ''}
+                        </p>
+
+                        <a
+                            href="article.html?id=${encodeURIComponent(article.id)}"
+                            class="btn"
+                            style="
+                                min-height:38px;
+                                padding:0 18px;
+                                font-size:12.5px;
+                                display:inline-flex;
+                                align-items:center;
+                            "
+                        >
+                            Read Full Story →
+                        </a>
+                    </div>
+                </article>
+            `;
+        }).join('');
+    }
+
+    // Category buttons
+    categoryPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+            categoryPills.forEach(p =>
+                p.classList.remove('active')
+            );
+
+            pill.classList.add('active');
+
+            currentCategory = pill.dataset.cat;
+
+            renderArticles();
+        });
+    });
+
+    // Search
+    if (searchInput) {
+        searchInput.addEventListener('input', event => {
+            currentSearch = event.target.value.trim();
+
+            renderArticles();
+        });
+    }
+
+    // Reset filters
+    function resetFilters() {
+        currentCategory = 'all';
+        currentSearch = '';
+
+        if (searchInput) {
+            searchInput.value = '';
         }
 
         categoryPills.forEach(pill => {
-            pill.addEventListener('click', () => {
-                categoryPills.forEach(p => p.classList.remove('active'));
-                pill.classList.add('active');
-                currentCategory = pill.dataset.cat;
-                renderArticles();
-            });
+            pill.classList.toggle(
+                'active',
+                pill.dataset.cat === 'all'
+            );
         });
 
-        searchInput.addEventListener('input', (e) => {
-            currentSearch = e.target.value.trim();
-            renderArticles();
-        });
+        renderArticles();
+    }
 
-        function resetFilters() {
-            currentCategory = 'all';
-            currentSearch = '';
-            searchInput.value = '';
-            categoryPills.forEach(p => p.classList.toggle('active', p.dataset.cat === 'all'));
-            renderArticles();
-        }
-
-        document.addEventListener('DOMContentLoaded', renderArticles);
-    </script>
+    // Start the news page
+    document.addEventListener('DOMContentLoaded', renderArticles);
+</script>
 </body>
 </html>

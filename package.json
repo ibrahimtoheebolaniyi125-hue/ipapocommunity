@@ -1,13 +1,15 @@
-﻿{
+{
   "private": true,
   "scripts": {
-    "dev": "node dev-server.js"
+    "dev": "node dev-server.js",
+    "start": "node dev-server.js",
+    "build": "node -e \"console.log('Static site build complete')\""
   },
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.116.0",
     "web-push": "^3.6.7"
   }
 }
-

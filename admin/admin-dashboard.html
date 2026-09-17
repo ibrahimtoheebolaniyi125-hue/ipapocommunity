@@ -123,6 +123,15 @@
                 <div class="metric-card"><span>Subscribed Devices</span><strong id="activityDevices">0</strong></div>
             </div>
         </section>
+
+        <section class="admin-card-box">
+            <div class="admin-card-header">
+                <h2>🏆 Successful Residents</h2>
+                <span class="badge-status published">Spotlight</span>
+            </div>
+            <div id="successfulResidentsList" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px;"></div>
+        </section>
+
         <section class="admin-card-box">
             <div class="admin-card-header">
                 <h2>� Scam & Risk Alerts</h2>
@@ -216,6 +225,20 @@
                 document.getElementById('metricPublished').textContent = stats.publishedArticles;
                 document.getElementById('metricSubmissions').textContent = stats.pendingSubmissions;
                 document.getElementById('metricEvents').textContent = stats.totalEvents;
+
+                const residentsList = document.getElementById('successfulResidentsList');
+                const successfulResidents = window.AdminController.getSuccessfulResidents();
+                residentsList.innerHTML = successfulResidents.map((resident) => `
+                    <article style="background: rgba(255,255,255,0.03); border:1px solid var(--admin-border); border-radius: 14px; padding: 16px; min-height: 180px; display:flex; flex-direction:column; justify-content:space-between;">
+                        <div>
+                            <span style="font-size:11px; color: var(--admin-primary); text-transform: uppercase; letter-spacing: .08em;">${resident.location}</span>
+                            <h3 style="margin:10px 0 8px; color:#fff; font-size:18px;">${resident.name}</h3>
+                            <strong style="display:block; color: #dce7ff; font-size:12.5px; margin-bottom:10px;">${resident.title}</strong>
+                            <p style="margin:0; color: var(--admin-muted); font-size:13px; line-height:1.6;">${resident.highlight}</p>
+                        </div>
+                        <span class="badge-status published" style="margin-top:12px; width: fit-content;">Success story</span>
+                    </article>
+                `).join('');
             }
             if (window.AuthService) {
                 const cur = window.AuthService.getCurrentUser();
@@ -225,11 +248,29 @@
             }
 
             let loadedRemoteNews = false;
+            let remoteStories = [];
             try {
                 const response = await fetch('/api/admin/dashboard', { headers: adminHeaders() });
                 const payload = response.ok ? await response.json() : null;
                 loadedRemoteNews = Boolean(payload && payload.success);
-                if (payload && payload.notifications) renderAdminNotifications(payload.notifications);
+                remoteStories = payload && Array.isArray(payload.stories) ? payload.stories : [];
+                if (payload && Array.isArray(payload.users)) {
+                    document.getElementById('metricUsers').textContent = payload.users.length;
+                }
+                const localNotifications = window.DashboardService
+                    ? window.DashboardService.getNotifications().map(item => ({
+                        id: `local-${item.id}`,
+                        type: item.type || 'announcement',
+                        title: item.title,
+                        message: item.message,
+                        createdAt: item.createdAt || new Date().toISOString()
+                    }))
+                    : [];
+                if (payload && payload.notifications) {
+                    renderAdminNotifications([...localNotifications, ...payload.notifications]);
+                } else if (localNotifications.length) {
+                    renderAdminNotifications(localNotifications);
+                }
                 if (payload && payload.activity) {
                     const activity = payload.activity;
                     document.getElementById('activityLastFetch').textContent = activity.lastFetch ? new Date(activity.lastFetch).toLocaleString() : 'Not yet';
@@ -343,7 +384,7 @@
             }
             const tableEl = document.getElementById('adminRecentNewsTable');
             if (window.NewsService) {
-                const articles = window.NewsService.getAllNews().slice(0, 5);
+                const articles = (remoteStories.length ? remoteStories : window.NewsService.getAllNews()).slice(0, 5);
                 tableEl.innerHTML = articles.map(art => `
                     <tr>
                         <td style="font-weight: 600; color: #fff; max-width: 320px;">${art.title}</td>

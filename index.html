@@ -209,6 +209,33 @@
                 </div>
             </section>
 
+            <section class="section" id="festival-calendar" aria-labelledby="festival-calendar-title">
+                <div class="section-head">
+                    <span class="sub-tag">Living Heritage</span>
+                    <h2 id="festival-calendar-title">Festivals of Ipapo</h2>
+                    <p>A growing community archive for the celebrations, rituals and stories that keep Ipapo's identity alive.</p>
+                </div>
+                <div class="features-grid">
+                    <article class="feature-card"><div class="feature-icon-bubble">🎭</div><h3>Egungun Festival</h3><p>Ancestral remembrance through masquerade, music, dance, colour and family gathering. It honours those who came before and brings families together in shared memory.</p><div class="culture-image-slot"><img src="img/egungun.jpg" alt="Egungun Festival" loading="lazy"></div></article>
+                    <article class="feature-card"><div class="feature-icon-bubble">🌙</div><h3>Oro Festival</h3><p>A solemn traditional observance connected with communal order, respect, protection and reflection. Its customs encourage discipline, responsibility and respect for the wider community.</p><div class="culture-image-slot"><img src="img/oro.jpg" alt="Oro Festival" loading="lazy"></div></article>
+                    <article class="feature-card"><div class="feature-icon-bubble">⚡</div><h3>Sango Festival</h3><p>A celebration of courage, justice, thunder, drumming and Yoruba heritage. Songs, movement and storytelling keep the values of bravery and fairness alive.</p><div class="culture-image-slot"><img src="img/sango.jpg" alt="Sango Festival" loading="lazy"></div></article>
+                    <article class="feature-card"><div class="feature-icon-bubble">🌿</div><h3>Sanda Festival</h3><p>A place to document local stories, family traditions and the community meaning of Omo Sanda. It connects family memory, identity and cultural continuity across generations.</p><div class="culture-image-slot"><img src="img/sanda.jpg" alt="Sanda Festival" loading="lazy"></div></article>
+                </div>
+            </section>
+
+            <section class="traditional-culture-section" id="ipapo-origins" aria-labelledby="ipapo-origins-title">
+                <div class="traditional-culture-image">
+                    <div class="culture-history-slot"><img src="img/background.jpg" alt="Historical Ipapo archive" loading="lazy" onerror="this.style.display='none'; this.parentElement.classList.add('missing-image'); this.parentElement.textContent='Add img/background.jpg';"></div>
+                </div>
+                <div class="traditional-culture-copy">
+                    <span class="sub-tag">Community Archive</span>
+                    <h2 id="ipapo-origins-title">The History of Ipapo</h2>
+                    <p>Ipapo's founding story should be preserved through the voices of elders, family histories, palace records and community archives.</p>
+                    <p>We will document the first settlement accounts, founding families, migration routes, development of the quarters, traditional leadership and the people shaping Ipapo today. The final timeline should be reviewed by elders, historians and community associations before publication.</p>
+                    <a href="contact.html" class="btn-hero-secondary">Share a Family History &rarr;</a>
+                </div>
+            </section>
+
             <div class="section-head" id="gallery-showcase" style="margin-top: 40px;">
                 <span class="sub-tag">Visual Heritage</span>
                 <h2>Captured in Ipapo</h2>
@@ -360,30 +387,30 @@
 
         </div>
     </div>
+    <script src="js/api-config.js"></script>
     <script src="js/landing.js"></script>
     <script>
-        function getLandingNewsImage(image) {
-            if (!image) return 'img/group.jpg';
-            if (!/^https?:\/\//i.test(image)) return image;
-            return `https://images.weserv.nl/?url=${encodeURIComponent(image)}`;
-        }
-
         async function loadLandingNews() {
             const grid = document.getElementById('landingNewsGrid');
             if (!grid) return;
 
             try {
-                const response = await fetch('/api/fetch-news');
+                const response = await fetch(window.ipapoApiUrl('/api/fetch-news?force=1'), { cache: 'no-store' });
                 if (!response.ok) throw new Error('Could not load latest news');
                 const payload = await response.json();
-                const stories = Array.isArray(payload.stories) ? payload.stories.slice(0, 3) : [];
+                const stories = Array.isArray(payload.stories)
+                    ? payload.stories
+                        .filter(story => !(story.image || '').includes('googleusercontent.com'))
+                        .sort((left, right) => Number(Boolean(right.image)) - Number(Boolean(left.image)))
+                        .slice(0, 3)
+                    : [];
                 if (!stories.length) throw new Error('No stories available');
 
                 grid.innerHTML = stories.map((story) => `
                     <article class="landing-news-card">
-                        <img src="${getLandingNewsImage(story.image)}" alt="${story.title}" loading="lazy" onerror="this.onerror=null;this.src='img/group.jpg';">
                         <div class="landing-news-card-body">
                             <span>${story.category || 'Community'}</span>
+                            <small>${story.fetchedAt ? `Updated ${new Date(story.fetchedAt).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}` : 'Latest update'}</small>
                             <h3>${story.title}</h3>
                             <p>${story.summary || 'Fresh community update from Ipapo.'}</p>
                             <a href="article.html?id=${encodeURIComponent(story.id)}">Read Story &rarr;</a>

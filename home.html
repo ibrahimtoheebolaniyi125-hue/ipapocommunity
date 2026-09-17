@@ -450,6 +450,70 @@
 
             </div>
 
+            <section class="section" id="traditions" style="background: #10141d;">
+                <div class="section-title reveal">
+                    <span class="section-label">LIVING HERITAGE</span>
+                    <h2>Traditions that keep <span>Ipapo connected</span></h2>
+                    <p>Explore the festivals, symbols and community values that carry Ipapo's identity from one generation to the next.</p>
+                </div>
+
+                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px;">
+                    <article class="service-card reveal">
+                        <div class="card-number">01</div>
+                        <div class="service-icon">🎭</div>
+                        <h3>Egungun Festival</h3>
+                        <p>Ancestral remembrance expressed through masquerade, music, dance, colour and family gathering. It honours those who came before and brings families together in shared memory.</p>
+                        <div class="culture-image-slot"><img src="img/egungun.jpg" alt="Egungun Festival" loading="lazy"></div>
+                    </article>
+                    <article class="service-card reveal">
+                        <div class="card-number">02</div>
+                        <div class="service-icon">🌙</div>
+                        <h3>Oro Festival</h3>
+                        <p>A solemn traditional observance connected with communal order, respect, protection and quiet reflection. Its customs encourage discipline, responsibility and respect for the wider community.</p>
+                        <div class="culture-image-slot"><img src="img/oro.jpg" alt="Oro Festival" loading="lazy" onerror="this.style.display='none'; this.parentElement.classList.add('missing-image'); this.parentElement.textContent='Add img/oro.jpg';"></div>
+                    </article>
+                    <article class="service-card reveal">
+                        <div class="card-number">03</div>
+                        <div class="service-icon">⚡</div>
+                        <h3>Sango Festival</h3>
+                        <p>A celebration of courage, justice, thunder, drumming and the enduring strength of Yoruba heritage. Songs, movement and storytelling keep the values of bravery and fairness alive.</p>
+                        <div class="culture-image-slot"><img src="img/sango.jpg" alt="Sango Festival" loading="lazy" onerror="this.style.display='none'; this.parentElement.classList.add('missing-image'); this.parentElement.textContent='Add img/sango.jpg';"></div>
+                    </article>
+                    <article class="service-card reveal">
+                        <div class="card-number">04</div>
+                        <div class="service-icon">🌿</div>
+                        <h3>Sanda Festival</h3>
+                        <p>A place to document local stories, family traditions and the community meaning of Omo Sanda. It connects family memory, identity and cultural continuity across generations.</p>
+                        <div class="culture-image-slot"><img src="img/sanda.jpg" alt="Sanda Festival" loading="lazy" onerror="this.style.display='none'; this.parentElement.classList.add('missing-image'); this.parentElement.textContent='Add img/sanda.jpg';"></div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section" id="ipapo-history">
+                <div class="section-title reveal">
+                    <span class="section-label">COMMUNITY ARCHIVE</span>
+                    <h2>Where the story of <span>Ipapo begins</span></h2>
+                    <p>Ipapo's history should be preserved through the voices of elders, families, palace records and community archives.</p>
+                </div>
+
+                <div class="about-container">
+                    <div class="about-image reveal">
+                        <div class="image-frame culture-history-slot"><img src="img/background.jpg" alt="Historical Ipapo archive" loading="lazy" onerror="this.style.display='none'; this.parentElement.classList.add('missing-image'); this.parentElement.textContent='Add img/background.jpg';"></div>
+                    </div>
+                    <div class="about-text reveal">
+                        <span class="section-label">A HISTORY TO VERIFY TOGETHER</span>
+                        <h3>From first settlement to <span>community identity</span></h3>
+                        <p>Ipapo's founding account belongs to its oral traditions and family histories. This archive will bring together the earliest settlement stories, the names of founding families, migration routes, the development of quarters, and the institution of traditional leadership.</p>
+                        <p>We will publish the final timeline after it has been reviewed with elders, the palace, historians and community associations. That keeps the story accurate, respectful and owned by the people of Ipapo.</p>
+                        <div style="display:grid; gap:10px; margin-top:18px;">
+                            <div><strong>Origins:</strong> founding families and first settlement accounts.</div>
+                            <div><strong>Growth:</strong> quarters, markets, farms, schools and community institutions.</div>
+                            <div><strong>Legacy:</strong> the Eleyinpo stool, festivals, crafts and the people shaping Ipapo today.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
         </section>
         <section class="business section" id="business">
 
@@ -997,15 +1061,17 @@
     </button>
 
 
+    <script src="js/api-config.js"></script>
     <script src="js/news.js"></script>
     <script src="js/dashboard.js"></script>
     <script src="script.js"></script>
 
     <script>
-        function getStoryImage(image) {
-            if (!image) return 'img/group.jpg';
-            if (!/^https?:\/\//i.test(image)) return image;
-            return `https://images.weserv.nl/?url=${encodeURIComponent(image)}`;
+        function formatNewsDate(story) {
+            const date = story.fetchedAt || story.publishedAt;
+            if (!date) return 'Latest update';
+            const parsed = new Date(date);
+            return Number.isNaN(parsed.getTime()) ? 'Latest update' : `Updated ${parsed.toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}`;
         }
 
         async function loadHomeNews() {
@@ -1013,7 +1079,7 @@
             if (!container || !window.NewsService) return;
 
             try {
-                const response = await fetch('/api/fetch-news');
+                const response = await fetch(window.ipapoApiUrl('/api/fetch-news'));
                 if (!response.ok) throw new Error('Home news fetch failed');
                 const payload = await response.json();
                 const stories = Array.isArray(payload.stories) ? payload.stories : [];
@@ -1025,12 +1091,9 @@
 
                 container.innerHTML = stories.slice(0, 6).map((story) => `
                     <article class="news-card reveal show">
-                        <div class="news-image">
-                            <img src="${getStoryImage(story.image)}" alt="${story.title}" loading="lazy" onerror="this.onerror=null;this.src='img/group.jpg';">
-                            <span class="news-tag">${story.category || 'Community'}</span>
-                        </div>
                         <div class="news-content">
-                            <small>${story.date || (story.publishedAt ? new Date(story.publishedAt).toLocaleDateString() : 'Latest Update')}</small>
+                            <span class="news-tag">${story.category || 'Community'}</span>
+                            <small>${formatNewsDate(story)}</small>
                             <h3>${story.title}</h3>
                             <p>${story.summary || story.content || 'Fresh community update from Ipapo.'}</p>
                             <a href="article.html?id=${story.id}" class="btn" style="min-height:40px; padding:0 20px; font-size:13px; text-decoration:none; display:inline-flex;">
@@ -1044,12 +1107,9 @@
                 const fallback = window.NewsService.getAllNews().slice(0, 6);
                 container.innerHTML = fallback.map((story) => `
                     <article class="news-card reveal show">
-                        <div class="news-image">
-                            <img src="${getStoryImage(story.image)}" alt="${story.title}" loading="lazy" onerror="this.onerror=null;this.src='img/group.jpg';">
-                            <span class="news-tag">${story.category || 'Community'}</span>
-                        </div>
                         <div class="news-content">
-                            <small>${story.date || 'Latest Update'}</small>
+                            <span class="news-tag">${story.category || 'Community'}</span>
+                            <small>${formatNewsDate(story)}</small>
                             <h3>${story.title}</h3>
                             <p>${story.summary || 'Fresh community update from Ipapo.'}</p>
                             <a href="article.html?id=${story.id}" class="btn" style="min-height:40px; padding:0 20px; font-size:13px; text-decoration:none; display:inline-flex;">

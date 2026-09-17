@@ -109,7 +109,7 @@ if (latestNewsBtn) {
 const audioToggle = document.getElementById("audioToggle");
 if (audioToggle) {
     const homeLiveAudio = document.getElementById("homeLiveAudio");
-    const homeStreamUrl = 'https://stream.zeno.fm/8rbamh3bkg0uv';
+    const homeStreamUrl = 'https://stream.zeno.fm/8dxamh3bkg0uv';
 
     if (homeLiveAudio) {
         let stationSettings = {};
@@ -119,7 +119,7 @@ if (audioToggle) {
             console.warn('Could not read station settings:', error);
         }
 
-        homeLiveAudio.src = stationSettings.streamUrl && stationSettings.streamUrl !== 'https://stream.zeno.fm/f3wvbbqmdg8uv'
+        homeLiveAudio.src = stationSettings.streamUrl && stationSettings.streamUrl !== 'https://stream.zeno.fm/f3wvbbqmdg8uv' && stationSettings.streamUrl !== 'https://stream.zeno.fm/8rbamh3bkg0uv'
             ? stationSettings.streamUrl
             : homeStreamUrl;
         homeLiveAudio.volume = 0.85;

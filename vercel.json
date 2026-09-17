@@ -3,14 +3,32 @@
   "buildCommand": null,
   "outputDirectory": ".",
   "rewrites": [
-    { "source": "/api/news/(story|seen|unseen)", "destination": "/api/news?action=$1" },
-    { "source": "/api/admin/(dashboard|approve|reject)", "destination": "/api/admin?action=$1" },
-    { "source": "/api/push/(config|subscribe|unsubscribe)", "destination": "/api/push?action=$1" },
-    { "source": "/api/activity/log", "destination": "/api/activity?action=log" },
-    { "source": "/api/cron/daily-fetch", "destination": "/api/cron?action=daily-fetch" }
+    {
+      "source": "/api/news/(story|seen|unseen)",
+      "destination": "/api/news?action=$1"
+    },
+    {
+      "source": "/api/admin/(dashboard|approve|reject)",
+      "destination": "/api/admin?action=$1"
+    },
+    {
+      "source": "/api/push/(config|subscribe|unsubscribe)",
+      "destination": "/api/push?action=$1"
+    },
+    {
+      "source": "/api/activity/log",
+      "destination": "/api/activity?action=log"
+    },
+    {
+      "source": "/api/cron/daily-fetch",
+      "destination": "/api/cron?action=daily-fetch"
+    }
   ],
   "crons": [
-    { "path": "/api/cron/daily-fetch", "schedule": "0 0 * * *" }
+    {
+      "path": "/api/cron/daily-fetch",
+      "schedule": "0 0 * * *"
+    }
   ],
   "cleanUrls": true,
   "trailingSlash": false

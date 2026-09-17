@@ -6,6 +6,7 @@
     const EVENTS_KEY = 'ipapo_events_db';
     const RSVP_KEY = 'ipapo_user_rsvps';
     const SUBMISSIONS_KEY = 'ipapo_community_submissions';
+    const IDEAS_KEY = 'ipapo_community_ideas';
     const NOTIFICATIONS_KEY = 'ipapo_user_notifications';
     const USER_DEVICE_NOTICES_KEY = 'ipapo_device_notices';
 
@@ -111,6 +112,9 @@
             if (!localStorage.getItem(SUBMISSIONS_KEY)) {
                 localStorage.setItem(SUBMISSIONS_KEY, JSON.stringify([]));
             }
+            if (!localStorage.getItem(IDEAS_KEY)) {
+                localStorage.setItem(IDEAS_KEY, JSON.stringify([]));
+            }
         }
 
         // Events & RSVPs
@@ -192,6 +196,32 @@
             } catch (e) {
                 return [];
             }
+        }
+
+        getIdeas() {
+            try {
+                return JSON.parse(localStorage.getItem(IDEAS_KEY)) || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        submitIdea(ideaData) {
+            const ideas = this.getIdeas();
+            const idea = {
+                id: 'idea_' + Date.now().toString(36),
+                title: ideaData.title,
+                description: ideaData.description,
+                category: ideaData.category || 'Community improvement',
+                authorName: ideaData.authorName || 'Ipapo Resident',
+                authorEmail: ideaData.authorEmail || '',
+                status: 'pending',
+                submittedAt: new Date().toISOString()
+            };
+            ideas.unshift(idea);
+            localStorage.setItem(IDEAS_KEY, JSON.stringify(ideas));
+            this._logRemoteActivity('idea_submitted', 'New community idea submitted', idea.title, { ideaId: idea.id });
+            return idea;
         }
 
         submitStory(storyData) {

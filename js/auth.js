@@ -68,20 +68,27 @@
         }
 
         async _supabaseRequest(path, options = {}, accessToken = '') {
-            const response = await fetch(`${SUPABASE_CONFIG.url}${path}`, {
-                ...options,
-                headers: {
-                    apikey: SUPABASE_CONFIG.anonKey,
-                    Authorization: `Bearer ${accessToken || SUPABASE_CONFIG.anonKey}`,
-                    'Content-Type': 'application/json',
-                    ...(options.headers || {})
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 15000);
+            try {
+                const response = await fetch(`${SUPABASE_CONFIG.url}${path}`, {
+                    ...options,
+                    signal: controller.signal,
+                    headers: {
+                        apikey: SUPABASE_CONFIG.anonKey,
+                        Authorization: `Bearer ${accessToken || SUPABASE_CONFIG.anonKey}`,
+                        'Content-Type': 'application/json',
+                        ...(options.headers || {})
+                    }
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok) {
+                    throw new Error(payload.error_description || payload.msg || payload.message || 'Supabase request failed.');
                 }
-            });
-            const payload = await response.json().catch(() => ({}));
-            if (!response.ok) {
-                throw new Error(payload.error_description || payload.msg || payload.message || 'Supabase request failed.');
+                return payload;
+            } finally {
+                clearTimeout(timeout);
             }
-            return payload;
         }
 
         _saveSupabaseSession(session, profile, rememberMe) {

@@ -76,9 +76,30 @@
     </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const tableBody = document.getElementById('usersTableBody');
-            const users = window.AdminController ? window.AdminController.getAllUsers() : [];
+            let users = window.AdminController ? window.AdminController.getAllUsers() : [];
+            try {
+                const response = await fetch('/api/admin/dashboard', {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('ipapo_supabase_access_token') || 'demo'}` }
+                });
+                const payload = response.ok ? await response.json() : null;
+                if (payload && Array.isArray(payload.users) && payload.users.length) {
+                    users = payload.users.map(user => ({
+                        id: user.id,
+                        firstName: user.first_name,
+                        lastName: user.last_name,
+                        username: user.username,
+                        email: user.email,
+                        phone: user.phone,
+                        location: user.location,
+                        role: user.role,
+                        status: user.status
+                    }));
+                }
+            } catch (error) {
+                console.warn('Could not load remote residents:', error);
+            }
 
             tableBody.innerHTML = users.map(u => `
                 <tr>
