@@ -1,359 +1,1347 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Listen Live to Ipapo Broadcast - Streaming 24/7 community radio, news analysis, youth dialogue, culture and music from Ipapo, Oyo State.">
-    <title>Live Broadcast & Radio | Ipapo Broadcast</title>
+    <meta name="description" content="Listen Live to Oke-Ogun FM 96.3 through Ipapo Broadcast - Live radio, local news, community conversations, culture and music from Oyo State.">
+    <title>Oke-Ogun FM 96.3 Live Radio | Ipapo Broadcast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="index.css">
-    <link rel="stylesheet" href="css/pages.css">
+<link rel="stylesheet" href="index.css">
+<link rel="stylesheet" href="css/pages.css">
+
+<style>
+    /* =========================================================
+       OKE-OGUN FM LIVE PLAYER
+    ========================================================= */
+
+    .radio-player-card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 22px;
+        padding: 24px;
+        margin-top: 25px;
+    }
+
+    .radio-brand {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 22px;
+    }
+
+    .radio-logo {
+        width: 64px;
+        height: 64px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        background: rgba(255, 204, 0, 0.12);
+        border: 1px solid rgba(255, 204, 0, 0.25);
+        font-size: 28px;
+    }
+
+    .radio-brand h3 {
+        margin: 0;
+        color: #fff;
+        font-size: 21px;
+        line-height: 1.25;
+    }
+
+    .radio-brand p {
+        margin: 5px 0 0;
+        color: rgba(255, 255, 255, 0.62);
+        font-size: 12.5px;
+    }
+
+    .radio-live-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 11px;
+        border-radius: 999px;
+        background: rgba(255, 59, 59, 0.1);
+        border: 1px solid rgba(255, 59, 59, 0.2);
+        color: #ff7070;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        margin-bottom: 18px;
+    }
+
+    .radio-live-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #ff4444;
+        animation: radioPulse 1.5s infinite;
+    }
+
+    .radio-player-controls {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .radio-play-button {
+        min-height: 52px;
+        padding: 0 28px;
+        border: 0;
+        border-radius: 12px;
+        background: var(--primary);
+        color: #111;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .radio-play-button:hover {
+        transform: translateY(-2px);
+    }
+
+    .radio-play-button:active {
+        transform: translateY(0);
+    }
+
+    .radio-volume {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 13px;
+    }
+
+    .radio-volume input {
+        width: 120px;
+        accent-color: var(--primary);
+        cursor: pointer;
+    }
+
+    .radio-status {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 12px;
+    }
+
+    .radio-station-info {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 18px;
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.07);
+        color: rgba(255, 255, 255, 0.58);
+        font-size: 12px;
+    }
+
+    .radio-station-info span {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    @keyframes radioPulse {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.35);
+            opacity: 0.5;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .radio-player-card {
+            padding: 18px;
+            border-radius: 18px;
+        }
+
+        .radio-brand {
+            align-items: flex-start;
+        }
+
+        .radio-logo {
+            width: 54px;
+            height: 54px;
+            border-radius: 13px;
+            font-size: 23px;
+        }
+
+        .radio-brand h3 {
+            font-size: 18px;
+        }
+
+        .radio-player-controls {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .radio-play-button {
+            width: 100%;
+        }
+
+        .radio-volume {
+            justify-content: space-between;
+        }
+
+        .radio-volume input {
+            flex: 1;
+            width: auto;
+        }
+
+        .radio-station-info {
+            justify-content: flex-start;
+            gap: 10px;
+        }
+    }
+</style>
+```
+
 </head>
+
 <body>
-    <header class="header" id="header">
-        <a href="index.html" class="logo">
-            IPAPO <span>Broadcast</span>
-        </a>
 
-        <nav class="navbar" id="navbar">
-            <a href="index.html" class="nav-link">Home</a>
-            <a href="news.html" class="nav-link">News</a>
-            <a href="live.html" class="nav-link active">Live</a>
-            <a href="programs.html" class="nav-link">Programs</a>
-            <a href="community.html" class="nav-link">Community</a>
-            <a href="events.html" class="nav-link">Events</a>
-            <a href="gallery.html" class="nav-link">Gallery</a>
-            <a href="about.html" class="nav-link">About</a>
-            <a href="contact.html" class="nav-link">Contact</a>
-        </nav>
+```
+<header class="header" id="header">
+    <a href="index.html" class="logo">
+        IPAPO <span>Broadcast</span>
+    </a>
 
-        <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
-            ☰
-        </button>
-    </header>
+    <nav class="navbar" id="navbar">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="news.html" class="nav-link">News</a>
+        <a href="live.html" class="nav-link active">Live</a>
+        <a href="programs.html" class="nav-link">Programs</a>
+        <a href="community.html" class="nav-link">Community</a>
+        <a href="events.html" class="nav-link">Events</a>
+        <a href="gallery.html" class="nav-link">Gallery</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+    </nav>
 
-    <section class="page-hero">
-        <div class="hero-content">
-            <span class="hero-badge">📻 24/7 COMMUNITY STREAMING</span>
-            <h1>Live <span>Broadcast Studio</span></h1>
-            <p>Tune into real stories, live news bulletins, civic conversations, and the vibrant musical rhythm of Ipapo from anywhere in the world.</p>
-        </div>
-    </section>
+    <button
+        class="menu-toggle"
+        id="menu-toggle"
+        aria-label="Open navigation menu"
+        aria-expanded="false">
+        ☰
+    </button>
+</header>
 
-    <main class="live-stream-container">
-        <div class="live-hero-card">
-            <div>
-                <div class="live-indicator-pill">
-                    <span class="pulse-dot"></span> ON AIR NOW • IPAPO LIVE
+<section class="page-hero">
+    <div class="hero-content">
+        <span class="hero-badge">📻 LIVE RADIO • 96.3 FM</span>
+
+        <h1>
+            Live <span>Radio</span>
+        </h1>
+
+        <p>
+            Listen to Oke-Ogun FM 96.3 live through Ipapo Broadcast,
+            bringing radio, music, local information and community
+            conversations to listeners wherever they are.
+        </p>
+    </div>
+</section>
+
+<main class="live-stream-container">
+
+    <!-- =====================================================
+         MAIN LIVE RADIO SECTION
+    ====================================================== -->
+
+    <div class="live-hero-card">
+
+        <div>
+
+            <div class="live-indicator-pill">
+                <span class="pulse-dot"></span>
+                ON AIR NOW • OKE-OGUN FM
+            </div>
+
+            <h2 style="font-size: clamp(26px, 4vw, 38px); margin-bottom: 12px; color: #fff; line-height: 1.2;">
+                Oke-Ogun FM 96.3
+            </h2>
+
+            <p style="color: rgba(255, 255, 255, 0.75); font-size: 15px; margin-bottom: 20px; line-height: 1.6;">
+                Listen to the live Oke-Ogun FM broadcast from Alaga,
+                Oyo State, featuring radio programmes, music, news,
+                Yoruba programming and community conversations.
+            </p>
+
+            <!-- Audio visualizer -->
+            <div class="audio-visualizer" id="audioViz">
+                <div class="viz-bar"></div>
+                <div class="viz-bar"></div>
+                <div class="viz-bar"></div>
+                <div class="viz-bar"></div>
+                <div class="viz-bar"></div>
+                <div class="viz-bar"></div>
+                <div class="viz-bar"></div>
+                <div class="viz-bar"></div>
+            </div>
+
+            <!-- =================================================
+                 RADIO PLAYER
+            ================================================== -->
+
+            <div class="radio-player-card">
+
+                <div class="radio-live-badge">
+                    <span class="radio-live-dot"></span>
+                    LIVE RADIO
                 </div>
 
-                <h2 style="font-size: clamp(26px, 4vw, 38px); margin-bottom: 12px; color: #fff; line-height: 1.2;">
-                    Oke-Ogun FM 96.3 Regional Relay
+                <div class="radio-brand">
+                    <div class="radio-logo">
+                        📻
+                    </div>
+
+                    <div>
+                        <h3>Oke-Ogun FM 96.3</h3>
+                        <p>Live radio stream • Alaga, Oyo State</p>
+                    </div>
+                </div>
+
+                <div class="radio-player-controls">
+
+                    <button
+                        class="radio-play-button"
+                        id="mainPlayToggle"
+                        type="button">
+
+                        <span
+                            id="playIcon"
+                            style="font-size: 18px; margin-right: 6px;">
+                            ▶
+                        </span>
+
+                        <span id="playText">
+                            Listen Live
+                        </span>
+
+                    </button>
+
+                    <audio
+                        id="liveAudio"
+                        preload="none">
+                    </audio>
+
+                    <div class="radio-volume">
+
+                        <span>🔊</span>
+
+                        <input
+                            type="range"
+                            id="volumeSlider"
+                            min="0"
+                            max="100"
+                            value="85"
+                            aria-label="Radio volume">
+
+                        <span id="volumeValue">85%</span>
+
+                    </div>
+
+                    <span
+                        class="radio-status"
+                        id="radioStatus"
+                        aria-live="polite">
+                        Ready to play
+                    </span>
+
+                </div>
+
+                <div class="radio-station-info">
+
+                    <span>
+                        📻 96.3 FM
+                    </span>
+
+                    <span>
+                        📍 Alaga, Oyo State
+                    </span>
+
+                    <span>
+                        🎙️ Oke-Ogun FM
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             CURRENT STATION / PROGRAM INFO
+        ====================================================== -->
+
+        <div style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px; padding: 28px;">
+
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+
+                <img
+                    src="img/people.jpg"
+                    alt="Radio presenter"
+                    style="width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
+
+                <div>
+
+                    <small style="color: var(--primary); font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 1px;">
+                        Live Radio Station
+                    </small>
+
+                    <h4 style="font-size: 18px; margin: 2px 0; color: #fff;">
+                        Oke-Ogun FM 96.3
+                    </h4>
+
+                    <span style="font-size: 12.5px; color: rgba(255, 255, 255, 0.6);">
+                        Regional broadcast from Alaga, Oyo State
+                    </span>
+
+                </div>
+
+            </div>
+
+            <h4 style="font-size: 15px; color: #fff; margin-bottom: 12px;">
+                Radio Information
+            </h4>
+
+            <ul
+                class="schedule-list"
+                style="list-style: none; padding: 0;">
+
+                <li style="display: flex; gap: 12px; margin-bottom: 10px; font-size: 13px; color: rgba(255, 255, 255, 0.8);">
+                    <span style="color: var(--primary); font-weight: 600;">
+                        📻
+                    </span>
+
+                    <strong>
+                        Oke-Ogun FM 96.3
+                    </strong>
+                </li>
+
+                <li style="display: flex; gap: 12px; margin-bottom: 10px; font-size: 13px; color: rgba(255, 255, 255, 0.8);">
+                    <span style="color: var(--primary); font-weight: 600;">
+                        📍
+                    </span>
+
+                    <strong>
+                        Alaga, Oyo State
+                    </strong>
+                </li>
+
+                <li style="display: flex; gap: 12px; font-size: 13px; color: rgba(255, 255, 255, 0.8);">
+                    <span style="color: var(--primary); font-weight: 600;">
+                        🎧
+                    </span>
+
+                    <strong>
+                        Online live radio stream
+                    </strong>
+                </li>
+
+            </ul>
+
+            <a
+                href="programs.html"
+                class="btn-outline"
+                style="width: 100%; text-align: center; margin-top: 20px; font-size: 13px; min-height: 42px;">
+
+                View Programs →
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         DAILY LOCAL BULLETIN
+    ====================================================== -->
+
+    <section
+        class="dash-card"
+        style="margin-top: 32px;"
+        aria-labelledby="local-bulletin-title">
+
+        <div class="dash-card-header">
+
+            <div>
+
+                <span class="section-label">
+                    IPAPO & ITESIWAJU NEWS DESK
+                </span>
+
+                <h2
+                    id="local-bulletin-title"
+                    style="margin: 6px 0 0;">
+
+                    Daily Local News & Music Desk
+
                 </h2>
 
-                <p style="color: rgba(255, 255, 255, 0.75); font-size: 15px; margin-bottom: 20px; line-height: 1.6;">
-                    Regional radio for Oke-Ogun, Itesiwaju and Ipapo, carrying local news, Yoruba programming, music and community conversations.
+            </div>
+
+            <span
+                class="badge-status active"
+                id="bulletinStatus">
+
+                Ready
+
+            </span>
+
+        </div>
+
+        <p style="color:#94a3b8; font-size:13.5px; line-height:1.6;">
+
+            Listen to Oke-Ogun FM live above. If the live station stream
+            is temporarily unavailable, you can still listen to the
+            latest local Ipapo, Itesiwaju and Oyo news through the
+            daily bulletin below.
+
+        </p>
+
+        <div
+            id="bulletinStories"
+            style="display:grid; gap:10px; margin:18px 0;">
+        </div>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+
+            <button
+                class="btn"
+                id="playBulletinBtn"
+                type="button">
+
+                ▶ Play Daily Bulletin
+
+            </button>
+
+            <button
+                class="btn-outline"
+                id="stopBulletinBtn"
+                type="button">
+
+                ■ Stop Bulletin
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         PODCASTS & ARCHIVES
+    ====================================================== -->
+
+    <section style="margin-top: 65px;">
+
+        <div
+            class="section-title"
+            style="text-align: left; margin-bottom: 30px;">
+
+            <span class="section-label">
+                PODCASTS & ARCHIVES
+            </span>
+
+            <h2>
+                Recent <span>Broadcast Recordings</span>
+            </h2>
+
+            <p>
+                Missed a live session? Catch up on recent community
+                interviews, educational briefings, and discussions
+                on demand.
+            </p>
+
+        </div>
+
+        <div
+            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px;">
+
+            <div class="dash-card">
+
+                <span class="badge-status active">
+                    Recorded • 42 mins
+                </span>
+
+                <h3 style="font-size: 17px; margin: 12px 0 8px;">
+                    Ipapo College of Education Campus Construction Update
+                </h3>
+
+                <p style="font-size: 13px; color: #94a3b8; margin-bottom: 16px;">
+                    Comprehensive interview with site engineers and
+                    community leaders on project timelines.
                 </p>
-                <div class="audio-visualizer" id="audioViz">
-                    <div class="viz-bar"></div>
-                    <div class="viz-bar"></div>
-                    <div class="viz-bar"></div>
-                    <div class="viz-bar"></div>
-                    <div class="viz-bar"></div>
-                    <div class="viz-bar"></div>
-                    <div class="viz-bar"></div>
-                    <div class="viz-bar"></div>
-                </div>
 
-                <div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-top: 25px;">
-                    <button class="btn" id="mainPlayToggle" type="button" style="min-height: 52px; padding: 0 32px; font-size: 15px;">
-                        <span id="playIcon" style="font-size: 18px; margin-right: 6px;">▶</span> 
-                        <span id="playText">Listen Live</span>
-                    </button>
+                <button
+                    class="btn archive-play-btn"
+                    type="button"
+                    style="min-height: 36px; padding: 0 16px; font-size: 12px;">
 
-                    <audio id="liveAudio" preload="none"></audio>
+                    ▶ Listen to Recording
 
-                    <div style="display: flex; align-items: center; gap: 8px; color: rgba(255, 255, 255, 0.7); font-size: 13px;">
-                        <span>🔊</span>
-                        <input type="range" id="volumeSlider" min="0" max="100" value="85" style="accent-color: var(--primary); cursor: pointer;">
-                    </div>
+                </button>
 
-                    <span style="font-size: 12.5px; color: var(--primary); background: rgba(255, 204, 0, 0.1); padding: 5px 12px; border-radius: 20px;">
-                        👥 <span id="listenerCount">348</span> Listening
-                    </span>
-                </div>
             </div>
 
-            <div style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px; padding: 28px;">
-                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
-                    <img src="img/people.jpg" alt="Presenter" style="width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
-                    <div>
-                        <small style="color: var(--primary); font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 1px;">Current Host</small>
-                        <h4 style="font-size: 18px; margin: 2px 0; color: #fff;">Oke-Ogun FM 96.3</h4>
-                        <span style="font-size: 12.5px; color: rgba(255, 255, 255, 0.6);">Regional broadcast from Alaga, Oyo State</span>
-                    </div>
-                </div>
 
-                <h4 style="font-size: 15px; color: #fff; margin-bottom: 12px;">Next Up on Air:</h4>
-                <ul class="schedule-list" style="list-style: none; padding: 0;">
-                    <li style="display: flex; gap: 12px; margin-bottom: 10px; font-size: 13px; color: rgba(255, 255, 255, 0.8);">
-                        <span style="color: var(--primary); font-weight: 600;">08:00 AM</span>
-                        <strong>News & Public Affairs Analysis</strong>
-                    </li>
-                    <li style="display: flex; gap: 12px; margin-bottom: 10px; font-size: 13px; color: rgba(255, 255, 255, 0.8);">
-                        <span style="color: var(--primary); font-weight: 600;">11:00 AM</span>
-                        <strong>Yoruba Heritage & Royalty Hour</strong>
-                    </li>
-                    <li style="display: flex; gap: 12px; font-size: 13px; color: rgba(255, 255, 255, 0.8);">
-                        <span style="color: var(--primary); font-weight: 600;">02:00 PM</span>
-                        <strong>Ipapo Sports & Youth Grassroots</strong>
-                    </li>
-                </ul>
+            <div class="dash-card">
 
-                <a href="programs.html" class="btn-outline" style="width: 100%; text-align: center; margin-top: 20px; font-size: 13px; min-height: 42px;">
-                    View Full Weekly Schedule →
-                </a>
+                <span class="badge-status active">
+                    Recorded • 35 mins
+                </span>
+
+                <h3 style="font-size: 17px; margin: 12px 0 8px;">
+                    Traditional Black Soap (Ose Abuwe) Trade Dialogue
+                </h3>
+
+                <p style="font-size: 13px; color: #94a3b8; margin-bottom: 16px;">
+                    Women cooperatives discuss production standards,
+                    organic ingredients, and regional exports.
+                </p>
+
+                <button
+                    class="btn archive-play-btn"
+                    type="button"
+                    style="min-height: 36px; padding: 0 16px; font-size: 12px;">
+
+                    ▶ Listen to Recording
+
+                </button>
+
             </div>
+
+
+            <div class="dash-card">
+
+                <span class="badge-status active">
+                    Recorded • 50 mins
+                </span>
+
+                <h3 style="font-size: 17px; margin: 12px 0 8px;">
+                    Youth Empowerment & JAMB/WAEC Scholarship Forum
+                </h3>
+
+                <p style="font-size: 13px; color: #94a3b8; margin-bottom: 16px;">
+                    FIPSU leaders outline student welfare packages
+                    and tech mentorship drives.
+                </p>
+
+                <button
+                    class="btn archive-play-btn"
+                    type="button"
+                    style="min-height: 36px; padding: 0 16px; font-size: 12px;">
+
+                    ▶ Listen to Recording
+
+                </button>
+
+            </div>
+
         </div>
 
-        <section class="dash-card" style="margin-top: 32px;" aria-labelledby="local-bulletin-title">
-            <div class="dash-card-header">
-                <div>
-                    <span class="section-label">IPAPO & ITESIWAJU NEWS DESK</span>
-                    <h2 id="local-bulletin-title" style="margin: 6px 0 0;">Daily Local News & Music Desk</h2>
-                </div>
-                <span class="badge-status active" id="bulletinStatus">Ready</span>
-            </div>
-            <p style="color:#94a3b8; font-size:13.5px; line-height:1.6;">The station stream carries music when available. If it is offline, this desk reads the latest fetched Ipapo, Itesiwaju and Oyo headlines aloud.</p>
-            <div id="bulletinStories" style="display:grid; gap:10px; margin:18px 0;"></div>
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <button class="btn" id="playBulletinBtn" type="button">▶ Play Daily Bulletin</button>
-                <button class="btn-outline" id="stopBulletinBtn" type="button">■ Stop Bulletin</button>
-            </div>
-        </section>
+    </section>
 
-        <section style="margin-top: 65px;">
-            <div class="section-title" style="text-align: left; margin-bottom: 30px;">
-                <span class="section-label">PODCASTS & ARCHIVES</span>
-                <h2>Recent <span>Broadcast Recordings</span></h2>
-                <p>Missed a live session? Catch up on recent community interviews, educational briefings, and discussions on demand.</p>
-            </div>
+</main>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px;">
-                <div class="dash-card">
-                    <span class="badge-status active">Recorded • 42 mins</span>
-                    <h3 style="font-size: 17px; margin: 12px 0 8px;">Ipapo College of Education Campus Construction Update</h3>
-                    <p style="font-size: 13px; color: #94a3b8; margin-bottom: 16px;">Comprehensive interview with site engineers and community leaders on project timelines.</p>
-                    <button class="btn archive-play-btn" type="button" style="min-height: 36px; padding: 0 16px; font-size: 12px;">
-                        ▶ Listen to Recording
-                    </button>
-                </div>
 
-                <div class="dash-card">
-                    <span class="badge-status active">Recorded • 35 mins</span>
-                    <h3 style="font-size: 17px; margin: 12px 0 8px;">Traditional Black Soap (Ose Abuwe) Trade Dialogue</h3>
-                    <p style="font-size: 13px; color: #94a3b8; margin-bottom: 16px;">Women cooperatives discuss production standards, organic ingredients, and regional exports.</p>
-                    <button class="btn archive-play-btn" type="button" style="min-height: 36px; padding: 0 16px; font-size: 12px;">
-                        ▶ Listen to Recording
-                    </button>
-                </div>
+<!-- =========================================================
+     FOOTER
+========================================================== -->
 
-                <div class="dash-card">
-                    <span class="badge-status active">Recorded • 50 mins</span>
-                    <h3 style="font-size: 17px; margin: 12px 0 8px;">Youth Empowerment & JAMB/WAEC Scholarship Forum</h3>
-                    <p style="font-size: 13px; color: #94a3b8; margin-bottom: 16px;">FIPSU leaders outline student welfare packages and tech mentorship drives.</p>
-                    <button class="btn archive-play-btn" type="button" style="min-height: 36px; padding: 0 16px; font-size: 12px;">
-                        ▶ Listen to Recording
-                    </button>
-                </div>
-            </div>
-        </section>
-    </main>
+<footer>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-brand">
-                <a href="index.html" class="logo">
-                    IPAPO <span>Broadcast</span>
-                </a>
-                <p>Trusted Voice • Professional Media • Community First</p>
-            </div>
+    <div class="footer-content">
 
-            <div class="footer-links">
-                <h4>Platform</h4>
-                <a href="index.html">🏠 Home</a>
-                <a href="news.html">📰 News</a>
-                <a href="live.html">📻 Live Radio</a>
-                <a href="programs.html">📺 Programs</a>
-                <a href="events.html">🎉 Events</a>
-            </div>
+        <div class="footer-brand">
 
-            <div class="footer-links">
-                <h4>Community</h4>
-                <a href="community.html">🤝 Community Hub</a>
-                <a href="gallery.html">🖼️ Photo Gallery</a>
-                <a href="submit-story.html">✍️ Submit Story</a>
-                <a href="contact.html">📞 Contact</a>
-            </div>
+            <a href="index.html" class="logo">
+                IPAPO <span>Broadcast</span>
+            </a>
 
-            <div class="footer-links">
-                <h4>About</h4>
-                <a href="about.html">👑 About Ipapo</a>
-                <a href="about.html#heritage">🏛️ Royal Heritage</a>
-                <a href="about.html#culture">🎭 Culture & Traditions</a>
-            </div>
+            <p>
+                Trusted Voice • Professional Media • Community First
+            </p>
+
         </div>
 
-        <div class="footer-bottom">
-            <p>© 2026 Ipapo Broadcast. All Rights Reserved.</p>
-            <p>Built with ❤️ for the community.</p>
-            <a href="admin/admin-login.html" style="color:rgba(255,255,255,0.3); font-size:11px; text-decoration:none; margin-top:10px; display:inline-block;">🔐 Admin Portal</a>
+
+        <div class="footer-links">
+
+            <h4>Platform</h4>
+
+            <a href="index.html">🏠 Home</a>
+            <a href="news.html">📰 News</a>
+            <a href="live.html">📻 Live Radio</a>
+            <a href="programs.html">📺 Programs</a>
+            <a href="events.html">🎉 Events</a>
+
         </div>
 
-        <div class="footer-credit">
-            <span class="credit-label">@</span>
-            <span class="builder">Ibrahim Olaniyi (Programmer)</span>
+
+        <div class="footer-links">
+
+            <h4>Community</h4>
+
+            <a href="community.html">🤝 Community Hub</a>
+            <a href="gallery.html">🖼️ Photo Gallery</a>
+            <a href="submit-story.html">✍️ Submit Story</a>
+            <a href="contact.html">📞 Contact</a>
+
         </div>
-    </footer>
 
-    <!-- Scripts -->
-    <script src="js/api-config.js"></script>
-    <script src="js/news.js"></script>
-    <script src="js/dashboard.js"></script>
-    <script src="js/admin.js"></script>
-    <script src="script.js"></script>
 
-    <script>
-        const mainPlayToggle = document.getElementById('mainPlayToggle');
-        const playIcon = document.getElementById('playIcon');
-        const playText = document.getElementById('playText');
-        const audioViz = document.getElementById('audioViz');
-        const listenerCount = document.getElementById('listenerCount');
-        const liveAudio = document.getElementById('liveAudio');
-        const volumeSlider = document.getElementById('volumeSlider');
-        const bulletinStatus = document.getElementById('bulletinStatus');
-        const bulletinStories = document.getElementById('bulletinStories');
-        const playBulletinBtn = document.getElementById('playBulletinBtn');
-        const stopBulletinBtn = document.getElementById('stopBulletinBtn');
-        let bulletinItems = [];
-        let bulletinIndex = 0;
+        <div class="footer-links">
 
-        const loadLocalBulletin = async () => {
-            try {
-                const response = await fetch((window.ipapoApiUrl || (path => path))('/api/fetch-news'), { cache: 'no-store' });
-                if (!response.ok) throw new Error('News feed unavailable');
-                const payload = await response.json();
-                bulletinItems = (payload.stories || []).filter(story => /ipapo|itesiwaju|oyo/i.test(`${story.title} ${story.summary || ''}`)).slice(0, 5);
-                bulletinStories.innerHTML = bulletinItems.length ? bulletinItems.map((story, index) => `
-                    <div style="padding:12px 14px; border-left:3px solid var(--primary); background:rgba(255,204,0,.06); color:#e2e8f0; font-size:13px;">
-                        <strong>${index + 1}. ${story.title}</strong>
-                        <small style="display:block; color:#94a3b8; margin-top:4px;">${story.source || 'Local news desk'}</small>
-                    </div>
-                `).join('') : '<p style="color:#94a3b8; font-size:13px;">No local bulletin stories are available right now.</p>';
-            } catch (error) {
-                bulletinStatus.textContent = 'Unavailable';
-                bulletinStories.innerHTML = '<p style="color:#fca5a5; font-size:13px;">The local news feed could not be reached.</p>';
-            }
-        };
+            <h4>About</h4>
 
-        const speakNextBulletin = () => {
-            if (bulletinIndex >= bulletinItems.length) {
-                bulletinStatus.textContent = 'Ready';
-                return;
-            }
-            const story = bulletinItems[bulletinIndex++];
-            const utterance = new SpeechSynthesisUtterance(`Ipapo and Itesiwaju news. ${story.title}. ${story.summary || ''}`);
-            utterance.rate = 0.92;
-            utterance.onstart = () => { bulletinStatus.textContent = `Reading ${bulletinIndex} of ${bulletinItems.length}`; };
-            utterance.onend = speakNextBulletin;
-            utterance.onerror = () => { bulletinStatus.textContent = 'Bulletin stopped'; };
-            window.speechSynthesis.speak(utterance);
-        };
+            <a href="about.html">👑 About Ipapo</a>
+            <a href="about.html#heritage">🏛️ Royal Heritage</a>
+            <a href="about.html#culture">🎭 Culture & Traditions</a>
 
-        const startBulletinFallback = async () => {
-            if (!bulletinItems.length) await loadLocalBulletin();
-            if (!('speechSynthesis' in window) || !bulletinItems.length) return;
-            window.speechSynthesis.cancel();
-            bulletinIndex = 0;
-            speakNextBulletin();
-        };
+        </div>
 
-        playBulletinBtn.addEventListener('click', async () => {
-            await startBulletinFallback();
-        });
-        stopBulletinBtn.addEventListener('click', () => {
-            window.speechSynthesis.cancel();
-            bulletinStatus.textContent = 'Stopped';
-        });
-        loadLocalBulletin();
+    </div>
 
-        const defaultStreamUrl = 'https://stream.zeno.fm/8dxamh3bkg0uv';
-        const stationSettings = window.AdminController ? window.AdminController.getSettings() : {};
-        liveAudio.src = stationSettings.streamUrl && stationSettings.streamUrl !== 'https://stream.zeno.fm/f3wvbbqmdg8uv' && stationSettings.streamUrl !== 'https://stream.zeno.fm/8rbamh3bkg0uv'
-            ? stationSettings.streamUrl
-            : defaultStreamUrl;
-        liveAudio.volume = Number(volumeSlider.value) / 100;
 
-        const setPlayerState = (playing) => {
-            playIcon.textContent = playing ? '⏸' : '▶';
-            playText.textContent = playing ? 'Listening Now' : 'Listen Live';
-            audioViz.classList.toggle('paused', !playing);
-            mainPlayToggle.style.background = playing ? '#fff' : 'var(--primary)';
-            mainPlayToggle.style.color = '#111';
-        };
+    <div class="footer-bottom">
 
-        mainPlayToggle.addEventListener('click', async () => {
+        <p>
+            © 2026 Ipapo Broadcast. All Rights Reserved.
+        </p>
+
+        <p>
+            Built with ❤️ for the community.
+        </p>
+
+        <a
+            href="admin/admin-login.html"
+            style="color:rgba(255,255,255,0.3); font-size:11px; text-decoration:none; margin-top:10px; display:inline-block;">
+
+            🔐 Admin Portal
+
+        </a>
+
+    </div>
+
+
+    <div class="footer-credit">
+
+        <span class="credit-label">@</span>
+
+        <span class="builder">
+            Ibrahim Olaniyi (Programmer)
+        </span>
+
+    </div>
+
+</footer>
+
+
+<!-- =========================================================
+     EXISTING PROJECT SCRIPTS
+========================================================== -->
+
+<script src="js/api-config.js"></script>
+<script src="js/news.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/admin.js"></script>
+<script src="script.js"></script>
+
+
+<!-- =========================================================
+     LIVE RADIO + DAILY BULLETIN JAVASCRIPT
+========================================================== -->
+
+<script>
+
+    const mainPlayToggle =
+        document.getElementById('mainPlayToggle');
+
+    const playIcon =
+        document.getElementById('playIcon');
+
+    const playText =
+        document.getElementById('playText');
+
+    const audioViz =
+        document.getElementById('audioViz');
+
+    const liveAudio =
+        document.getElementById('liveAudio');
+
+    const volumeSlider =
+        document.getElementById('volumeSlider');
+
+    const volumeValue =
+        document.getElementById('volumeValue');
+
+    const radioStatus =
+        document.getElementById('radioStatus');
+
+    const bulletinStatus =
+        document.getElementById('bulletinStatus');
+
+    const bulletinStories =
+        document.getElementById('bulletinStories');
+
+    const playBulletinBtn =
+        document.getElementById('playBulletinBtn');
+
+    const stopBulletinBtn =
+        document.getElementById('stopBulletinBtn');
+
+
+    let bulletinItems = [];
+    let bulletinIndex = 0;
+
+
+    /* =====================================================
+       OKE-OGUN FM LIVE STREAM
+
+       This is the Zeno stream associated with the
+       Oke-Ogun FM station.
+    ====================================================== */
+
+    const defaultStreamUrl =
+        'https://stream.zeno.fm/8dxamh3bkg0uv';
+
+
+    /*
+     * Allow an admin-configured stream if one exists.
+     * Otherwise use the verified default Oke-Ogun FM stream.
+     */
+
+    let stationSettings = {};
+
+    try {
+
+        stationSettings =
+            window.AdminController &&
+            typeof window.AdminController.getSettings === 'function'
+                ? window.AdminController.getSettings()
+                : {};
+
+    } catch (error) {
+
+        stationSettings = {};
+
+    }
+
+
+    const configuredStream =
+        stationSettings &&
+        typeof stationSettings.streamUrl === 'string'
+            ? stationSettings.streamUrl.trim()
+            : '';
+
+
+    liveAudio.src =
+        configuredStream || defaultStreamUrl;
+
+
+    liveAudio.volume =
+        Number(volumeSlider.value) / 100;
+
+
+    volumeValue.textContent =
+        `${volumeSlider.value}%`;
+
+
+    /* =====================================================
+       PLAYER STATE
+    ====================================================== */
+
+    const setPlayerState = (playing) => {
+
+        playIcon.textContent =
+            playing ? '⏸' : '▶';
+
+        playText.textContent =
+            playing
+                ? 'Listening Now'
+                : 'Listen Live';
+
+        audioViz.classList.toggle(
+            'paused',
+            !playing
+        );
+
+        mainPlayToggle.style.background =
+            playing
+                ? '#fff'
+                : 'var(--primary)';
+
+        mainPlayToggle.style.color =
+            '#111';
+
+        radioStatus.textContent =
+            playing
+                ? 'Oke-Ogun FM is playing live'
+                : 'Ready to play';
+
+    };
+
+
+    /* =====================================================
+       PLAY / PAUSE LIVE RADIO
+    ====================================================== */
+
+    mainPlayToggle.addEventListener(
+        'click',
+        async () => {
+
             if (!liveAudio.src) {
-                if (window.showToast) window.showToast('Add a live stream URL in Admin > Station Settings first.', 'info');
+
+                radioStatus.textContent =
+                    'Radio stream unavailable';
+
+                if (window.showToast) {
+
+                    window.showToast(
+                        'The Oke-Ogun FM stream is currently unavailable.',
+                        'info'
+                    );
+
+                }
+
                 return;
             }
+
 
             if (!liveAudio.paused) {
+
                 liveAudio.pause();
+
                 return;
             }
 
+
             try {
+
+                radioStatus.textContent =
+                    'Connecting to Oke-Ogun FM...';
+
+
                 await liveAudio.play();
-                listenerCount.textContent = 'Live';
-                if (window.showToast) window.showToast('Connected to Ipapo Broadcast Live.', 'success');
-            } catch (error) {
-                setPlayerState(false);
-                bulletinStatus.textContent = 'Radio unavailable — local bulletin ready';
-                if (window.showToast) window.showToast('Radio stream unavailable. Starting the local daily bulletin.', 'info');
-                await startBulletinFallback();
-                console.error('Live radio playback failed:', error);
-            }
-        });
 
-        liveAudio.addEventListener('play', () => setPlayerState(true));
-        liveAudio.addEventListener('pause', () => setPlayerState(false));
-        liveAudio.addEventListener('error', () => {
-            setPlayerState(false);
-            bulletinStatus.textContent = 'Radio unavailable — local bulletin ready';
-            if (window.showToast) window.showToast('Radio stream unavailable. Use the daily local bulletin.', 'info');
-        });
 
-        volumeSlider.addEventListener('input', () => {
-            liveAudio.volume = Number(volumeSlider.value) / 100;
-        });
-
-        document.querySelectorAll('.archive-play-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
                 if (window.showToast) {
-                    window.showToast("Playing archived broadcast recording...", "success");
+
+                    window.showToast(
+                        'Connected to Oke-Ogun FM 96.3.',
+                        'success'
+                    );
+
                 }
-                mainPlayToggle.scrollIntoView({ behavior: 'smooth' });
-                if (liveAudio.paused) {
-                    mainPlayToggle.click();
+
+            } catch (error) {
+
+                setPlayerState(false);
+
+                radioStatus.textContent =
+                    'Radio unavailable';
+
+
+                if (window.showToast) {
+
+                    window.showToast(
+                        'The live radio stream is currently unavailable. You can use the Daily Bulletin below.',
+                        'info'
+                    );
+
                 }
-            });
-        });
-    </script>
+
+                await startBulletinFallback();
+
+
+                console.error(
+                    'Oke-Ogun FM playback failed:',
+                    error
+                );
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       AUDIO EVENTS
+    ====================================================== */
+
+    liveAudio.addEventListener(
+        'play',
+        () => {
+
+            setPlayerState(true);
+
+        }
+    );
+
+
+    liveAudio.addEventListener(
+        'pause',
+        () => {
+
+            setPlayerState(false);
+
+        }
+    );
+
+
+    liveAudio.addEventListener(
+        'error',
+        () => {
+
+            setPlayerState(false);
+
+            radioStatus.textContent =
+                'Radio stream unavailable';
+
+
+            if (window.showToast) {
+
+                window.showToast(
+                    'Oke-Ogun FM live stream is unavailable right now. Try again later or use the Daily Bulletin.',
+                    'info'
+                );
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       VOLUME CONTROL
+    ====================================================== */
+
+    volumeSlider.addEventListener(
+        'input',
+        () => {
+
+            const volume =
+                Number(volumeSlider.value);
+
+            liveAudio.volume =
+                volume / 100;
+
+            volumeValue.textContent =
+                `${volume}%`;
+
+        }
+    );
+
+
+    /* =====================================================
+       DAILY LOCAL NEWS BULLETIN
+    ====================================================== */
+
+    const loadLocalBulletin = async () => {
+
+        try {
+
+            const apiPath =
+                '/api/fetch-news';
+
+
+            const response =
+                await fetch(
+                    (window.ipapoApiUrl ||
+                        (path => path))(apiPath),
+                    {
+                        cache: 'no-store'
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    'News feed unavailable'
+                );
+
+            }
+
+
+            const payload =
+                await response.json();
+
+
+            bulletinItems =
+                (payload.stories || [])
+                    .filter(
+                        story =>
+                            /ipapo|itesiwaju|oyo/i.test(
+                                `${story.title} ${story.summary || ''}`
+                            )
+                    )
+                    .slice(0, 5);
+
+
+            bulletinStories.innerHTML =
+                bulletinItems.length
+
+                    ? bulletinItems
+                        .map(
+                            (story, index) => `
+
+                            <div
+                                style="
+                                    padding:12px 14px;
+                                    border-left:3px solid var(--primary);
+                                    background:rgba(255,204,0,.06);
+                                    color:#e2e8f0;
+                                    font-size:13px;
+                                ">
+
+                                <strong>
+                                    ${index + 1}. ${story.title}
+                                </strong>
+
+                                <small
+                                    style="
+                                        display:block;
+                                        color:#94a3b8;
+                                        margin-top:4px;
+                                    ">
+
+                                    ${story.source || 'Local news desk'}
+
+                                </small>
+
+                            </div>
+
+                        `
+                        )
+                        .join('')
+
+                    : `
+                        <p
+                            style="
+                                color:#94a3b8;
+                                font-size:13px;
+                            ">
+
+                            No local bulletin stories are available right now.
+
+                        </p>
+                    `;
+
+
+            bulletinStatus.textContent =
+                bulletinItems.length
+                    ? 'Ready'
+                    : 'No stories';
+
+
+        } catch (error) {
+
+            bulletinStatus.textContent =
+                'Unavailable';
+
+
+            bulletinStories.innerHTML = `
+                <p
+                    style="
+                        color:#fca5a5;
+                        font-size:13px;
+                    ">
+
+                    The local news feed could not be reached.
+
+                </p>
+            `;
+
+
+            console.error(
+                'Daily bulletin error:',
+                error
+            );
+
+        }
+
+    };
+
+
+    /* =====================================================
+       TEXT-TO-SPEECH BULLETIN
+    ====================================================== */
+
+    const speakNextBulletin = () => {
+
+        if (
+            bulletinIndex >=
+            bulletinItems.length
+        ) {
+
+            bulletinStatus.textContent =
+                'Ready';
+
+            return;
+
+        }
+
+
+        const story =
+            bulletinItems[
+                bulletinIndex++
+            ];
+
+
+        const utterance =
+            new SpeechSynthesisUtterance(
+                `Ipapo and Itesiwaju news. ${story.title}. ${story.summary || ''}`
+            );
+
+
+        utterance.rate =
+            0.92;
+
+
+        utterance.onstart =
+            () => {
+
+                bulletinStatus.textContent =
+                    `Reading ${bulletinIndex} of ${bulletinItems.length}`;
+
+            };
+
+
+        utterance.onend =
+            speakNextBulletin;
+
+
+        utterance.onerror =
+            () => {
+
+                bulletinStatus.textContent =
+                    'Bulletin stopped';
+
+            };
+
+
+        window.speechSynthesis.speak(
+            utterance
+        );
+
+    };
+
+
+    const startBulletinFallback =
+        async () => {
+
+            if (!bulletinItems.length) {
+
+                await loadLocalBulletin();
+
+            }
+
+
+            if (
+                !('speechSynthesis' in window) ||
+                !bulletinItems.length
+            ) {
+
+                return;
+
+            }
+
+
+            window.speechSynthesis.cancel();
+
+
+            bulletinIndex =
+                0;
+
+
+            speakNextBulletin();
+
+        };
+
+
+    playBulletinBtn.addEventListener(
+        'click',
+        async () => {
+
+            await startBulletinFallback();
+
+        }
+    );
+
+
+    stopBulletinBtn.addEventListener(
+        'click',
+        () => {
+
+            if ('speechSynthesis' in window) {
+
+                window.speechSynthesis.cancel();
+
+            }
+
+            bulletinStatus.textContent =
+                'Stopped';
+
+        }
+    );
+
+
+    /* =====================================================
+       ARCHIVE BUTTONS
+    ====================================================== */
+
+    document
+        .querySelectorAll('.archive-play-btn')
+        .forEach(
+            btn => {
+
+                btn.addEventListener(
+                    'click',
+                    () => {
+
+                        if (window.showToast) {
+
+                            window.showToast(
+                                'Archived recordings will be available when audio files are added.',
+                                'info'
+                            );
+
+                        }
+
+                        mainPlayToggle.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
+
+                    }
+                );
+
+            }
+        );
+
+
+
+    loadLocalBulletin();
+
+</script>
+
 </body>
 </html>
+
