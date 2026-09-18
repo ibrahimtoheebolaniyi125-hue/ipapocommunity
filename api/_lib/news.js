@@ -57,87 +57,417 @@ const decodeHtml = (value = '') =>
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
-    .replace(/&#39;|&apos;/g, "'");
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&#x2F;/gi, '/')
+    .replace(/&#47;/g, '/');
 
+/*
+ * Extract an attribute from an HTML tag regardless of
+ * the order of the attributes.
+ */
+const extractMetaContent = (
+  html = '',
+  attributeName = '',
+  attributeValue = ''
+) => {
+  const escapedName = attributeName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const escapedValue = attributeValue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  const pattern = new RegExp(
+    `<meta\\b(?=[^>]*\\b${escapedName}\\s*=\\s*["']${escapedValue}["'])(?=[^>]*\\bcontent\\s*=\\s*["']([^"']+)["'])[^>]*>`,
+    'i'
+  );
+
+  const reversePattern = new RegExp(
+    `<meta\\b(?=[^>]*\\bcontent\\s*=\\s*["']([^"']+)["'])(?=[^>]*\\b${escapedName}\\s*=\\s*["']${escapedValue}["'])[^>]*>`,
+    'i'
+  );
+
+  return (
+    html.match(pattern)?.[1] ||
+    html.match(reversePattern)?.[1] ||
+    ''
+  );
+};
+
+/*
+ * Extract a useful image URL from an article page.
+ *
+ * Priority:
+ * 1. og:image
+ * 2. twitter:image
+ * 3. JSON-LD article image
+ * 4. image_src
+ * 5. first reasonably-sized image
+ */
 const extractImageUrl = (html = '', baseUrl = '') => {
   const source = decodeHtml(html);
 
-  const candidates = [
-    source.match(/<img[^>]+src=["']([^"']+)["']/i)?.[1],
-    source.match(/<meta[^>]+(?:property|name)=["'](?:og:image|twitter:image)["'][^>]+content=["']([^"']+)["']/i)?.[1],
-    source.match(/<meta[^>]+content=["']([^"']+)["'][^>]+(?:property|name)=["'](?:og:image|twitter:image)["']/i)?.[1],
-    source.match(/"image"\s*:\s*["']([^"']+)["']/i)?.[1]
-  ].filter(Boolean);
+  const candidates = [];
 
-  if (!candidates.length) return '';
+  const ogImage = extractMetaContent(
+    source,
+    'property',
+    'og:image'
+  );
 
-  try {
-    return new URL(candidates[0], baseUrl || undefined).href;
-  } catch (error) {
-    return '';
+  const twitterImage =
+    extractMetaContent(
+      source,
+      'name',
+      'twitter:image'
+    ) ||
+    extractMetaContent(
+      source,
+      'name',
+      'twitter:image:src'
+    );
+
+  if (ogImage) {
+    candidates.push(ogImage);
   }
+
+  if (twitterImage) {
+    candidates.push(twitterImage);
+  }
+
+  /*
+   * Try JSON-LD.
+   *
+   * Many news websites expose article images through:
+   * "image": "https://..."
+   *
+   * or:
+   * "image": {
+   *   "url": "https://..."
+   * }
+   *
+   * or:
+   * "image": [
+   *   "https://..."
+   * ]
+   */
+  const jsonLdBlocks = [
+    ...source.matchAll(
+      /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi
+    )
+  ];
+
+  for (const block of jsonLdBlocks) {
+    const rawJson = block[1]
+      .trim()
+      .replace(/<!--/g, '')
+      .replace(/-->/g, '');
+
+    try {
+      const parsed = JSON.parse(rawJson);
+
+      const objects = Array.isArray(parsed)
+        ? parsed
+        : [parsed];
+
+      for (const item of objects) {
+        if (!item || typeof item !== 'object') {
+          continue;
+        }
+
+        const image = item.image;
+
+        if (typeof image === 'string') {
+          candidates.push(image);
+        } else if (Array.isArray(image)) {
+          image.forEach((value) => {
+            if (typeof value === 'string') {
+              candidates.push(value);
+            }
+
+            if (
+              value &&
+              typeof value === 'object' &&
+              typeof value.url === 'string'
+            ) {
+              candidates.push(value.url);
+            }
+          });
+        } else if (
+          image &&
+          typeof image === 'object' &&
+          typeof image.url === 'string'
+        ) {
+          candidates.push(image.url);
+        }
+      }
+    } catch (error) {
+      /*
+       * Some websites contain malformed JSON-LD.
+       * Ignore it and continue to the next method.
+       */
+    }
+  }
+
+  /*
+   * image_src is used by some older news websites.
+   */
+  const imageSrc = source.match(
+    /<link[^>]+rel=["'][^"']*\bimage_src\b[^"']*["'][^>]+href=["']([^"']+)["']/i
+  )?.[1];
+
+  if (imageSrc) {
+    candidates.push(imageSrc);
+  }
+
+  /*
+   * Last fallback:
+   * Look for an image with an actual image extension.
+   * This comes AFTER og:image and JSON-LD so that logos
+   * and icons are less likely to be selected.
+   */
+  const imageMatches = [
+    ...source.matchAll(
+      /<img[^>]+(?:src|data-src|data-lazy-src)=["']([^"']+)["'][^>]*>/gi
+    )
+  ];
+
+  for (const match of imageMatches.slice(0, 15)) {
+    const image = match[1];
+
+    if (
+      /\.(jpg|jpeg|png|webp|gif)(\?|#|$)/i.test(image)
+    ) {
+      candidates.push(image);
+    }
+  }
+
+  for (const candidate of candidates.filter(Boolean)) {
+    try {
+      const absoluteUrl = new URL(
+        candidate,
+        baseUrl || undefined
+      ).href;
+
+      const hostname = new URL(absoluteUrl).hostname
+        .toLowerCase();
+
+      /*
+       * Do not use Google's preview/proxy images.
+       * We want the actual publisher image.
+       */
+      if (
+        hostname.includes('googleusercontent.com') ||
+        hostname.includes('gstatic.com')
+      ) {
+        continue;
+      }
+
+      /*
+       * Ignore obvious tracking pixels and data URLs.
+       */
+      if (
+        absoluteUrl.startsWith('data:') ||
+        absoluteUrl.includes('favicon') ||
+        absoluteUrl.includes('logo.svg') ||
+        absoluteUrl.includes('icon.svg')
+      ) {
+        continue;
+      }
+
+      return absoluteUrl;
+    } catch (error) {
+      continue;
+    }
+  }
+
+  return '';
 };
 
 const isGooglePreviewImage = (image = '') => {
   try {
-    return new URL(image).hostname.includes('googleusercontent.com');
+    const hostname = new URL(image).hostname.toLowerCase();
+
+    return (
+      hostname.includes('googleusercontent.com') ||
+      hostname.includes('gstatic.com')
+    );
   } catch (error) {
     return false;
   }
 };
 
+/*
+ * Fetch an article page and extract the actual publisher image.
+ *
+ * For Google News:
+ *
+ * Google News RSS
+ *       ↓
+ * Google News article URL
+ *       ↓
+ * Follow redirect
+ *       ↓
+ * Original publisher URL
+ *       ↓
+ * og:image / twitter:image / JSON-LD
+ */
 const extractArticleImage = async (link) => {
-  if (!link || link === '#') return '';
+  if (!link || link === '#') {
+    return '';
+  }
+
+  let controller;
+  let timeout;
 
   try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
+    controller = new AbortController();
+
+    timeout = setTimeout(() => {
+      controller.abort();
+    }, 8000);
 
     const response = await fetch(link, {
+      method: 'GET',
+      redirect: 'follow',
       headers: {
-        'User-Agent': 'IpapoBroadcast/1.0'
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131 Safari/537.36',
+        Accept:
+          'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-NG,en;q=0.9'
       },
       signal: controller.signal
     });
 
-    clearTimeout(timeout);
+    if (!response.ok) {
+      return '';
+    }
 
-    if (!response.ok) return '';
+    const finalUrl = response.url || link;
+
+    /*
+     * Only inspect HTML pages.
+     */
+    const contentType =
+      response.headers.get('content-type') || '';
+
+    if (
+      contentType &&
+      !contentType.includes('text/html') &&
+      !contentType.includes('application/xhtml+xml')
+    ) {
+      return '';
+    }
 
     const html = await response.text();
-    const image = extractImageUrl(html, link);
 
-    const canonical =
-      html.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i)?.[1] ||
-      html.match(/<meta[^>]+property=["']og:url["'][^>]+content=["']([^"']+)["']/i)?.[1] ||
-      '';
+    /*
+     * The final response URL is extremely important.
+     *
+     * If the original link was:
+     * news.google.com/...
+     *
+     * but Google redirected to:
+     * punchng.com/...
+     *
+     * finalUrl will contain the publisher URL.
+     */
+    const finalHostname =
+      new URL(finalUrl).hostname.toLowerCase();
 
-    const canonicalUrl = canonical
-      ? new URL(canonical, link).href
-      : '';
+    const originalHostname =
+      new URL(link).hostname.toLowerCase();
 
-    const isGoogleNewsUrl =
-      new URL(link).hostname.includes('news.google.com');
+    const isGoogleNews =
+      originalHostname.includes('news.google.com');
 
-    const isPublisherUrl =
-      canonicalUrl &&
-      !new URL(canonicalUrl).hostname.includes('news.google.com');
+    const isPublisherPage =
+      !finalHostname.includes('news.google.com');
 
-    if (isGoogleNewsUrl && isPublisherUrl) {
-      const publisherImage = await extractArticleImage(canonicalUrl);
+    /*
+     * First try the page we reached.
+     */
+    if (isPublisherPage) {
+      const publisherImage =
+        extractImageUrl(html, finalUrl);
 
       if (publisherImage) {
         return publisherImage;
       }
     }
 
-    return image && !isGoogleNewsUrl ? image : '';
+    /*
+     * Sometimes Google News does not redirect cleanly.
+     *
+     * Try to find a canonical publisher URL.
+     */
+    const canonical =
+      extractMetaContent(
+        html,
+        'property',
+        'og:url'
+      ) ||
+      html.match(
+        /<link[^>]+rel=["'][^"']*\bcanonical\b[^"']*["'][^>]+href=["']([^"']+)["']/i
+      )?.[1] ||
+      '';
 
-  } catch (error) {
+    if (canonical && isGoogleNews) {
+      try {
+        const canonicalUrl =
+          new URL(canonical, finalUrl).href;
+
+        const canonicalHostname =
+          new URL(canonicalUrl).hostname.toLowerCase();
+
+        if (
+          !canonicalHostname.includes('news.google.com')
+        ) {
+          const canonicalImage =
+            await extractArticleImage(canonicalUrl);
+
+          if (canonicalImage) {
+            return canonicalImage;
+          }
+        }
+      } catch (error) {
+        /*
+         * Ignore malformed canonical URLs.
+         */
+      }
+    }
+
+    /*
+     * For a normal publisher RSS link, use the image
+     * directly from that page.
+     */
+    if (!isGoogleNews) {
+      const directImage =
+        extractImageUrl(html, finalUrl);
+
+      if (directImage) {
+        return directImage;
+      }
+    }
+
     return '';
+  } catch (error) {
+    /*
+     * Image fetching should NEVER break the news fetch.
+     */
+    console.warn(
+      `Could not fetch article image (${link}):`,
+      error.message
+    );
+
+    return '';
+  } finally {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
   }
 };
 
+/*
+ * Parse an RSS feed.
+ */
 const parseRssFeed = async (url) => {
   try {
     const response = await fetch(url, {
@@ -154,7 +484,9 @@ const parseRssFeed = async (url) => {
     const xml = await response.text();
 
     const items = [
-      ...xml.matchAll(/<item>([\s\S]*?)<\/item>/gi)
+      ...xml.matchAll(
+        /<item>([\s\S]*?)<\/item>/gi
+      )
     ];
 
     return items
@@ -163,14 +495,26 @@ const parseRssFeed = async (url) => {
 
         const title =
           normaliseText(
-            (chunk.match(/<title>([\s\S]*?)<\/title>/i) || [])[1] || ''
+            (
+              chunk.match(
+                /<title>([\s\S]*?)<\/title>/i
+              ) || []
+            )[1] || ''
           );
 
         const link =
-          (chunk.match(/<link>([\s\S]*?)<\/link>/i) || [])[1] || '';
+          (
+            chunk.match(
+              /<link>([\s\S]*?)<\/link>/i
+            ) || []
+          )[1] || '';
 
         const descriptionHtml =
-          (chunk.match(/<description>([\s\S]*?)<\/description>/i) || [])[1] || '';
+          (
+            chunk.match(
+              /<description>([\s\S]*?)<\/description>/i
+            ) || []
+          )[1] || '';
 
         const decodedDescription =
           decodeHtml(descriptionHtml);
@@ -179,14 +523,36 @@ const parseRssFeed = async (url) => {
           normaliseText(decodedDescription);
 
         const pubDate =
-          (chunk.match(/<pubDate>([\s\S]*?)<\/pubDate>/i) || [])[1] ||
+          (
+            chunk.match(
+              /<pubDate>([\s\S]*?)<\/pubDate>/i
+            ) || []
+          )[1] ||
           new Date().toISOString();
 
+        /*
+         * Try to get an image directly from RSS first.
+         */
         const image =
-          (chunk.match(/<media:content[^>]+url=["']([^"']+)["']/i) || [])[1] ||
-          (chunk.match(/<media:thumbnail[^>]+url=["']([^"']+)["']/i) || [])[1] ||
-          (chunk.match(/<enclosure[^>]+url=["']([^"']+)["']/i) || [])[1] ||
-          extractImageUrl(decodedDescription, url) ||
+          (
+            chunk.match(
+              /<media:content[^>]+url=["']([^"']+)["']/i
+            ) || []
+          )[1] ||
+          (
+            chunk.match(
+              /<media:thumbnail[^>]+url=["']([^"']+)["']/i
+            ) || []
+          )[1] ||
+          (
+            chunk.match(
+              /<enclosure[^>]+url=["']([^"']+)["']/i
+            ) || []
+          )[1] ||
+          extractImageUrl(
+            decodedDescription,
+            url
+          ) ||
           '';
 
         if (!title) {
@@ -194,11 +560,14 @@ const parseRssFeed = async (url) => {
         }
 
         const source =
-          new URL(url).hostname.replace('www.', '');
+          new URL(url).hostname
+            .replace('www.', '');
 
         const stableKey =
           Buffer
-            .from(`${source}:${link || title}`)
+            .from(
+              `${source}:${link || title}`
+            )
             .toString('base64url')
             .slice(0, 80);
 
@@ -207,9 +576,19 @@ const parseRssFeed = async (url) => {
           title,
           source,
           link: link || '#',
-          summary: description || title,
-          content: description || title,
-          image: isGooglePreviewImage(image) ? '' : image,
+          summary:
+            description || title,
+          content:
+            description || title,
+
+          /*
+           * Never keep Google's preview image.
+           */
+          image:
+            isGooglePreviewImage(image)
+              ? ''
+              : image,
+
           publishedAt: pubDate,
           category: 'World'
         };
@@ -226,10 +605,15 @@ const parseRssFeed = async (url) => {
   }
 };
 
+/*
+ * Scam detection.
+ */
 const scoreScam = (text = '') => {
-  const lower = String(text).toLowerCase();
+  const lower =
+    String(text).toLowerCase();
 
   let score = 0;
+
   const reasons = [];
 
   scamPatterns.forEach((pattern) => {
@@ -245,31 +629,44 @@ const scoreScam = (text = '') => {
     }
   });
 
-  if (/\b(urgent|immediately|today|now)\b/.test(lower)) {
+  if (
+    /\b(urgent|immediately|today|now)\b/.test(
+      lower
+    )
+  ) {
     score += 15;
   }
 
   if (
-    /(pay|send|transfer).*(bank|money|bitcoin|crypto|wallet)/i.test(lower)
+    /(pay|send|transfer).*(bank|money|bitcoin|crypto|wallet)/i.test(
+      lower
+    )
   ) {
     score += 20;
   }
 
   if (
-    /(claim|winner|lottery|gift|reward)/i.test(lower)
+    /(claim|winner|lottery|gift|reward)/i.test(
+      lower
+    )
   ) {
     score += 18;
   }
 
   return {
     score: Math.min(score, 100),
-    reasons: [...new Set(reasons)].slice(0, 5),
+
+    reasons: [
+      ...new Set(reasons)
+    ].slice(0, 5),
+
     risk:
       score >= 60
         ? 'high'
         : score >= 30
           ? 'medium'
           : 'low',
+
     label:
       score >= 60
         ? 'Scam alert'
@@ -279,16 +676,22 @@ const scoreScam = (text = '') => {
   };
 };
 
+/*
+ * Analyse and sanitize a story.
+ */
 const sanitizeStory = (story) => {
-  const scam = scoreScam(
-    `${story.title} ${story.summary} ${story.content}`
-  );
+  const scam =
+    scoreScam(
+      `${story.title} ${story.summary} ${story.content}`
+    );
 
   return {
     ...story,
 
-    // Low-risk stories can be shown publicly.
-    // Medium-risk stories remain pending for review.
+    /*
+     * Low-risk stories can be shown publicly.
+     * Medium/high-risk stories remain pending.
+     */
     status:
       scam.risk === 'low'
         ? 'approved'
@@ -298,24 +701,27 @@ const sanitizeStory = (story) => {
     scamRisk: scam.risk,
     scamLabel: scam.label,
     scamReasons: scam.reasons,
-    isScam: scam.risk === 'high'
+    isScam:
+      scam.risk === 'high'
   };
 };
 
 /*
- * Remove duplicate stories by BOTH ID and title.
- * This prevents Supabase from receiving the same
- * constrained ID more than once in one request.
+ * Remove duplicates by BOTH ID and title.
  */
 const dedupeStories = (stories = []) => {
   const seenIds = new Set();
   const seenTitles = new Set();
+
   const result = [];
 
   for (const story of stories) {
-    if (!story || !story.id) continue;
+    if (!story || !story.id) {
+      continue;
+    }
 
-    const idKey = String(story.id).trim();
+    const idKey =
+      String(story.id).trim();
 
     const titleKey =
       String(story.title || '')
@@ -327,7 +733,10 @@ const dedupeStories = (stories = []) => {
       continue;
     }
 
-    if (titleKey && seenTitles.has(titleKey)) {
+    if (
+      titleKey &&
+      seenTitles.has(titleKey)
+    ) {
       continue;
     }
 
@@ -343,6 +752,9 @@ const dedupeStories = (stories = []) => {
   return result;
 };
 
+/*
+ * Check whether a story is related to Ipapo/Oyo.
+ */
 const isLocalStory = (story) => {
   const text =
     `${story.title} ${story.summary} ${story.content}`;
@@ -352,31 +764,36 @@ const isLocalStory = (story) => {
   );
 };
 
+/*
+ * Fetch today's local stories.
+ */
 const fetchDailyStories = async () => {
-  const feeds = await Promise.all(
-    [...trustedSources, ...localSources].map(
-      parseRssFeed
-    )
-  );
+  const feeds =
+    await Promise.all(
+      [
+        ...trustedSources,
+        ...localSources
+      ].map(parseRssFeed)
+    );
 
   /*
-   * Only accept genuinely recent articles.
-   *
-   * This prevents old stories from 2022, 2025,
-   * etc. from appearing as current news.
-   *
-   * Current window: last 7 days.
+   * Only accept articles from the last 7 days.
    */
-  const now = Date.now();
+  const now =
+    Date.now();
 
   const recentStories =
     feeds
       .flat()
       .filter((story) => {
         const publishedTime =
-          new Date(story.publishedAt).getTime();
+          new Date(
+            story.publishedAt
+          ).getTime();
 
-        if (Number.isNaN(publishedTime)) {
+        if (
+          Number.isNaN(publishedTime)
+        ) {
           return false;
         }
 
@@ -385,24 +802,65 @@ const fetchDailyStories = async () => {
 
         return (
           age >= 0 &&
-          age <= 7 * 24 * 60 * 60 * 1000
+          age <=
+            7 *
+            24 *
+            60 *
+            60 *
+            1000
         );
       });
 
+  /*
+   * Remove duplicates and keep only
+   * local/Oyo-related stories.
+   */
   const merged =
     dedupeStories(recentStories)
       .filter(isLocalStory);
 
+  /*
+   * IMPORTANT:
+   *
+   * Fetch the actual publisher page for
+   * every story and attempt to retrieve
+   * the publisher's real image.
+   *
+   * If an image cannot be found, the story
+   * is still kept.
+   */
   const enriched =
     await Promise.all(
-      merged.map(async (story) => ({
-        ...story,
-        image:
-          await extractArticleImage(story.link) ||
-          story.image
-      }))
+      merged.map(async (story) => {
+        let articleImage = '';
+
+        try {
+          articleImage =
+            await extractArticleImage(
+              story.link
+            );
+        } catch (error) {
+          articleImage = '';
+        }
+
+        return {
+          ...story,
+
+          /*
+           * Publisher image first.
+           * RSS image second.
+           */
+          image:
+            articleImage ||
+            story.image ||
+            ''
+        };
+      })
     );
 
+  /*
+   * Set all fetched stories as Local.
+   */
   const analysed =
     enriched
       .map((story) => ({
@@ -412,12 +870,13 @@ const fetchDailyStories = async () => {
       .map(sanitizeStory);
 
   /*
-   * High-risk stories are not published publicly.
-   * They are still sent to the alert system below.
+   * High-risk stories are not publicly published.
+   * They still go into the alert system.
    */
   const cleaned =
     analysed.filter(
-      (story) => story.scamRisk !== 'high'
+      (story) =>
+        story.scamRisk !== 'high'
     );
 
   const existingState =
@@ -426,7 +885,10 @@ const fetchDailyStories = async () => {
   const existingStories =
     new Map(
       existingState.stories.map(
-        (story) => [story.id, story]
+        (story) => [
+          story.id,
+          story
+        ]
       )
     );
 
@@ -434,21 +896,22 @@ const fetchDailyStories = async () => {
     new Date().toISOString();
 
   /*
-   * Keep existing stories that already have a good
-   * image so the site does not unnecessarily lose
-   * useful article images.
+   * Keep existing stories that already have
+   * valid publisher images.
    */
   const retainedImageStories =
     existingState.stories.filter(
       (story) =>
         story.image &&
-        !isGooglePreviewImage(story.image) &&
+        !isGooglePreviewImage(
+          story.image
+        ) &&
         isLocalStory(story)
     );
 
   /*
-   * Combine newly fetched stories with retained
-   * stories, then remove duplicates.
+   * Combine newly fetched stories with
+   * existing stories that have useful images.
    */
   const candidateStories =
     dedupeStories([
@@ -457,31 +920,46 @@ const fetchDailyStories = async () => {
     ]);
 
   /*
-   * Put stories with images first and limit the
-   * collection to 20 stories.
+   * Put stories with actual images first.
    */
   const limitedStories =
     candidateStories
       .sort(
         (left, right) =>
-          Number(Boolean(right.image)) -
-          Number(Boolean(left.image))
+          Number(
+            Boolean(right.image)
+          ) -
+          Number(
+            Boolean(left.image)
+          )
       )
       .slice(0, 20);
 
   /*
-   * Final ID-only safety check immediately before
+   * Final ID-only safety check before
    * sending anything to Supabase.
    */
   const finalStories = [];
-  const finalIds = new Set();
 
-  for (const story of limitedStories) {
-    if (!story || !story.id) continue;
+  const finalIds =
+    new Set();
 
-    const id = String(story.id);
+  for (
+    const story of limitedStories
+  ) {
+    if (
+      !story ||
+      !story.id
+    ) {
+      continue;
+    }
 
-    if (finalIds.has(id)) {
+    const id =
+      String(story.id);
+
+    if (
+      finalIds.has(id)
+    ) {
       continue;
     }
 
@@ -490,34 +968,66 @@ const fetchDailyStories = async () => {
     finalStories.push({
       ...story,
 
+      /*
+       * Preserve an existing approved/pending
+       * status when the story already exists.
+       */
       status:
         existingStories.get(id)?.status ||
         story.status,
 
+      /*
+       * Preserve the original fetchedAt for
+       * existing stories.
+       */
       fetchedAt:
         existingStories.get(id)?.fetchedAt ||
         fetchedAt
     });
   }
 
+  /*
+   * Create scam alerts for medium/high-risk stories.
+   */
   const nextAlerts =
     analysed
       .filter(
-        (story) => story.scamRisk !== 'low'
+        (story) =>
+          story.scamRisk !== 'low'
       )
       .map((story) => ({
-        id: `alert-${story.id}`,
-        title: story.title,
-        risk: story.scamRisk,
-        score: story.scamScore,
-        reasons: story.scamReasons,
-        source: story.source,
+        id:
+          `alert-${story.id}`,
+
+        title:
+          story.title,
+
+        risk:
+          story.scamRisk,
+
+        score:
+          story.scamScore,
+
+        reasons:
+          story.scamReasons,
+
+        source:
+          story.source,
+
         createdAt:
           new Date().toISOString()
       }));
 
-  await saveStories(finalStories);
+  /*
+   * Save the final stories.
+   */
+  await saveStories(
+    finalStories
+  );
 
+  /*
+   * Save scam alerts.
+   */
   await saveAlerts(
     dedupeStories(nextAlerts)
   );
@@ -525,170 +1035,236 @@ const fetchDailyStories = async () => {
   return finalStories;
 };
 
-const getDailyStories = async (force = false) => {
-  const cache =
-    await getCache();
+/*
+ * Get daily stories.
+ */
+const getDailyStories =
+  async (force = false) => {
+    const cache =
+      await getCache();
 
-  const now =
-    Date.now();
+    const now =
+      Date.now();
 
-  const visibleStories =
-    dedupeStories(
-      cache.stories
-        .filter(
+    const visibleStories =
+      dedupeStories(
+        cache.stories.filter(
           (story) =>
-            !isGooglePreviewImage(story.image)
+            !isGooglePreviewImage(
+              story.image
+            )
         )
-    )
-      .sort(
-        (left, right) =>
-          Number(Boolean(right.image)) -
-          Number(Boolean(left.image))
-      );
+      )
+        .sort(
+          (left, right) =>
+            Number(
+              Boolean(right.image)
+            ) -
+            Number(
+              Boolean(left.image)
+            )
+        );
 
-  if (
-    !force &&
-    cache.generatedAt &&
-    (
-      now -
-      new Date(cache.generatedAt).getTime()
-    ) <
-    15 * 60 * 1000
-  ) {
-    return visibleStories;
-  }
+    /*
+     * Use the cache for 15 minutes unless
+     * force=true.
+     */
+    if (
+      !force &&
+      cache.generatedAt &&
+      (
+        now -
+        new Date(
+          cache.generatedAt
+        ).getTime()
+      ) <
+        15 *
+        60 *
+        1000
+    ) {
+      return visibleStories;
+    }
 
-  return fetchDailyStories();
-};
-
-const getScheduledGreeting = async (
-  date = new Date()
-) => {
-  const year =
-    date.getUTCFullYear();
-
-  const month =
-    date.getUTCMonth();
-
-  const day =
-    date.getUTCDate();
-
-  const dayOfWeek =
-    date.getUTCDay();
-
-  const isNewYear =
-    month === 0 && day === 1;
-
-  const isNewMonth =
-    day === 1;
-
-  const isNewWeek =
-    dayOfWeek === 1;
-
-  if (
-    !isNewYear &&
-    !isNewMonth &&
-    !isNewWeek
-  ) {
-    return null;
-  }
-
-  let period;
-  let title;
-  let message;
-
-  if (isNewYear) {
-    period = `year-${year}`;
-
-    title =
-      `Happy New Year from Ipapo Broadcast - ${year}`;
-
-    message =
-      `Wishing every Ipapo family, resident, and descendant a peaceful and prosperous ${year}.`;
-
-  } else if (isNewMonth) {
-    period =
-      `month-${year}-${String(month + 1).padStart(2, '0')}`;
-
-    title =
-      'Happy New Month from Ipapo Broadcast';
-
-    message =
-      'Welcome to a new month, Ipapo. May this month bring progress, good health, and stronger community connections.';
-
-  } else {
-    const monday =
-      new Date(
-        Date.UTC(
-          year,
-          month,
-          day - (dayOfWeek || 7) + 1
-        )
-      );
-
-    period =
-      `week-${monday.toISOString().slice(0, 10)}`;
-
-    title =
-      'Happy New Week from Ipapo Broadcast';
-
-    message =
-      'A new week begins across Ipapo and Itesiwaju. Stay informed, stay connected, and support one another.';
-  }
-
-  const id =
-    `announcement-${period}`;
-
-  const state =
-    await readState();
-
-  const existing =
-    state.stories.find(
-      (story) => story.id === id
-    );
-
-  if (existing) {
-    return existing;
-  }
-
-  const greeting = {
-    id,
-    title,
-    source: 'Ipapo Broadcast Editorial Desk',
-    link:
-      `/article.html?id=${encodeURIComponent(id)}`,
-    summary: message,
-    content: `<p>${message}</p>`,
-    image: 'img/ipapo_gateway.jpg',
-    publishedAt:
-      date.toISOString(),
-    category: 'Community',
-    status: 'approved',
-    scamScore: 0,
-    scamRisk: 'low',
-    scamLabel: 'Likely safe',
-    scamReasons: [],
-    isScam: false,
-    fetchedAt:
-      date.toISOString()
+    return fetchDailyStories();
   };
 
-  await saveStories([greeting]);
+/*
+ * Scheduled community greetings.
+ */
+const getScheduledGreeting =
+  async (
+    date = new Date()
+  ) => {
+    const year =
+      date.getUTCFullYear();
 
-  return greeting;
-};
+    const month =
+      date.getUTCMonth();
+
+    const day =
+      date.getUTCDate();
+
+    const dayOfWeek =
+      date.getUTCDay();
+
+    const isNewYear =
+      month === 0 &&
+      day === 1;
+
+    const isNewMonth =
+      day === 1;
+
+    const isNewWeek =
+      dayOfWeek === 1;
+
+    if (
+      !isNewYear &&
+      !isNewMonth &&
+      !isNewWeek
+    ) {
+      return null;
+    }
+
+    let period;
+    let title;
+    let message;
+
+    if (isNewYear) {
+      period =
+        `year-${year}`;
+
+      title =
+        `Happy New Year from Ipapo Broadcast - ${year}`;
+
+      message =
+        `Wishing every Ipapo family, resident, and descendant a peaceful and prosperous ${year}.`;
+
+    } else if (isNewMonth) {
+      period =
+        `month-${year}-${String(
+          month + 1
+        ).padStart(2, '0')}`;
+
+      title =
+        'Happy New Month from Ipapo Broadcast';
+
+      message =
+        'Welcome to a new month, Ipapo. May this month bring progress, good health, and stronger community connections.';
+
+    } else {
+      const monday =
+        new Date(
+          Date.UTC(
+            year,
+            month,
+            day -
+              (dayOfWeek || 7) +
+              1
+          )
+        );
+
+      period =
+        `week-${monday
+          .toISOString()
+          .slice(0, 10)}`;
+
+      title =
+        'Happy New Week from Ipapo Broadcast';
+
+      message =
+        'A new week begins across Ipapo and Itesiwaju. Stay informed, stay connected, and support one another.';
+    }
+
+    const id =
+      `announcement-${period}`;
+
+    const state =
+      await readState();
+
+    const existing =
+      state.stories.find(
+        (story) =>
+          story.id === id
+      );
+
+    if (existing) {
+      return existing;
+    }
+
+    const greeting = {
+      id,
+
+      title,
+
+      source:
+        'Ipapo Broadcast Editorial Desk',
+
+      link:
+        `/article.html?id=${encodeURIComponent(id)}`,
+
+      summary:
+        message,
+
+      content:
+        `<p>${message}</p>`,
+
+      image:
+        'img/ipapo_gateway.jpg',
+
+      publishedAt:
+        date.toISOString(),
+
+      category:
+        'Community',
+
+      status:
+        'approved',
+
+      scamScore:
+        0,
+
+      scamRisk:
+        'low',
+
+      scamLabel:
+        'Likely safe',
+
+      scamReasons:
+        [],
+
+      isScam:
+        false,
+
+      fetchedAt:
+        date.toISOString()
+    };
+
+    await saveStories([
+      greeting
+    ]);
+
+    return greeting;
+  };
 
 const updateStoryStatus =
   (storyId, status) =>
-    updateStory(storyId, status);
+    updateStory(
+      storyId,
+      status
+    );
 
 const getDailyNewsForUser =
   (userEmail = 'all') =>
-    getUnseenStories(userEmail);
+    getUnseenStories(
+      userEmail
+    );
 
 const markNewsSeenForUser =
   (userEmail, itemId) =>
-    markStorySeen(userEmail, itemId);
+    markStorySeen(
+      userEmail,
+      itemId
+    );
 
 module.exports = {
   fetchDailyStories,
