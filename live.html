@@ -763,84 +763,126 @@
 <script src="js/admin.js"></script>
 <script src="script.js"></script>
 
-
-<!-- =========================================================
-     LIVE RADIO + DAILY BULLETIN JAVASCRIPT
-========================================================== -->
-
 <script>
+(function () {
 
-    const mainPlayToggle =
-        document.getElementById('mainPlayToggle');
+    'use strict';
 
-    const playIcon =
-        document.getElementById('playIcon');
+    /* =========================================================
+       ELEMENTS
+    ========================================================= */
 
-    const playText =
-        document.getElementById('playText');
+    const mainPlayToggle = document.getElementById('mainPlayToggle');
+    const playIcon = document.getElementById('playIcon');
+    const playText = document.getElementById('playText');
+    const audioViz = document.getElementById('audioViz');
+    const liveAudio = document.getElementById('liveAudio');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const volumeValue = document.getElementById('volumeValue');
+    const radioStatus = document.getElementById('radioStatus');
 
-    const audioViz =
-        document.getElementById('audioViz');
+    const bulletinStatus = document.getElementById('bulletinStatus');
+    const bulletinStories = document.getElementById('bulletinStories');
+    const playBulletinBtn = document.getElementById('playBulletinBtn');
+    const stopBulletinBtn = document.getElementById('stopBulletinBtn');
 
-    const liveAudio =
-        document.getElementById('liveAudio');
 
-    const volumeSlider =
-        document.getElementById('volumeSlider');
+    /* =========================================================
+       SAFETY CHECK
+    ========================================================= */
 
-    const volumeValue =
-        document.getElementById('volumeValue');
+    if (!mainPlayToggle || !liveAudio) {
+        console.error('Ipapo Broadcast radio player elements not found.');
+        return;
+    }
 
-    const radioStatus =
-        document.getElementById('radioStatus');
 
-    const bulletinStatus =
-        document.getElementById('bulletinStatus');
+    /* =========================================================
+       ZENO FM STREAM
+       
+       HTTPS is intentionally used because your website is served
+       through HTTPS on Vercel.
+    ========================================================= */
 
-    const bulletinStories =
-        document.getElementById('bulletinStories');
+    const DEFAULT_STREAM_URL =
+        'https://stream.zeno.fm/8dxamh3bkg0uv';
 
-    const playBulletinBtn =
-        document.getElementById('playBulletinBtn');
 
-    const stopBulletinBtn =
-        document.getElementById('stopBulletinBtn');
+    /* =========================================================
+       DEVICE DETECTION
+    ========================================================= */
 
+    const userAgent =
+        navigator.userAgent || navigator.vendor || window.opera || '';
+
+    const isIOS =
+        /iPad|iPhone|iPod/.test(userAgent) ||
+        (
+            navigator.platform === 'MacIntel' &&
+            navigator.maxTouchPoints > 1
+        );
+
+    const isAndroid =
+        /Android/i.test(userAgent);
+
+    const isMobile =
+        isIOS || isAndroid ||
+        /Mobile|webOS|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+
+
+    console.log('Ipapo Radio device:', {
+        isIOS,
+        isAndroid,
+        isMobile,
+        userAgent
+    });
+
+
+    /* =========================================================
+       BULLETIN STATE
+    ========================================================= */
 
     let bulletinItems = [];
     let bulletinIndex = 0;
 
 
-    /* =====================================================
-       OKE-OGUN FM LIVE STREAM
+    /* =========================================================
+       PLAYER STATE
+    ========================================================= */
 
-       This is the Zeno stream associated with the
-       Oke-Ogun FM station.
-    ====================================================== */
+    let isRadioPlaying = false;
+    let isConnecting = false;
+    let retryCount = 0;
 
-    const defaultStreamUrl =
-        'https://stream.zeno.fm/8dxamh3bkg0uv';
+    const MAX_RETRIES = 3;
+
+    let retryTimer = null;
 
 
-    /*
-     * Allow an admin-configured stream if one exists.
-     * Otherwise use the verified default Oke-Ogun FM stream.
-     */
+    /* =========================================================
+       GET ADMIN STREAM
+    ========================================================= */
 
     let stationSettings = {};
 
     try {
 
-        stationSettings =
+        if (
             window.AdminController &&
             typeof window.AdminController.getSettings === 'function'
-                ? window.AdminController.getSettings()
-                : {};
+        ) {
+            stationSettings =
+                window.AdminController.getSettings() || {};
+        }
 
     } catch (error) {
 
-        stationSettings = {};
+        console.warn(
+            'Could not load admin radio settings:',
+            error
+        );
 
+        stationSettings = {};
     }
 
 
@@ -851,128 +893,580 @@
             : '';
 
 
-    liveAudio.src =
-        configuredStream || defaultStreamUrl;
+    const streamUrl =
+        configuredStream || DEFAULT_STREAM_URL;
 
+
+    console.log(
+        'Ipapo Broadcast radio stream:',
+        streamUrl
+    );
+
+
+    /* =========================================================
+       AUDIO CONFIGURATION
+    ========================================================= */
+
+    liveAudio.preload = 'none';
+
+    liveAudio.setAttribute(
+        'playsinline',
+        ''
+    );
+
+    liveAudio.setAttribute(
+        'webkit-playsinline',
+        ''
+    );
 
     liveAudio.volume =
-        Number(volumeSlider.value) / 100;
+        Number(volumeSlider?.value || 85) / 100;
 
 
-    volumeValue.textContent =
-        `${volumeSlider.value}%`;
+    if (volumeValue && volumeSlider) {
+
+        volumeValue.textContent =
+            `${volumeSlider.value}%`;
+
+    }
 
 
-    /* =====================================================
-       PLAYER STATE
-    ====================================================== */
+    /*
+     * Set the source once.
+     *
+     * We intentionally do NOT call play() automatically.
+     *
+     * Mobile Safari and many mobile browsers require the user
+     * to interact with the page before audio can begin.
+     */
 
-    const setPlayerState = (playing) => {
+    liveAudio.src = streamUrl;
 
-        playIcon.textContent =
-            playing ? '⏸' : '▶';
 
-        playText.textContent =
-            playing
-                ? 'Listening Now'
-                : 'Listen Live';
+    /* =========================================================
+       STATUS HELPER
+    ========================================================= */
 
-        audioViz.classList.toggle(
-            'paused',
-            !playing
+    function setStatus(message) {
+
+        if (radioStatus) {
+            radioStatus.textContent = message;
+        }
+
+    }
+
+
+    /* =========================================================
+       PLAYER UI
+    ========================================================= */
+
+    function updatePlayerUI(state) {
+
+        switch (state) {
+
+            case 'playing':
+
+                isRadioPlaying = true;
+                isConnecting = false;
+
+                playIcon.textContent = '⏸';
+
+                playText.textContent =
+                    'Listening Now';
+
+                audioViz.classList.remove(
+                    'paused'
+                );
+
+                mainPlayToggle.style.background =
+                    '#ffffff';
+
+                mainPlayToggle.style.color =
+                    '#111111';
+
+                setStatus(
+                    'Oke-Ogun FM is playing live'
+                );
+
+                break;
+
+
+            case 'connecting':
+
+                isConnecting = true;
+
+                playIcon.textContent =
+                    '⏳';
+
+                playText.textContent =
+                    'Connecting...';
+
+                audioViz.classList.add(
+                    'paused'
+                );
+
+                mainPlayToggle.style.background =
+                    'var(--primary)';
+
+                mainPlayToggle.style.color =
+                    '#111111';
+
+                setStatus(
+                    isMobile
+                        ? 'Connecting... please wait'
+                        : 'Connecting to Oke-Ogun FM...'
+                );
+
+                break;
+
+
+            case 'paused':
+
+                isRadioPlaying = false;
+                isConnecting = false;
+
+                playIcon.textContent =
+                    '▶';
+
+                playText.textContent =
+                    'Listen Live';
+
+                audioViz.classList.add(
+                    'paused'
+                );
+
+                mainPlayToggle.style.background =
+                    'var(--primary)';
+
+                mainPlayToggle.style.color =
+                    '#111111';
+
+                setStatus(
+                    'Ready to play'
+                );
+
+                break;
+
+
+            case 'buffering':
+
+                isConnecting = true;
+
+                playIcon.textContent =
+                    '⏳';
+
+                playText.textContent =
+                    'Buffering...';
+
+                audioViz.classList.add(
+                    'paused'
+                );
+
+                setStatus(
+                    'Buffering live radio...'
+                );
+
+                break;
+
+
+            case 'error':
+
+                isRadioPlaying = false;
+                isConnecting = false;
+
+                playIcon.textContent =
+                    '▶';
+
+                playText.textContent =
+                    'Try Again';
+
+                audioViz.classList.add(
+                    'paused'
+                );
+
+                mainPlayToggle.style.background =
+                    'var(--primary)';
+
+                mainPlayToggle.style.color =
+                    '#111111';
+
+                break;
+
+        }
+
+    }
+
+
+    /* =========================================================
+       TOAST HELPER
+    ========================================================= */
+
+    function toast(message, type = 'info') {
+
+        if (
+            typeof window.showToast ===
+            'function'
+        ) {
+
+            window.showToast(
+                message,
+                type
+            );
+
+        }
+
+    }
+
+
+    /* =========================================================
+       CLEAR RETRY TIMER
+    ========================================================= */
+
+    function clearRetryTimer() {
+
+        if (retryTimer) {
+
+            clearTimeout(
+                retryTimer
+            );
+
+            retryTimer = null;
+
+        }
+
+    }
+
+
+    /* =========================================================
+       LOAD STREAM
+    ========================================================= */
+
+    function loadStream() {
+
+        clearRetryTimer();
+
+        try {
+
+            liveAudio.pause();
+
+        } catch (error) {
+
+            console.warn(
+                'Audio pause warning:',
+                error
+            );
+
+        }
+
+
+        /*
+         * Reset the media element.
+         *
+         * This is useful when Safari or Android Chrome has
+         * entered a failed media state.
+         */
+
+        try {
+
+            liveAudio.removeAttribute(
+                'src'
+            );
+
+            liveAudio.load();
+
+            liveAudio.src =
+                streamUrl;
+
+            liveAudio.load();
+
+        } catch (error) {
+
+            console.error(
+                'Could not reload radio stream:',
+                error
+            );
+
+        }
+
+    }
+
+
+    /* =========================================================
+       START RADIO
+    ========================================================= */
+
+    async function startRadio() {
+
+        if (isConnecting) {
+            return;
+        }
+
+
+        if (!streamUrl) {
+
+            updatePlayerUI(
+                'error'
+            );
+
+            setStatus(
+                'Radio stream unavailable'
+            );
+
+            toast(
+                'The Oke-Ogun FM stream is unavailable.',
+                'info'
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * If audio is already playing, tapping the button pauses it.
+         */
+
+        if (!liveAudio.paused) {
+
+            liveAudio.pause();
+
+            return;
+
+        }
+
+
+        retryCount = 0;
+
+        updatePlayerUI(
+            'connecting'
         );
 
-        mainPlayToggle.style.background =
-            playing
-                ? '#fff'
-                : 'var(--primary)';
 
-        mainPlayToggle.style.color =
-            '#111';
+        try {
 
-        radioStatus.textContent =
-            playing
-                ? 'Oke-Ogun FM is playing live'
-                : 'Ready to play';
+            /*
+             * Important:
+             *
+             * play() happens directly inside the button click
+             * flow. This gives mobile browsers the user gesture
+             * they require for audio playback.
+             */
 
-    };
+            const playPromise =
+                liveAudio.play();
 
 
-    /* =====================================================
-       PLAY / PAUSE LIVE RADIO
-    ====================================================== */
+            if (
+                playPromise &&
+                typeof playPromise.then ===
+                'function'
+            ) {
+
+                await playPromise;
+
+            }
+
+
+            updatePlayerUI(
+                'playing'
+            );
+
+            toast(
+                'Connected to Oke-Ogun FM 96.3.',
+                'success'
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                'Radio playback failed:',
+                error
+            );
+
+
+            isRadioPlaying = false;
+            isConnecting = false;
+
+
+            /*
+             * AbortError generally means the media operation was
+             * interrupted. Don't immediately tell the user that
+             * the station is dead.
+             */
+
+            if (
+                error &&
+                error.name ===
+                'AbortError'
+            ) {
+
+                updatePlayerUI(
+                    'paused'
+                );
+
+                return;
+
+            }
+
+
+            /*
+             * NotAllowedError usually means the browser blocked
+             * autoplay. Since this function is triggered by a
+             * button tap, it should normally not happen here.
+             */
+
+            if (
+                error &&
+                error.name ===
+                'NotAllowedError'
+            ) {
+
+                updatePlayerUI(
+                    'error'
+                );
+
+                setStatus(
+                    'Tap Listen Live to start the radio'
+                );
+
+                toast(
+                    'Your browser blocked automatic audio. Tap Listen Live again.',
+                    'info'
+                );
+
+                return;
+
+            }
+
+
+            /*
+             * Network/media errors.
+             */
+
+            updatePlayerUI(
+                'error'
+            );
+
+            setStatus(
+                'Unable to connect to the live stream'
+            );
+
+
+            scheduleRetry();
+
+        }
+
+    }
+
+
+    /* =========================================================
+       RETRY STREAM
+    ========================================================= */
+
+    function scheduleRetry() {
+
+        if (
+            retryCount >=
+            MAX_RETRIES
+        ) {
+
+            updatePlayerUI(
+                'error'
+            );
+
+            setStatus(
+                'Radio unavailable — tap Try Again'
+            );
+
+            toast(
+                'The live stream could not be reached. Please try again.',
+                'info'
+            );
+
+            return;
+
+        }
+
+
+        retryCount++;
+
+
+        const delay =
+            retryCount * 2000;
+
+
+        setStatus(
+            `Reconnecting... attempt ${retryCount} of ${MAX_RETRIES}`
+        );
+
+
+        retryTimer =
+            setTimeout(
+                async () => {
+
+                    try {
+
+                        loadStream();
+
+                        updatePlayerUI(
+                            'connecting'
+                        );
+
+
+                        await liveAudio.play();
+
+
+                        retryCount = 0;
+
+                        updatePlayerUI(
+                            'playing'
+                        );
+
+
+                    } catch (error) {
+
+                        console.warn(
+                            `Radio retry ${retryCount} failed:`,
+                            error
+                        );
+
+                        scheduleRetry();
+
+                    }
+
+                },
+                delay
+            );
+
+    }
+
+
+    /* =========================================================
+       MAIN PLAY BUTTON
+    ========================================================= */
 
     mainPlayToggle.addEventListener(
         'click',
-        async () => {
-
-            if (!liveAudio.src) {
-
-                radioStatus.textContent =
-                    'Radio stream unavailable';
-
-                if (window.showToast) {
-
-                    window.showToast(
-                        'The Oke-Ogun FM stream is currently unavailable.',
-                        'info'
-                    );
-
-                }
-
-                return;
-            }
+        startRadio
+    );
 
 
-            if (!liveAudio.paused) {
+    /* =========================================================
+       AUDIO EVENTS
+    ========================================================= */
 
-                liveAudio.pause();
+    liveAudio.addEventListener(
+        'loadstart',
+        () => {
 
-                return;
-            }
+            if (
+                isConnecting &&
+                !isRadioPlaying
+            ) {
 
-
-            try {
-
-                radioStatus.textContent =
-                    'Connecting to Oke-Ogun FM...';
-
-
-                await liveAudio.play();
-
-
-                if (window.showToast) {
-
-                    window.showToast(
-                        'Connected to Oke-Ogun FM 96.3.',
-                        'success'
-                    );
-
-                }
-
-            } catch (error) {
-
-                setPlayerState(false);
-
-                radioStatus.textContent =
-                    'Radio unavailable';
-
-
-                if (window.showToast) {
-
-                    window.showToast(
-                        'The live radio stream is currently unavailable. You can use the Daily Bulletin below.',
-                        'info'
-                    );
-
-                }
-
-                await startBulletinFallback();
-
-
-                console.error(
-                    'Oke-Ogun FM playback failed:',
-                    error
+                setStatus(
+                    'Loading Oke-Ogun FM...'
                 );
 
             }
@@ -981,15 +1475,39 @@
     );
 
 
-    /* =====================================================
-       AUDIO EVENTS
-    ====================================================== */
-
     liveAudio.addEventListener(
-        'play',
+        'loadedmetadata',
         () => {
 
-            setPlayerState(true);
+            console.log(
+                'Radio metadata loaded.'
+            );
+
+        }
+    );
+
+
+    liveAudio.addEventListener(
+        'canplay',
+        () => {
+
+            console.log(
+                'Radio stream can play.'
+            );
+
+        }
+    );
+
+
+    liveAudio.addEventListener(
+        'playing',
+        () => {
+
+            retryCount = 0;
+
+            updatePlayerUI(
+                'playing'
+            );
 
         }
     );
@@ -999,7 +1517,55 @@
         'pause',
         () => {
 
-            setPlayerState(false);
+            if (
+                !liveAudio.ended
+            ) {
+
+                updatePlayerUI(
+                    'paused'
+                );
+
+            }
+
+        }
+    );
+
+
+    liveAudio.addEventListener(
+        'waiting',
+        () => {
+
+            if (
+                !liveAudio.paused
+            ) {
+
+                updatePlayerUI(
+                    'buffering'
+                );
+
+            }
+
+        }
+    );
+
+
+    liveAudio.addEventListener(
+        'stalled',
+        () => {
+
+            console.warn(
+                'Radio stream stalled.'
+            );
+
+            if (
+                !liveAudio.paused
+            ) {
+
+                setStatus(
+                    'Connection interrupted...'
+                );
+
+            }
 
         }
     );
@@ -1009,245 +1575,320 @@
         'error',
         () => {
 
-            setPlayerState(false);
-
-            radioStatus.textContent =
-                'Radio stream unavailable';
-
-
-            if (window.showToast) {
-
-                window.showToast(
-                    'Oke-Ogun FM live stream is unavailable right now. Try again later or use the Daily Bulletin.',
-                    'info'
-                );
-
-            }
-
-        }
-    );
-
-
-    /* =====================================================
-       VOLUME CONTROL
-    ====================================================== */
-
-    volumeSlider.addEventListener(
-        'input',
-        () => {
-
-            const volume =
-                Number(volumeSlider.value);
-
-            liveAudio.volume =
-                volume / 100;
-
-            volumeValue.textContent =
-                `${volume}%`;
-
-        }
-    );
-
-
-    /* =====================================================
-       DAILY LOCAL NEWS BULLETIN
-    ====================================================== */
-
-    const loadLocalBulletin = async () => {
-
-        try {
-
-            const apiPath =
-                '/api/fetch-news';
-
-
-            const response =
-                await fetch(
-                    (window.ipapoApiUrl ||
-                        (path => path))(apiPath),
-                    {
-                        cache: 'no-store'
-                    }
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    'News feed unavailable'
-                );
-
-            }
-
-
-            const payload =
-                await response.json();
-
-
-            bulletinItems =
-                (payload.stories || [])
-                    .filter(
-                        story =>
-                            /ipapo|itesiwaju|oyo/i.test(
-                                `${story.title} ${story.summary || ''}`
-                            )
-                    )
-                    .slice(0, 5);
-
-
-            bulletinStories.innerHTML =
-                bulletinItems.length
-
-                    ? bulletinItems
-                        .map(
-                            (story, index) => `
-
-                            <div
-                                style="
-                                    padding:12px 14px;
-                                    border-left:3px solid var(--primary);
-                                    background:rgba(255,204,0,.06);
-                                    color:#e2e8f0;
-                                    font-size:13px;
-                                ">
-
-                                <strong>
-                                    ${index + 1}. ${story.title}
-                                </strong>
-
-                                <small
-                                    style="
-                                        display:block;
-                                        color:#94a3b8;
-                                        margin-top:4px;
-                                    ">
-
-                                    ${story.source || 'Local news desk'}
-
-                                </small>
-
-                            </div>
-
-                        `
-                        )
-                        .join('')
-
-                    : `
-                        <p
-                            style="
-                                color:#94a3b8;
-                                font-size:13px;
-                            ">
-
-                            No local bulletin stories are available right now.
-
-                        </p>
-                    `;
-
-
-            bulletinStatus.textContent =
-                bulletinItems.length
-                    ? 'Ready'
-                    : 'No stories';
-
-
-        } catch (error) {
-
-            bulletinStatus.textContent =
-                'Unavailable';
-
-
-            bulletinStories.innerHTML = `
-                <p
-                    style="
-                        color:#fca5a5;
-                        font-size:13px;
-                    ">
-
-                    The local news feed could not be reached.
-
-                </p>
-            `;
+            const mediaError =
+                liveAudio.error;
 
 
             console.error(
-                'Daily bulletin error:',
-                error
-            );
-
-        }
-
-    };
-
-
-    /* =====================================================
-       TEXT-TO-SPEECH BULLETIN
-    ====================================================== */
-
-    const speakNextBulletin = () => {
-
-        if (
-            bulletinIndex >=
-            bulletinItems.length
-        ) {
-
-            bulletinStatus.textContent =
-                'Ready';
-
-            return;
-
-        }
-
-
-        const story =
-            bulletinItems[
-                bulletinIndex++
-            ];
-
-
-        const utterance =
-            new SpeechSynthesisUtterance(
-                `Ipapo and Itesiwaju news. ${story.title}. ${story.summary || ''}`
+                'Radio media error:',
+                mediaError
             );
 
 
-        utterance.rate =
-            0.92;
+            if (
+                mediaError
+            ) {
+
+                console.error(
+                    'Media error code:',
+                    mediaError.code
+                );
+
+                console.error(
+                    'Media error message:',
+                    mediaError.message
+                );
+
+            }
 
 
-        utterance.onstart =
+            if (
+                !liveAudio.paused
+            ) {
+
+                updatePlayerUI(
+                    'error'
+                );
+
+            }
+
+
+            setStatus(
+                'Radio stream interrupted'
+            );
+
+        }
+    );
+
+
+    /* =========================================================
+       VOLUME
+    ========================================================= */
+
+    if (volumeSlider) {
+
+        volumeSlider.addEventListener(
+            'input',
             () => {
 
-                bulletinStatus.textContent =
-                    `Reading ${bulletinIndex} of ${bulletinItems.length}`;
-
-            };
-
-
-        utterance.onend =
-            speakNextBulletin;
+                const volume =
+                    Number(
+                        volumeSlider.value
+                    );
 
 
-        utterance.onerror =
-            () => {
-
-                bulletinStatus.textContent =
-                    'Bulletin stopped';
-
-            };
+                liveAudio.volume =
+                    volume / 100;
 
 
-        window.speechSynthesis.speak(
-            utterance
+                if (volumeValue) {
+
+                    volumeValue.textContent =
+                        `${volume}%`;
+
+                }
+
+            }
         );
 
-    };
+    }
+
+
+    /* =========================================================
+       PAGE VISIBILITY
+       
+       We DO NOT automatically start playback when the user
+       returns to the page. This avoids mobile autoplay problems.
+    ========================================================= */
+
+    document.addEventListener(
+        'visibilitychange',
+        () => {
+
+            if (
+                document.visibilityState ===
+                'visible'
+            ) {
+
+                console.log(
+                    'Ipapo Radio page visible.'
+                );
+
+            }
+
+        }
+    );
+
+
+    /* =========================================================
+       DAILY LOCAL BULLETIN
+    ========================================================= */
+
+    const loadLocalBulletin =
+        async () => {
+
+            try {
+
+                const apiPath =
+                    '/api/fetch-news';
+
+
+                const response =
+                    await fetch(
+                        (
+                            window.ipapoApiUrl ||
+                            (path => path)
+                        )(apiPath),
+                        {
+                            cache: 'no-store'
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        'News feed unavailable'
+                    );
+
+                }
+
+
+                const payload =
+                    await response.json();
+
+
+                bulletinItems =
+                    (payload.stories || [])
+                        .filter(
+                            story =>
+                                /ipapo|itesiwaju|oyo/i.test(
+                                    `${story.title} ${story.summary || ''}`
+                                )
+                        )
+                        .slice(0, 5);
+
+
+                bulletinStories.innerHTML =
+                    bulletinItems.length
+
+                        ? bulletinItems
+                            .map(
+                                (story, index) => `
+
+                                <div
+                                    style="
+                                        padding:12px 14px;
+                                        border-left:3px solid var(--primary);
+                                        background:rgba(255,204,0,.06);
+                                        color:#e2e8f0;
+                                        font-size:13px;
+                                    ">
+
+                                    <strong>
+                                        ${index + 1}. ${story.title}
+                                    </strong>
+
+                                    <small
+                                        style="
+                                            display:block;
+                                            color:#94a3b8;
+                                            margin-top:4px;
+                                        ">
+
+                                        ${story.source || 'Local news desk'}
+
+                                    </small>
+
+                                </div>
+
+                            `
+                            )
+                            .join('')
+
+                        : `
+
+                            <p
+                                style="
+                                    color:#94a3b8;
+                                    font-size:13px;
+                                ">
+
+                                No local bulletin stories are available right now.
+
+                            </p>
+
+                        `;
+
+
+                bulletinStatus.textContent =
+                    bulletinItems.length
+                        ? 'Ready'
+                        : 'No stories';
+
+
+            } catch (error) {
+
+                bulletinStatus.textContent =
+                    'Unavailable';
+
+
+                bulletinStories.innerHTML = `
+
+                    <p
+                        style="
+                            color:#fca5a5;
+                            font-size:13px;
+                        ">
+
+                        The local news feed could not be reached.
+
+                    </p>
+
+                `;
+
+
+                console.error(
+                    'Daily bulletin error:',
+                    error
+                );
+
+            }
+
+        };
+
+
+    /* =========================================================
+       TEXT-TO-SPEECH BULLETIN
+    ========================================================= */
+
+    const speakNextBulletin =
+        () => {
+
+            if (
+                bulletinIndex >=
+                bulletinItems.length
+            ) {
+
+                bulletinStatus.textContent =
+                    'Ready';
+
+                return;
+
+            }
+
+
+            const story =
+                bulletinItems[
+                    bulletinIndex++
+                ];
+
+
+            const utterance =
+                new SpeechSynthesisUtterance(
+                    `Ipapo and Itesiwaju news. ${story.title}. ${story.summary || ''}`
+                );
+
+
+            utterance.rate =
+                0.92;
+
+
+            utterance.onstart =
+                () => {
+
+                    bulletinStatus.textContent =
+                        `Reading ${bulletinIndex} of ${bulletinItems.length}`;
+
+                };
+
+
+            utterance.onend =
+                speakNextBulletin;
+
+
+            utterance.onerror =
+                () => {
+
+                    bulletinStatus.textContent =
+                        'Bulletin stopped';
+
+                };
+
+
+            window.speechSynthesis.speak(
+                utterance
+            );
+
+        };
 
 
     const startBulletinFallback =
         async () => {
 
-            if (!bulletinItems.length) {
+            if (
+                !bulletinItems.length
+            ) {
 
                 await loadLocalBulletin();
 
@@ -1266,46 +1907,53 @@
 
             window.speechSynthesis.cancel();
 
-
-            bulletinIndex =
-                0;
-
+            bulletinIndex = 0;
 
             speakNextBulletin();
 
         };
 
 
-    playBulletinBtn.addEventListener(
-        'click',
-        async () => {
+    if (playBulletinBtn) {
 
-            await startBulletinFallback();
+        playBulletinBtn.addEventListener(
+            'click',
+            async () => {
 
-        }
-    );
-
-
-    stopBulletinBtn.addEventListener(
-        'click',
-        () => {
-
-            if ('speechSynthesis' in window) {
-
-                window.speechSynthesis.cancel();
+                await startBulletinFallback();
 
             }
+        );
 
-            bulletinStatus.textContent =
-                'Stopped';
-
-        }
-    );
+    }
 
 
-    /* =====================================================
+    if (stopBulletinBtn) {
+
+        stopBulletinBtn.addEventListener(
+            'click',
+            () => {
+
+                if (
+                    'speechSynthesis' in window
+                ) {
+
+                    window.speechSynthesis.cancel();
+
+                }
+
+                bulletinStatus.textContent =
+                    'Stopped';
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
        ARCHIVE BUTTONS
-    ====================================================== */
+    ========================================================= */
 
     document
         .querySelectorAll('.archive-play-btn')
@@ -1316,14 +1964,11 @@
                     'click',
                     () => {
 
-                        if (window.showToast) {
+                        toast(
+                            'Archived recordings will be available when audio files are added.',
+                            'info'
+                        );
 
-                            window.showToast(
-                                'Archived recordings will be available when audio files are added.',
-                                'info'
-                            );
-
-                        }
 
                         mainPlayToggle.scrollIntoView({
                             behavior: 'smooth',
@@ -1337,10 +1982,35 @@
         );
 
 
+    /* =========================================================
+       INITIAL STATE
+       
+       IMPORTANT:
+       Do not autoplay the radio here.
+    ========================================================= */
+
+    updatePlayerUI(
+        'paused'
+    );
+
+
+    setStatus(
+        isMobile
+            ? 'Tap Listen Live to start'
+            : 'Ready to play'
+    );
+
+
+    /*
+     * Load the bulletin, but NEVER start the radio automatically.
+     */
 
     loadLocalBulletin();
 
+
+})();
 </script>
+
 
 </body>
 </html>
