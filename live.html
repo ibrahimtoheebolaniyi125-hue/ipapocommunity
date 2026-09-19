@@ -169,6 +169,21 @@
             margin-top: 18px;
         }
 
+        .audio-test-note {
+            margin-top: 12px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: rgba(255, 204, 0, 0.06);
+            border: 1px solid rgba(255, 204, 0, 0.12);
+            color: #cbd5e1;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .audio-test-note strong {
+            color: var(--primary);
+        }
+
         @keyframes radioPulse {
             0%, 100% {
                 transform: scale(1);
@@ -290,7 +305,7 @@
 <main class="live-stream-container">
 
     <!-- =====================================================
-         MAIN LIVE RADIO SECTION
+         MAIN AUDIO COMPATIBILITY TEST
     ====================================================== -->
 
     <div class="live-hero-card">
@@ -322,16 +337,14 @@
                 "
             >
                 We are testing a normal MP3 audio file hosted directly
-                inside the Ipapo Broadcast website. This helps us
-                confirm that audio playback works correctly on Android,
-                iPhone, laptop and desktop before reconnecting the
-                live radio stream.
+                inside the Ipapo Broadcast website. This confirms that
+                audio playback works correctly on Android, iPhone,
+                laptop and desktop before we reconnect the live radio
+                stream.
             </p>
 
 
-            <!-- =================================================
-                 AUDIO VISUALIZER
-            ================================================== -->
+            <!-- AUDIO VISUALIZER -->
 
             <div class="audio-visualizer paused" id="audioViz">
 
@@ -347,9 +360,7 @@
             </div>
 
 
-            <!-- =================================================
-                 RADIO PLAYER
-            ================================================== -->
+            <!-- RADIO PLAYER -->
 
             <div class="radio-player-card">
 
@@ -375,7 +386,7 @@
                         </h3>
 
                         <p>
-                            double.mp3 • Mobile & Laptop Compatibility Test
+                            Double.mp3 • Mobile & Laptop Compatibility Test
                         </p>
 
                     </div>
@@ -409,10 +420,12 @@
 
 
                     <!-- =================================================
-                         LOCAL MP3 FILE
+                         IMPORTANT AUDIO FILE
 
-                         IMPORTANT:
-                         double.mp3 is inside the audio folder.
+                         EXACT FILE:
+                         audio/Double.mp3
+
+                         The capital D MUST match the real filename.
                     ================================================== -->
 
                     <audio
@@ -425,13 +438,28 @@
                     >
 
                         <source
-                            src="audio/double.mp3"
+                            src="audio/Double.mp3"
                             type="audio/mpeg"
                         >
 
                         Your browser does not support HTML5 audio.
 
                     </audio>
+
+
+                    <div class="audio-test-note">
+
+                        <strong>Test file:</strong>
+                        audio/Double.mp3
+
+                        <br>
+
+                        If this file plays on your phone,
+                        the website's mobile audio system is working.
+                        We will then replace this test file with the
+                        real Oke-Ogun FM 96.3 stream.
+
+                    </div>
 
 
                     <div class="radio-volume">
@@ -470,7 +498,7 @@
                 <div class="radio-station-info">
 
                     <span>
-                        🎵 audio/double.mp3
+                        🎵 audio/Double.mp3
                     </span>
 
                     <span>
@@ -594,7 +622,7 @@
                     </span>
 
                     <strong>
-                        Local audio/double.mp3 audio
+                        Local audio/Double.mp3 audio
                     </strong>
 
                 </li>
@@ -1019,6 +1047,11 @@
 
 </footer>
 
+
+<!-- =========================================================
+     EXISTING PROJECT SCRIPTS
+========================================================== -->
+
 <script src="js/api-config.js"></script>
 <script src="js/news.js"></script>
 <script src="js/dashboard.js"></script>
@@ -1031,6 +1064,10 @@
 
     'use strict';
 
+
+    /* =========================================================
+       ELEMENTS
+    ========================================================= */
 
     const mainPlayToggle =
         document.getElementById('mainPlayToggle');
@@ -1108,7 +1145,7 @@
 
 
     console.log(
-        'Ipapo audio test device:',
+        'Ipapo Broadcast audio test device:',
         {
             isIOS,
             isAndroid,
@@ -1150,10 +1187,16 @@
     );
 
 
-    liveAudio.volume =
-        Number(
-            volumeSlider?.value || 85
-        ) / 100;
+    if (volumeSlider) {
+
+        liveAudio.volume =
+            Number(volumeSlider.value) / 100;
+
+    } else {
+
+        liveAudio.volume = 0.85;
+
+    }
 
 
     if (volumeValue && volumeSlider) {
@@ -1165,22 +1208,29 @@
 
 
     /* =========================================================
-       LOCAL MP3 FILE
-
        IMPORTANT:
-       double.mp3 is inside the audio folder.
+       THE REAL FILE IS audio/Double.mp3
     ========================================================= */
 
     const TEST_MUSIC_URL =
-        'audio/double.mp3';
+        'audio/Double.mp3';
 
+
+    /*
+     * Set the source using JavaScript as well.
+     * This guarantees the player uses the same exact
+     * filename and capitalization.
+     */
 
     liveAudio.src =
         TEST_MUSIC_URL;
 
 
+    liveAudio.load();
+
+
     console.log(
-        'Ipapo Broadcast LOCAL TEST MUSIC:',
+        'Ipapo Broadcast test music:',
         TEST_MUSIC_URL
     );
 
@@ -1266,7 +1316,7 @@
                     true;
 
                 setStatus(
-                    'Loading audio/double.mp3...'
+                    'Loading audio/Double.mp3...'
                 );
 
                 break;
@@ -1332,7 +1382,7 @@
                     false;
 
                 setStatus(
-                    'Unable to load audio/double.mp3'
+                    'Unable to load audio/Double.mp3'
                 );
 
                 break;
@@ -1377,6 +1427,10 @@
         }
 
 
+        /*
+         * If currently playing, pause.
+         */
+
         if (!liveAudio.paused) {
 
             liveAudio.pause();
@@ -1394,8 +1448,19 @@
         try {
 
             /*
-             * play() is called directly
-             * from the user's tap/click.
+             * Reset the source before retrying.
+             * This helps after a failed mobile attempt.
+             */
+
+            liveAudio.src =
+                TEST_MUSIC_URL;
+
+            liveAudio.load();
+
+
+            /*
+             * play() is called directly from
+             * the user's tap/click.
              */
 
             const playPromise =
@@ -1412,6 +1477,12 @@
 
             }
 
+
+            /*
+             * The "playing" event will also update
+             * the UI, but we update immediately here
+             * after a successful play promise.
+             */
 
             updatePlayerUI(
                 'playing'
@@ -1466,12 +1537,12 @@
 
 
             setStatus(
-                'Could not load audio/double.mp3'
+                'Could not load audio/Double.mp3'
             );
 
 
             toast(
-                'Could not load audio/double.mp3.',
+                'Could not load audio/Double.mp3.',
                 'info'
             );
 
@@ -1499,7 +1570,7 @@
         () => {
 
             console.log(
-                'Local audio loading...'
+                'Double.mp3 loading...'
             );
 
         }
@@ -1511,12 +1582,16 @@
         () => {
 
             console.log(
-                'double.mp3 metadata loaded.'
+                'Double.mp3 metadata loaded.'
             );
 
             console.log(
                 'Audio duration:',
                 liveAudio.duration
+            );
+
+            setStatus(
+                'Audio file found — tap Play Test Music'
             );
 
         }
@@ -1528,7 +1603,7 @@
         () => {
 
             console.log(
-                'double.mp3 can play.'
+                'Double.mp3 can play.'
             );
 
             if (!isAudioPlaying) {
@@ -1594,7 +1669,7 @@
             if (!liveAudio.paused) {
 
                 setStatus(
-                    'Buffering audio/double.mp3...'
+                    'Buffering audio/Double.mp3...'
                 );
 
             }
@@ -1608,7 +1683,7 @@
         () => {
 
             console.warn(
-                'double.mp3 playback stalled.'
+                'Double.mp3 playback stalled.'
             );
 
         }
