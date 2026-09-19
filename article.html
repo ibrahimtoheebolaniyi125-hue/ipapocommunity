@@ -181,16 +181,71 @@
                 return;
             }
 
-            const currentUser = window.AuthService ? window.AuthService.getCurrentUser() : null;
-            if (currentUser) {
-                fetch('/api/news/seen', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: currentUser.email, storyId: article.id })
-                }).catch(() => {
-                    window.NewsService.markNewsSeenForUser(currentUser.email, article.id);
-                });
-            }
+           /* =========================================================
+   MARK ARTICLE AS SEEN
+   Works for visitors without login/authentication.
+========================================================= */
+
+function getVisitorId() {
+    let visitorId = localStorage.getItem(
+        'ipapo_broadcast_visitor_id'
+    );
+
+    if (!visitorId) {
+        if (
+            window.crypto &&
+            typeof window.crypto.randomUUID === 'function'
+        ) {
+            visitorId =
+                'visitor-' +
+                window.crypto.randomUUID();
+        } else {
+            visitorId =
+                'visitor-' +
+                Date.now() +
+                '-' +
+                Math.random()
+                    .toString(36)
+                    .substring(2, 10);
+        }
+
+        localStorage.setItem(
+            'ipapo_broadcast_visitor_id',
+            visitorId
+        );
+    }
+
+    return visitorId;
+}
+
+
+const visitorId = getVisitorId();
+
+fetch('/api/news?action=seen', {
+    method: 'POST',
+
+    headers: {
+        'Content-Type': 'application/json'
+    },
+
+    body: JSON.stringify({
+        visitorId: visitorId,
+        storyId: article.id
+    })
+})
+    .then(response => response.json())
+    .then(data => {
+        console.log(
+            'Article marked as seen:',
+            data
+        );
+    })
+    .catch(error => {
+        console.warn(
+            'Could not mark article as seen:',
+            error
+        );
+    });
 
             document.title = `${article.title} | Ipapo Broadcast`;
             document.getElementById('articleMainTitle').textContent = article.title;

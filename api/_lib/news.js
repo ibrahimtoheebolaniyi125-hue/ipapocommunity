@@ -1,128 +1,50 @@
-'use strict';
-
-/**
- * Ipapo Broadcast - News Fetching Engine
- *
- * Responsibilities:
- * - Fetch real news from trusted RSS feeds
- * - Search for Ipapo / Itesiwaju / Oyo-related stories
- * - Extract real publisher images from RSS
- * - Match Google News stories to direct publisher RSS
- * - Try WordPress REST API for featured images
- * - Detect possible scam/fraud stories
- * - Remove duplicates
- * - Return clean daily stories
- *
- * Performance protections:
- * - Publisher RSS requests are cached, including in-flight requests
- * - Image enrichment is limited to recent stories
- * - Image enrichment has a timeout
- * - Failed image requests never stop the news fetch
- */
-
-const crypto = require('crypto');
-
-/* =========================================================
-   CONFIGURATION
-========================================================= */
-
-const REQUEST_TIMEOUT = 15000;
-const IMAGE_REQUEST_TIMEOUT = 10000;
-const IMAGE_ENRICHMENT_TIMEOUT = 12000;
-
-const MAX_STORIES = 50;
-
-/**
- * Only attempt expensive image lookups for the newest
- * stories. Stories that already contain RSS images do not
- * need enrichment.
- */
-const MAX_IMAGE_ENRICHMENT_STORIES = 15;
-
-/**
- * Number of image lookups allowed at the same time.
- */
-const IMAGE_BATCH_SIZE = 3;
-
-/* =========================================================
-   TRUSTED FEEDS
-========================================================= */
-
 const trustedFeeds = [
   {
-    url: 'https://www.aljazeera.com/xml/rss/all.xml',
-    name: 'Al Jazeera'
+    name: 'Al Jazeera',
+    url: 'https://www.aljazeera.com/xml/rss/all.xml'
   },
   {
-    url: 'https://feeds.bbci.co.uk/news/world/africa/rss.xml',
-    name: 'BBC'
+    name: 'BBC Africa',
+    url: 'https://feeds.bbci.co.uk/news/world/africa/rss.xml'
   },
   {
-    url: 'https://tribuneonlineng.com/feed/',
-    name: 'Tribune Online'
-  },
-  {
-    url: 'https://punchng.com/feed/',
-    name: 'Punch Newspapers'
-  },
-  {
-    url: 'https://guardian.ng/feed/',
-    name: 'Guardian Nigeria'
-  }
-];
-
-/* =========================================================
-   LOCAL GOOGLE NEWS FEEDS
-========================================================= */
-
-const localFeeds = [
-  {
-    url:
-      'https://news.google.com/rss/search?q=Ipapo%20Oyo%20Nigeria&hl=en-NG&gl=NG&ceid=NG:en',
-    name: 'Google News - Ipapo'
-  },
-  {
-    url:
-      'https://news.google.com/rss/search?q=Itesiwaju%20Oyo%20Nigeria&hl=en-NG&gl=NG&ceid=NG:en',
-    name: 'Google News - Itesiwaju'
-  },
-  {
-    url:
-      'https://news.google.com/rss/search?q=Oyo%20State%20Nigeria&hl=en-NG&gl=NG&ceid=NG:en',
-    name: 'Google News - Oyo State'
-  }
-];
-
-/* =========================================================
-   PUBLISHER RSS FEEDS
-========================================================= */
-
-const publisherRssFeeds = [
-  {
-    domain: 'tribuneonlineng.com',
     name: 'Tribune Online',
     url: 'https://tribuneonlineng.com/feed/'
   },
   {
-    domain: 'punchng.com',
-    name: 'Punch Newspapers',
+    name: 'Punch',
     url: 'https://punchng.com/feed/'
   },
   {
-    domain: 'guardian.ng',
     name: 'Guardian Nigeria',
     url: 'https://guardian.ng/feed/'
-  },
-  {
-    domain: 'oyoinsight.com',
-    name: 'OyoInsight',
-    url: 'https://oyoinsight.com/feed/'
   }
 ];
 
-/* =========================================================
-   LOCAL KEYWORDS
-========================================================= */
+const localFeeds = [
+  {
+    name: 'Google News - Ipapo',
+    url: 'https://news.google.com/rss/search?q=Ipapo+Oyo+Nigeria&hl=en-NG&gl=NG&ceid=NG:en'
+  },
+  {
+    name: 'Google News - Itesiwaju',
+    url: 'https://news.google.com/rss/search?q=Itesiwaju+Oyo+Nigeria&hl=en-NG&gl=NG&ceid=NG:en'
+  },
+  {
+    name: 'Google News - Oyo State',
+    url: 'https://news.google.com/rss/search?q=Oyo+State+Nigeria&hl=en-NG&gl=NG&ceid=NG:en'
+  }
+];
+
+/*
+ * Ipapo Broadcast fallback image.
+ *
+ * IMPORTANT:
+ * Every news story will use this image.
+ * Publisher/PUNCH images are intentionally
+ * NOT used.
+ */
+const FALLBACK_IMAGE = '/img/broadcast.jpeg';
 
 const localKeywords = [
   'ipapo',
@@ -133,7 +55,6 @@ const localKeywords = [
   'oyo',
   'saki',
   'saki west',
-  'saki west local government',
   'saki east',
   'iwajowa',
   'kajola',
@@ -148,479 +69,295 @@ const localKeywords = [
   'oyo police',
   'oyo amotekun',
   'oyo government',
-  'oyo govt'
+  'oyo govt',
+  'makinde'
 ];
 
-/* =========================================================
-   SCAM / FRAUD PATTERNS
-========================================================= */
+/*
+ * Number of stories displayed.
+ */
+const MAX_STORIES = 15;
 
-const scamPatterns = [
-  /send\s+money/i,
-  /send\s+funds/i,
-  /pay\s+now/i,
-  /urgent\s+payment/i,
-  /claim\s+your\s+money/i,
-  /claim\s+now/i,
-  /free\s+money/i,
-  /guaranteed\s+cash/i,
-  /investment\s+opportunity/i,
-  /double\s+your\s+money/i,
-  /crypto\s+giveaway/i,
-  /airdrop/i,
-  /account\s+will\s+be\s+blocked/i,
-  /verify\s+your\s+account/i,
-  /send\s+your\s+otp/i,
-  /share\s+your\s+otp/i,
-  /give\s+us\s+your\s+password/i,
-  /whatsapp\s+number/i,
-  /bank\s+details/i,
-  /account\s+details/i,
-  /loan\s+approval\s+fee/i,
-  /registration\s+fee/i,
-  /processing\s+fee/i
-];
-
-/* =========================================================
-   BASIC HELPERS
-========================================================= */
+let publisherFeedCache = new Map();
 
 function cleanText(value) {
-  return String(value || '')
-    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/gi, '$1')
-    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
+  if (!value) return '';
 
-function decodeEntities(value) {
-  return String(value || '')
+  return String(value)
+    .replace(/<!\[CDATA\[/gi, '')
+    .replace(/\]\]>/gi, '')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
     .replace(/&amp;/gi, '&')
     .replace(/&quot;/gi, '"')
     .replace(/&#39;/gi, "'")
     .replace(/&apos;/gi, "'")
     .replace(/&lt;/gi, '<')
     .replace(/&gt;/gi, '>')
-    .replace(/&#(\d+);/g, (_, code) => {
-      try {
-        return String.fromCharCode(Number(code));
-      } catch {
-        return '';
-      }
-    })
-    .replace(/&#x([0-9a-f]+);/gi, (_, code) => {
-      try {
-        return String.fromCharCode(parseInt(code, 16));
-      } catch {
-        return '';
-      }
-    });
-}
-
-function stripHtml(value) {
-  return decodeEntities(cleanText(value));
-}
-
-function normalizeTitle(value) {
-  return stripHtml(value)
-    .toLowerCase()
-    .replace(/\[[^\]]+\]/g, ' ')
-    .replace(/[^\w\s]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
-function normalizeDomain(value) {
+function decodeHtml(value) {
   if (!value) return '';
 
-  try {
-    const input = /^https?:\/\//i.test(value)
-      ? value
-      : `https://${value}`;
-
-    return new URL(input)
-      .hostname
-      .toLowerCase()
-      .replace(/^www\./, '');
-  } catch {
-    return String(value)
-      .toLowerCase()
-      .replace(/^www\./, '')
-      .split('/')[0];
-  }
+  return String(value)
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/&apos;/gi, "'")
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>');
 }
 
-function isGoogleNewsUrl(url) {
-  return /news\.google\.com/i.test(String(url || ''));
+function normalizeTitle(value) {
+  return cleanText(value)
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
-function safeUrl(value) {
-  const url = decodeEntities(String(value || '').trim());
+/*
+ * Common words that do not help much
+ * when comparing headlines.
+ */
+const stopWords = new Set([
+  'the',
+  'a',
+  'an',
+  'and',
+  'or',
+  'of',
+  'to',
+  'for',
+  'in',
+  'on',
+  'at',
+  'by',
+  'with',
+  'from',
+  'as',
+  'is',
+  'are',
+  'was',
+  'were',
+  'has',
+  'have',
+  'had',
+  'will',
+  'its',
+  'their',
+  'his',
+  'her',
+  'this',
+  'that',
+  'these',
+  'those',
+  'says',
+  'said',
+  'news',
+  'report',
+  'reports',
+  'latest',
+  'update',
+  'updates',
+  'nigeria',
+  'nigerian',
+  'state',
+  'government',
+  'govt',
+  'official',
+  'officials'
+]);
 
-  if (!url) return '';
-
-  try {
-    const parsed = new URL(url);
-
-    if (
-      parsed.protocol !== 'http:' &&
-      parsed.protocol !== 'https:'
-    ) {
-      return '';
-    }
-
-    return parsed.toString();
-  } catch {
-    return '';
-  }
-}
-
-function makeId(title, link) {
-  return crypto
-    .createHash('sha256')
-    .update(`${normalizeTitle(title)}|${link || ''}`)
-    .digest('hex')
-    .slice(0, 24);
-}
-
-function getReadTime(text) {
-  const words = stripHtml(text)
+function getSignificantWords(value) {
+  return normalizeTitle(value)
     .split(/\s+/)
-    .filter(Boolean).length;
-
-  const minutes = Math.max(
-    1,
-    Math.ceil(words / 220)
-  );
-
-  return `${minutes} min read`;
+    .filter(word => {
+      return word.length >= 3 &&
+        !stopWords.has(word);
+    });
 }
 
-function formatDate(dateValue) {
-  const date = new Date(dateValue);
+/*
+ * Calculate how closely two headlines are related.
+ */
+function titleSimilarity(a, b) {
+  const firstWords =
+    getSignificantWords(a);
 
-  if (Number.isNaN(date.getTime())) {
-    return new Date().toLocaleDateString(
-      'en-US',
-      {
-        month: 'long',
-        year: 'numeric'
-      }
-    );
-  }
-
-  return date.toLocaleDateString(
-    'en-US',
-    {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric'
-    }
-  );
-}
-
-/* =========================================================
-   HTTP
-========================================================= */
-
-async function fetchText(url, options = {}) {
-  const timeout =
-    options.timeout || REQUEST_TIMEOUT;
-
-  const controller =
-    new AbortController();
-
-  const timer =
-    setTimeout(
-      () => controller.abort(),
-      timeout
-    );
-
-  try {
-    const response =
-      await fetch(
-        url,
-        {
-          method:
-            options.method || 'GET',
-
-          headers: {
-            'User-Agent':
-              options.userAgent ||
-              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131 Safari/537.36',
-
-            'Accept':
-              options.accept ||
-              'application/rss+xml, application/xml, text/xml, application/json, text/html;q=0.9, */*;q=0.8'
-          },
-
-          redirect: 'follow',
-
-          signal:
-            controller.signal
-        }
-      );
-
-    const text =
-      await response.text();
-
-    if (!response.ok) {
-      throw new Error(
-        `HTTP ${response.status} ${response.statusText || ''}`.trim()
-      );
-    }
-
-    return {
-      status:
-        response.status,
-
-      headers:
-        response.headers,
-
-      text
-    };
-
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
-/* =========================================================
-   XML HELPERS
-========================================================= */
-
-function getTagValue(
-  block,
-  tagName
-) {
-  const escaped =
-    tagName.replace(
-      /[.*+?^${}()|[\]\\]/g,
-      '\\$&'
-    );
-
-  const regex =
-    new RegExp(
-      `<${escaped}(?:\\s[^>]*)?>([\\s\\S]*?)<\\/${escaped}>`,
-      'i'
-    );
-
-  const match =
-    String(block || '').match(regex);
-
-  return match
-    ? match[1].trim()
-    : '';
-}
-
-function getXmlAttribute(
-  text,
-  tagName,
-  attributeName
-) {
-  const escapedTag =
-    tagName.replace(
-      /[.*+?^${}()|[\]\\]/g,
-      '\\$&'
-    );
-
-  const escapedAttr =
-    attributeName.replace(
-      /[.*+?^${}()|[\]\\]/g,
-      '\\$&'
-    );
-
-  const regex =
-    new RegExp(
-      `<${escapedTag}\\b[^>]*\\b${escapedAttr}\\s*=\\s*["']([^"']+)["'][^>]*>`,
-      'i'
-    );
-
-  const match =
-    String(text || '').match(regex);
-
-  return match
-    ? decodeEntities(match[1])
-    : '';
-}
-
-/* =========================================================
-   IMAGE EXTRACTION FROM RSS
-========================================================= */
-
-function extractImageFromRssItem(
-  item
-) {
-  const imageCandidates = [];
-
-  /* media:content */
-
-  const mediaContent =
-    getXmlAttribute(
-      item,
-      'media:content',
-      'url'
-    ) ||
-    getXmlAttribute(
-      item,
-      'media:content',
-      'href'
-    );
-
-  if (mediaContent) {
-    imageCandidates.push(
-      mediaContent
-    );
-  }
-
-  /* media:thumbnail */
-
-  const mediaThumbnail =
-    getXmlAttribute(
-      item,
-      'media:thumbnail',
-      'url'
-    ) ||
-    getXmlAttribute(
-      item,
-      'media:thumbnail',
-      'href'
-    );
-
-  if (mediaThumbnail) {
-    imageCandidates.push(
-      mediaThumbnail
-    );
-  }
-
-  /* enclosure */
-
-  const enclosure =
-    getXmlAttribute(
-      item,
-      'enclosure',
-      'url'
-    );
-
-  const enclosureType =
-    getXmlAttribute(
-      item,
-      'enclosure',
-      'type'
-    );
+  const secondWords =
+    getSignificantWords(b);
 
   if (
-    enclosure &&
-    (
-      !enclosureType ||
-      enclosureType.startsWith('image/')
-    )
+    !firstWords.length ||
+    !secondWords.length
   ) {
-    imageCandidates.push(
-      enclosure
-    );
+    return 0;
   }
 
-  /* image tag */
+  const first =
+    new Set(firstWords);
 
-  const imageUrl =
-    getTagValue(
-      item,
-      'image'
-    );
+  const second =
+    new Set(secondWords);
 
-  if (imageUrl) {
-    imageCandidates.push(
-      imageUrl
-    );
+  let matches = 0;
+
+  for (const word of first) {
+    if (second.has(word)) {
+      matches++;
+    }
   }
 
-  /* HTML image inside content */
+  if (!matches) {
+    return 0;
+  }
 
-  const htmlFields = [
-    getTagValue(
-      item,
-      'description'
-    ),
+  const union =
+    new Set([
+      ...first,
+      ...second
+    ]).size;
 
-    getTagValue(
-      item,
-      'content:encoded'
-    ),
+  const jaccard =
+    union
+      ? matches / union
+      : 0;
 
-    getTagValue(
-      item,
-      'content'
-    )
+  const smaller =
+    Math.min(
+      first.size,
+      second.size
+    );
+
+  const containment =
+    smaller
+      ? matches / smaller
+      : 0;
+
+  const aText =
+    normalizeTitle(a);
+
+  const bText =
+    normalizeTitle(b);
+
+  let phraseBonus = 0;
+
+  if (
+    aText.includes(bText) ||
+    bText.includes(aText)
+  ) {
+    phraseBonus = 0.30;
+  }
+
+  /*
+   * Important Oyo-related terms.
+   */
+  const importantTerms = [
+    'makinde',
+    'oyo',
+    'ibadan',
+    'ipapo',
+    'igbeti',
+    'saki',
+    'igboho',
+    'iseyin',
+    'itesiwaju',
+    'iwajowa',
+    'kajola',
+    'komu',
+    'lanlate',
+    'police',
+    'amotekun'
   ];
 
+  let importantMatches = 0;
+
   for (
-    const html of htmlFields
+    const term
+    of importantTerms
   ) {
-    const matches =
-      String(html || '').match(
-        /<img\b[^>]*\bsrc\s*=\s*["']([^"']+)["']/gi
-      ) || [];
-
-    for (
-      const match of matches
+    if (
+      aText.includes(term) &&
+      bText.includes(term)
     ) {
-      const urlMatch =
-        match.match(
-          /\bsrc\s*=\s*["']([^"']+)["']/i
-        );
-
-      if (
-        urlMatch &&
-        urlMatch[1]
-      ) {
-        imageCandidates.push(
-          urlMatch[1]
-        );
-      }
+      importantMatches++;
     }
   }
 
-  for (
-    const candidate of imageCandidates
-  ) {
-    const url =
-      safeUrl(candidate);
+  const importantBonus =
+    Math.min(
+      importantMatches * 0.10,
+      0.30
+    );
 
-    if (url) {
-      return url;
-    }
+  return Math.min(
+    (jaccard * 0.30) +
+    (containment * 0.45) +
+    phraseBonus +
+    importantBonus,
+    1
+  );
+}
+
+/*
+ * Kept for compatibility with existing
+ * news parsing code.
+ *
+ * The returned publisher image is NOT used
+ * in the final story.
+ */
+function getValidImage(image) {
+  if (!image) return '';
+
+  let value =
+    String(image).trim();
+
+  if (!value) return '';
+
+  value =
+    decodeHtml(value);
+
+  if (
+    value.startsWith('//')
+  ) {
+    value =
+      `https:${value}`;
+  }
+
+  if (
+    value.startsWith('http://') ||
+    value.startsWith('https://')
+  ) {
+    return value;
   }
 
   return '';
 }
 
-/* =========================================================
-   IMAGE EXTRACTION FROM HTML
-========================================================= */
+function extractImageFromHtml(html) {
+  if (!html) return '';
 
-function extractImageFromHtml(
-  html
-) {
   const source =
-    String(html || '');
+    String(html);
 
   const patterns = [
-    /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i,
-
-    /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i,
-
-    /<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i,
-
-    /<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i,
-
-    /<img\b[^>]+src=["']([^"']+)["']/i
+    /<media:content[^>]+url=["']([^"']+)["']/i,
+    /<media:thumbnail[^>]+url=["']([^"']+)["']/i,
+    /<enclosure[^>]+url=["']([^"']+)["']/i,
+    /<img[^>]+src=["']([^"']+)["']/i,
+    /<img[^>]+data-src=["']([^"']+)["']/i,
+    /<img[^>]+data-lazy-src=["']([^"']+)["']/i
   ];
 
   for (
-    const pattern of patterns
+    const pattern
+    of patterns
   ) {
     const match =
       source.match(pattern);
@@ -629,15 +366,13 @@ function extractImageFromHtml(
       match &&
       match[1]
     ) {
-      const url =
-        safeUrl(
-          decodeEntities(
-            match[1]
-          )
+      const image =
+        getValidImage(
+          match[1]
         );
 
-      if (url) {
-        return url;
+      if (image) {
+        return image;
       }
     }
   }
@@ -645,1521 +380,807 @@ function extractImageFromHtml(
   return '';
 }
 
-/* =========================================================
-   RSS PARSER
-========================================================= */
-
-function parseRssFeed(
-  xml,
-  feedName,
-  feedUrl
+function getTagValue(
+  block,
+  tagNames
 ) {
-  const stories = [];
+  if (!block) return '';
 
-  const itemMatches =
-    String(xml || '').match(
+  for (
+    const tagName
+    of tagNames
+  ) {
+    const escaped =
+      tagName.replace(
+        ':',
+        '\\:'
+      );
+
+    const regex =
+      new RegExp(
+        `<${escaped}(?:\\s[^>]*)?>([\\s\\S]*?)<\\/${escaped}>`,
+        'i'
+      );
+
+    const match =
+      block.match(regex);
+
+    if (
+      match &&
+      match[1]
+    ) {
+      return match[1].trim();
+    }
+  }
+
+  return '';
+}
+
+function getTagAttribute(
+  block,
+  tagName,
+  attribute
+) {
+  if (!block) return '';
+
+  const regex =
+    new RegExp(
+      `<${tagName}(?:\\s[^>]*)?\\s${attribute}=["']([^"']+)["']`,
+      'i'
+    );
+
+  const match =
+    block.match(regex);
+
+  return match &&
+    match[1]
+    ? match[1].trim()
+    : '';
+}
+
+function parseRss(
+  xml,
+  feedName
+) {
+  if (!xml) return [];
+
+  const items = [];
+
+  const blocks =
+    xml.match(
       /<item\b[\s\S]*?<\/item>/gi
     ) || [];
 
   for (
-    const rawItem of itemMatches
+    const block
+    of blocks
   ) {
     const titleRaw =
       getTagValue(
-        rawItem,
-        'title'
+        block,
+        ['title']
+      );
+
+    const linkRaw =
+      getTagValue(
+        block,
+        ['link']
+      );
+
+    const descriptionRaw =
+      getTagValue(
+        block,
+        [
+          'description',
+          'content:encoded'
+        ]
+      );
+
+    const pubDateRaw =
+      getTagValue(
+        block,
+        [
+          'pubDate',
+          'dc:date',
+          'published',
+          'updated'
+        ]
       );
 
     const title =
-      stripHtml(titleRaw);
+      cleanText(titleRaw);
+
+    const link =
+      cleanText(linkRaw);
+
+    const description =
+      cleanText(descriptionRaw);
 
     if (!title) {
       continue;
     }
 
-    const description =
-      stripHtml(
-        getTagValue(
-          rawItem,
-          'description'
-        )
+    /*
+     * We may still read the publisher image
+     * while parsing RSS, but it will NEVER be
+     * used in the final output.
+     */
+    let publisherImage = '';
+
+    const mediaUrl =
+      getTagAttribute(
+        block,
+        'media:content',
+        'url'
+      ) ||
+      getTagAttribute(
+        block,
+        'media:thumbnail',
+        'url'
       );
 
-    const content =
-      stripHtml(
-        getTagValue(
-          rawItem,
-          'content:encoded'
-        )
-      ) ||
-      description;
+    if (mediaUrl) {
+      publisherImage =
+        getValidImage(
+          mediaUrl
+        );
+    }
 
-    const linkRaw =
-      getTagValue(
-        rawItem,
-        'link'
-      );
-
-    const link =
-      safeUrl(linkRaw);
-
-    const guid =
-      stripHtml(
-        getTagValue(
-          rawItem,
-          'guid'
-        )
-      );
-
-    const publishedAt =
-      getTagValue(
-        rawItem,
-        'pubDate'
-      ) ||
-      getTagValue(
-        rawItem,
-        'published'
-      ) ||
-      getTagValue(
-        rawItem,
-        'dc:date'
-      ) ||
-      getTagValue(
-        rawItem,
-        'updated'
-      ) ||
-      new Date().toISOString();
-
-    const source =
-      stripHtml(
-        getTagValue(
-          rawItem,
-          'source'
-        )
-      ) ||
-      feedName;
-
-    const sourceUrl =
-      safeUrl(
-        getXmlAttribute(
-          rawItem,
-          'source',
+    if (!publisherImage) {
+      const enclosureUrl =
+        getTagAttribute(
+          block,
+          'enclosure',
           'url'
+        );
+
+      publisherImage =
+        getValidImage(
+          enclosureUrl
+        );
+    }
+
+    if (!publisherImage) {
+      publisherImage =
+        extractImageFromHtml(
+          descriptionRaw
+        );
+    }
+
+    let publishedAt = null;
+
+    if (pubDateRaw) {
+      const parsedDate =
+        new Date(
+          cleanText(
+            pubDateRaw
+          )
+        );
+
+      if (
+        !Number.isNaN(
+          parsedDate.getTime()
         )
-      );
+      ) {
+        publishedAt =
+          parsedDate.toISOString();
+      }
+    }
 
-    const image =
-      extractImageFromRssItem(
-        rawItem
-      );
-
-    const publisherDomain =
-      normalizeDomain(
-        sourceUrl
-      ) ||
-      normalizeDomain(
-        link
-      );
-
-    const id =
-      makeId(
-        title,
-        guid ||
-          link ||
-          feedUrl
-      );
-
-    stories.push({
-      id,
-
+    items.push({
       title,
-
-      description,
-
-      summary:
-        description ||
-        content.slice(0, 300),
-
-      content,
-
       link,
-
-      source,
-
-      publisher:
-        source,
-
-      publisherUrl:
-        sourceUrl ||
-        (
-          publisherDomain
-            ? `https://${publisherDomain}`
-            : ''
-        ),
-
-      publisherDomain,
-
+      description,
       publishedAt,
 
-      fetchedAt:
-        new Date().toISOString(),
+      /*
+       * Force the Ipapo Broadcast image
+       * immediately.
+       */
+      image: FALLBACK_IMAGE,
 
-      image,
+      /*
+       * Keep publisher image internally only
+       * for compatibility/debugging if needed.
+       */
+      publisherImage,
 
-      rawItem,
-
-      category:
-        detectCategory(
-          title,
-          content
-        ),
-
-      badge:
-        'Latest',
-
-      author:
-        source,
-
-      date:
-        formatDate(
-          publishedAt
-        ),
-
-      readTime:
-        getReadTime(
-          content
-        ),
-
-      views: 0,
-
-      status:
-        'approved'
+      source: feedName
     });
   }
 
-  return stories;
+  return items;
 }
 
-/* =========================================================
-   CATEGORY
-========================================================= */
+async function fetchFeed(feed) {
+  try {
+    const response =
+      await fetch(
+        feed.url,
+        {
+          headers: {
+            'User-Agent':
+              'Ipapo-Broadcast/1.0'
+          }
+        }
+      );
 
-function detectCategory(
-  title,
-  content
-) {
-  const text =
-    `${title} ${content}`
-      .toLowerCase();
+    if (!response.ok) {
+      throw new Error(
+        `HTTP ${response.status}`
+      );
+    }
+
+    return await response.text();
+  } catch (error) {
+    console.warn(
+      `Feed failed: ${feed.name}`,
+      error.message
+    );
+
+    return '';
+  }
+}
+
+async function getPublisherFeed(feed) {
+  const cacheKey =
+    feed.url;
 
   if (
-    /education|school|student|teacher|university|college|scholarship/i
-      .test(text)
+    publisherFeedCache.has(
+      cacheKey
+    )
   ) {
-    return 'Education';
+    return publisherFeedCache.get(
+      cacheKey
+    );
   }
 
+  const xml =
+    await fetchFeed(feed);
+
+  const articles =
+    parseRss(
+      xml,
+      feed.name
+    );
+
+  publisherFeedCache.set(
+    cacheKey,
+    articles
+  );
+
+  return articles;
+}
+
+function isLocalStory(story) {
+  const text =
+    normalizeTitle(
+      `${story.title} ${story.description}`
+    );
+
+  return localKeywords.some(
+    keyword =>
+      text.includes(
+        normalizeTitle(keyword)
+      )
+  );
+}
+
+function normalizeStory(story) {
+  return {
+    ...story,
+
+    title:
+      cleanText(
+        story.title
+      ),
+
+    description:
+      cleanText(
+        story.description
+      ),
+
+    link:
+      cleanText(
+        story.link
+      ),
+
+    /*
+     * IMPORTANT:
+     * Always use the Ipapo Broadcast image.
+     */
+    image:
+      FALLBACK_IMAGE,
+
+    imageSource:
+      'local-fallback'
+  };
+}
+
+function getStoryId(story) {
+  const value =
+    `${story.title}|${story.link}`;
+
+  return Buffer
+    .from(value)
+    .toString('base64')
+    .replace(
+      /[^a-zA-Z0-9]/g,
+      ''
+    )
+    .slice(
+      0,
+      60
+    );
+}
+
+function dedupeStories(stories) {
+  const seen =
+    new Set();
+
+  const result = [];
+
+  for (
+    const story
+    of stories
+  ) {
+    const normalized =
+      normalizeTitle(
+        story.title
+      );
+
+    if (!normalized) {
+      continue;
+    }
+
+    const key =
+      story.link ||
+      normalized;
+
+    if (
+      seen.has(key)
+    ) {
+      continue;
+    }
+
+    seen.add(key);
+
+    result.push(story);
+  }
+
+  return result;
+}
+
+function classifyCategory(story) {
+  const text =
+    normalizeTitle(
+      `${story.title} ${story.description}`
+    );
+
   if (
-    /police|kidnap|crime|security|amotekun|terrorist|gunmen|arrested/i
-      .test(text)
+    text.includes('police') ||
+    text.includes('security') ||
+    text.includes('kidnap') ||
+    text.includes('crime') ||
+    text.includes('amotekun')
   ) {
     return 'Security';
   }
 
   if (
-    /government|governor|commissioner|minister|political|election|party|senator/i
-      .test(text)
+    text.includes('school') ||
+    text.includes('education') ||
+    text.includes('student') ||
+    text.includes('teacher')
   ) {
-    return 'Politics';
+    return 'Education';
   }
 
   if (
-    /road|bridge|construction|infrastructure|building|project|development/i
-      .test(text)
+    text.includes('hospital') ||
+    text.includes('health') ||
+    text.includes('doctor') ||
+    text.includes('medical')
   ) {
-    return 'Development';
+    return 'Health';
   }
 
   if (
-    /sport|football|match|player|league/i
-      .test(text)
+    text.includes('football') ||
+    text.includes('sports') ||
+    text.includes('match')
   ) {
     return 'Sports';
   }
 
   if (
-    /culture|festival|traditional|heritage|oba|royal/i
-      .test(text)
+    text.includes('farm') ||
+    text.includes('agriculture') ||
+    text.includes('farmer')
+  ) {
+    return 'Agriculture';
+  }
+
+  if (
+    text.includes('culture') ||
+    text.includes('oba') ||
+    text.includes('traditional') ||
+    text.includes('palace')
   ) {
     return 'Culture';
+  }
+
+  if (
+    text.includes('government') ||
+    text.includes('governor') ||
+    text.includes('makinde') ||
+    text.includes('politics')
+  ) {
+    return 'Politics';
+  }
+
+  if (
+    text.includes('development') ||
+    text.includes('road') ||
+    text.includes('project') ||
+    text.includes('infrastructure')
+  ) {
+    return 'Development';
   }
 
   return 'Community';
 }
 
-/* =========================================================
-   LOCAL RELEVANCE
-========================================================= */
-
-function isLocalStory(
-  story
-) {
-  const text = [
-    story.title,
-    story.description,
-    story.summary,
-    story.content,
-    story.source,
-    story.publisher,
-    story.link
-  ]
-    .join(' ')
-    .toLowerCase();
-
-  return localKeywords.some(
-    keyword =>
-      text.includes(
-        keyword.toLowerCase()
-      )
-  );
-}
-
-/* =========================================================
-   TITLE MATCHING
-========================================================= */
-
-function tokenizeTitle(
-  title
-) {
-  return new Set(
-    normalizeTitle(title)
-      .split(/\s+/)
-      .filter(
-        word =>
-          word.length > 2
-      )
-  );
-}
-
-function titleSimilarity(
-  a,
-  b
-) {
-  const first =
-    tokenizeTitle(a);
-
-  const second =
-    tokenizeTitle(b);
-
-  if (
-    !first.size ||
-    !second.size
-  ) {
-    return 0;
-  }
-
-  let common = 0;
-
-  for (
-    const word of first
-  ) {
-    if (
-      second.has(word)
-    ) {
-      common++;
-    }
-  }
-
-  return (
-    common /
-    Math.max(
-      first.size,
-      second.size
-    )
-  );
-}
-
-/* =========================================================
-   PUBLISHER RSS CACHE
-========================================================= */
-
-/**
- * IMPORTANT:
- *
- * The cache stores the PROMISE immediately.
- *
- * This prevents several stories from starting the same
- * publisher RSS request at the same time.
+/*
+ * Always return the same local image.
  */
-const publisherFeedCache =
-  new Map();
-
-async function loadPublisherFeed(
-  feed
-) {
-  const domain =
-    normalizeDomain(
-      feed.domain
-    );
-
-  if (
-    publisherFeedCache.has(
-      domain
-    )
-  ) {
-    return publisherFeedCache.get(
-      domain
-    );
-  }
-
-  const promise =
-    (async () => {
-      try {
-        const response =
-          await fetchText(
-            feed.url,
-            {
-              timeout:
-                REQUEST_TIMEOUT
-            }
-          );
-
-        const stories =
-          parseRssFeed(
-            response.text,
-            feed.name,
-            feed.url
-          );
-
-        const result = {
-          success: true,
-          stories
-        };
-
-        console.log(
-          `Publisher RSS ${feed.name}: ${stories.length} stories`
-        );
-
-        return result;
-
-      } catch (error) {
-        const result = {
-          success: false,
-          stories: [],
-          error:
-            error.message
-        };
-
-        console.log(
-          `Publisher RSS ${feed.name} failed with ${error.message}`
-        );
-
-        return result;
-      }
-    })();
-
-  publisherFeedCache.set(
-    domain,
-    promise
-  );
-
-  return promise;
+function getFallbackImage() {
+  return FALLBACK_IMAGE;
 }
 
-/* =========================================================
-   FIND PUBLISHER
-========================================================= */
-
-function findPublisherFeedForStory(
-  story
-) {
-  const domain =
-    normalizeDomain(
-      story.publisherUrl
-    ) ||
-    normalizeDomain(
-      story.publisherDomain
+/*
+ * Basic scam-risk detection.
+ *
+ * This is NOT the final AI scam detection system.
+ * We will improve this later.
+ */
+function calculateScamScore(story) {
+  const text =
+    normalizeTitle(
+      `${story.title} ${story.description}`
     );
 
-  if (!domain) {
-    return null;
-  }
+  const suspiciousTerms = [
+    'send money',
+    'pay now',
+    'investment opportunity',
+    'double your money',
+    'free cash',
+    'giveaway',
+    'claim your money',
+    'urgent payment',
+    'secret investment',
+    'crypto giveaway'
+  ];
 
-  return (
-    publisherRssFeeds.find(
-      feed => {
-        const feedDomain =
-          normalizeDomain(
-            feed.domain
-          );
-
-        return (
-          domain === feedDomain ||
-          domain.endsWith(
-            `.${feedDomain}`
-          ) ||
-          feedDomain.endsWith(
-            `.${domain}`
-          )
-        );
-      }
-    ) ||
-    null
-  );
-}
-
-/* =========================================================
-   PUBLISHER RSS IMAGE MATCH
-========================================================= */
-
-async function findPublisherArticle(
-  story
-) {
-  const feed =
-    findPublisherFeedForStory(
-      story
-    );
-
-  if (!feed) {
-    return null;
-  }
-
-  const result =
-    await loadPublisherFeed(
-      feed
-    );
-
-  if (
-    !result.success ||
-    !result.stories.length
-  ) {
-    return null;
-  }
-
-  let best = null;
-  let bestScore = 0;
+  let score = 0;
 
   for (
-    const candidate of result.stories
+    const term
+    of suspiciousTerms
   ) {
-    const score =
-      titleSimilarity(
-        story.title,
-        candidate.title
-      );
-
     if (
-      score > bestScore
+      text.includes(
+        normalizeTitle(term)
+      )
     ) {
-      bestScore =
-        score;
-
-      best =
-        candidate;
+      score += 15;
     }
   }
 
-  if (
-    !best ||
-    bestScore < 0.45
-  ) {
-    return null;
-  }
-
-  return {
-    story: best,
-    score: bestScore
-  };
-}
-
-/* =========================================================
-   WORDPRESS IMAGE FALLBACK
-========================================================= */
-
-function looksLikeWordPressDomain(
-  domain
-) {
-  return Boolean(
-    domain &&
-    (
-      domain.includes(
-        'wordpress'
-      ) ||
-      domain.includes(
-        'oyoinsight'
-      ) ||
-      domain.includes(
-        'tribuneonlineng'
-      ) ||
-      domain.includes(
-        'punchng'
-      )
-    )
+  return Math.min(
+    score,
+    100
   );
 }
 
-async function fetchJson(
-  url
-) {
-  const response =
-    await fetchText(
-      url,
-      {
-        timeout:
-          IMAGE_REQUEST_TIMEOUT,
-
-        accept:
-          'application/json, text/plain, */*'
-      }
-    );
-
-  try {
-    return JSON.parse(
-      response.text
-    );
-  } catch {
-    throw new Error(
-      'Invalid JSON response'
-    );
-  }
-}
-
-function extractWordPressImage(
-  post
-) {
-  if (!post) {
-    return '';
-  }
-
-  const featured =
-    post._embedded &&
-    post._embedded[
-      'wp:featuredmedia'
-    ];
-
-  if (
-    Array.isArray(featured) &&
-    featured.length
-  ) {
-    const sourceUrl =
-      featured[0] &&
-      featured[0].source_url;
-
-    const image =
-      safeUrl(
-        sourceUrl
-      );
-
-    if (image) {
-      return image;
-    }
-  }
-
-  const content =
-    post.content &&
-    post.content.rendered;
-
-  if (content) {
-    const image =
-      extractImageFromHtml(
-        content
-      );
-
-    if (image) {
-      return image;
-    }
-  }
-
-  const excerpt =
-    post.excerpt &&
-    post.excerpt.rendered;
-
-  if (excerpt) {
-    const image =
-      extractImageFromHtml(
-        excerpt
-      );
-
-    if (image) {
-      return image;
-    }
-  }
-
+/*
+ * Kept for compatibility.
+ *
+ * PUNCH image matching has been disabled.
+ * The website now intentionally uses
+ * broadcast.jpeg for every story.
+ */
+async function findPunchImage() {
   return '';
 }
 
-async function findWordPressImage(
-  story
-) {
-  const domain =
-    normalizeDomain(
-      story.publisherDomain ||
-      story.publisherUrl ||
-      story.link
+/*
+ * Force every story to use the local
+ * Ipapo Broadcast fallback image.
+ */
+async function enrichStoryImage(story) {
+  story =
+    normalizeStory(
+      story
     );
 
-  if (
-    !domain ||
-    !looksLikeWordPressDomain(
-      domain
-    )
-  ) {
-    return '';
-  }
+  story.image =
+    FALLBACK_IMAGE;
 
-  const searchUrl =
-    `https://${domain}/wp-json/wp/v2/posts?search=${encodeURIComponent(story.title)}&per_page=5&_embed=1`;
-
-  try {
-    const posts =
-      await fetchJson(
-        searchUrl
-      );
-
-    if (
-      !Array.isArray(posts) ||
-      !posts.length
-    ) {
-      return '';
-    }
-
-    let best = null;
-    let bestScore = 0;
-
-    for (
-      const post of posts
-    ) {
-      const postTitle =
-        post &&
-        post.title &&
-        post.title.rendered
-          ? stripHtml(
-              post.title.rendered
-            )
-          : '';
-
-      const score =
-        titleSimilarity(
-          story.title,
-          postTitle
-        );
-
-      if (
-        score > bestScore
-      ) {
-        bestScore =
-          score;
-
-        best =
-          post;
-      }
-    }
-
-    if (
-      !best ||
-      bestScore < 0.40
-    ) {
-      return '';
-    }
-
-    return extractWordPressImage(
-      best
-    );
-
-  } catch (error) {
-    console.log(
-      `WordPress image lookup failed for ${domain}: ${error.message}`
-    );
-
-    return '';
-  }
-}
-
-/* =========================================================
-   DIRECT ARTICLE IMAGE
-========================================================= */
-
-async function fetchDirectArticleImage(
-  story
-) {
-  if (
-    !story.link ||
-    isGoogleNewsUrl(
-      story.link
-    )
-  ) {
-    return '';
-  }
-
-  try {
-    const response =
-      await fetchText(
-        story.link,
-        {
-          timeout:
-            IMAGE_REQUEST_TIMEOUT,
-
-          accept:
-            'text/html,application/xhtml+xml'
-        }
-      );
-
-    return extractImageFromHtml(
-      response.text
-    );
-
-  } catch {
-    return '';
-  }
-}
-
-/* =========================================================
-   IMAGE ENRICHMENT
-========================================================= */
-
-async function enrichStoryImage(
-  story
-) {
-  /**
-   * 1. Keep an image that already came
-   *    directly from RSS.
-   */
-  if (story.image) {
-    return story;
-  }
-
-  /**
-   * 2. Try matching the Google News
-   *    story to the publisher RSS.
-   */
-  try {
-    const publisherMatch =
-      await findPublisherArticle(
-        story
-      );
-
-    if (
-      publisherMatch &&
-      publisherMatch.story
-    ) {
-      const matched =
-        publisherMatch.story;
-
-      if (matched.image) {
-        story.image =
-          matched.image;
-
-        if (
-          matched.link &&
-          !isGoogleNewsUrl(
-            matched.link
-          )
-        ) {
-          story.link =
-            matched.link;
-        }
-
-        story.publisher =
-          matched.publisher ||
-          story.publisher;
-
-        story.publisherDomain =
-          matched.publisherDomain ||
-          story.publisherDomain;
-
-        story.publisherUrl =
-          matched.publisherUrl ||
-          story.publisherUrl;
-
-        return story;
-      }
-    }
-  } catch (error) {
-    console.log(
-      `Publisher image matching failed: ${error.message}`
-    );
-  }
-
-  /**
-   * 3. Try WordPress featured image.
-   */
-  try {
-    const wordpressImage =
-      await findWordPressImage(
-        story
-      );
-
-    if (wordpressImage) {
-      story.image =
-        wordpressImage;
-
-      return story;
-    }
-  } catch {
-    // Ignore image failure.
-  }
-
-  /**
-   * 4. Finally try the direct article.
-   */
-  try {
-    const directImage =
-      await fetchDirectArticleImage(
-        story
-      );
-
-    if (directImage) {
-      story.image =
-        directImage;
-    }
-  } catch {
-    // Ignore image failure.
-  }
+  story.imageSource =
+    'local-fallback';
 
   return story;
 }
 
-/* =========================================================
-   IMAGE ENRICHMENT TIMEOUT
-========================================================= */
+async function enrichImages(stories) {
+  const output = [];
 
-function enrichStoryWithTimeout(
-  story
-) {
-  return Promise.race([
-    enrichStoryImage(
-      story
-    ),
+  const batchSize = 3;
 
-    new Promise(
-      resolve => {
-        setTimeout(
-          () => {
-            console.log(
-              `Image enrichment timeout: ${story.title}`
-            );
-
-            resolve(story);
-          },
-          IMAGE_ENRICHMENT_TIMEOUT
-        );
-      }
-    )
-  ]).catch(
-    error => {
-      console.log(
-        `Image enrichment failed: ${error.message}`
-      );
-
-      return story;
-    }
-  );
-}
-
-/* =========================================================
-   IMAGE ENRICHMENT WITH LIMITS
-========================================================= */
-
-async function enrichImages(
-  stories
-) {
-  /**
-   * Work on a copy so the original array
-   * remains safe.
-   */
-  const output =
-    stories.slice();
-
-  /**
-   * Stories that already have an image
-   * require no expensive processing.
-   */
-  const candidates =
-    output
-      .map(
-        (story, index) => ({
-          story,
-          index
-        })
-      )
-      .filter(
-        item =>
-          !item.story.image
-      )
-      .slice(
-        0,
-        MAX_IMAGE_ENRICHMENT_STORIES
-      );
-
-  console.log(
-    `Image enrichment: ${candidates.length} stories queued`
-  );
-
-  /**
-   * Process only a few requests at a time.
-   */
   for (
     let i = 0;
-    i < candidates.length;
-    i += IMAGE_BATCH_SIZE
+    i < stories.length;
+    i += batchSize
   ) {
     const batch =
-      candidates.slice(
+      stories.slice(
         i,
-        i + IMAGE_BATCH_SIZE
+        i + batchSize
       );
 
     const enriched =
       await Promise.all(
         batch.map(
-          item =>
-            enrichStoryWithTimeout(
-              item.story
+          story =>
+            enrichStoryImage(
+              story
             )
         )
       );
 
-    enriched.forEach(
-      (story, offset) => {
-        const original =
-          batch[offset];
-
-        output[
-          original.index
-        ] = story;
-      }
-    );
-
-    console.log(
-      `Image enrichment progress: ${Math.min(
-        i + batch.length,
-        candidates.length
-      )}/${candidates.length}`
+    output.push(
+      ...enriched
     );
   }
 
   return output;
 }
 
-/* =========================================================
-   SCAM DETECTION
-========================================================= */
-
-function analyzeScamRisk(
-  story
-) {
-  const text =
-    [
-      story.title,
-      story.description,
-      story.summary,
-      story.content
-    ]
-      .join(' ')
-      .trim();
-
-  const flags = [];
-
-  for (
-    const pattern of scamPatterns
-  ) {
-    if (
-      pattern.test(text)
-    ) {
-      flags.push(
-        pattern.source
-      );
-    }
-  }
-
-  let score = 0;
-
-  score +=
-    Math.min(
-      flags.length * 12,
-      60
+function cleanStory(story) {
+  const category =
+    story.category ||
+    classifyCategory(
+      story
     );
 
-  if (
-    !story.publisher &&
-    !story.source
-  ) {
-    score += 10;
-  }
+  const scamScore =
+    typeof story.scamScore === 'number'
+      ? story.scamScore
+      : calculateScamScore(
+          story
+        );
 
-  let label =
-    'low';
-
-  if (
-    score >= 60
-  ) {
-    label =
-      'high';
-  } else if (
-    score >= 30
-  ) {
-    label =
-      'medium';
-  }
-
-  return {
-    scamScore:
-      score,
-
-    scamRisk:
-      label,
-
-    scamFlags:
-      flags,
-
-    scamReviewRequired:
-      score >= 30
-  };
-}
-
-/* =========================================================
-   STORY CLEANUP
-========================================================= */
-
-function cleanStory(
-  story
-) {
-  const title =
-    stripHtml(
-      story.title
-    );
-
-  const description =
-    stripHtml(
-      story.description ||
-      story.summary ||
-      ''
-    );
-
-  const content =
-    stripHtml(
-      story.content ||
-      description
-    );
-
-  const scam =
-    analyzeScamRisk({
-      ...story,
-      title,
-      description,
-      content
-    });
-
+  /*
+   * FINAL IMAGE GUARANTEE:
+   * Every story ALWAYS receives
+   * /img/broadcast.jpeg.
+   */
   return {
     id:
       story.id ||
-      makeId(
-        title,
-        story.link
+      getStoryId(
+        story
       ),
 
-    title,
+    title:
+      story.title,
 
-    description,
-
-    summary:
-      description ||
-      content.slice(0, 300),
-
-    content,
+    description:
+      story.description,
 
     link:
-      safeUrl(
-        story.link
-      ),
+      story.link,
 
     source:
       story.source ||
-      story.publisher ||
-      'Ipapo Broadcast',
+      'Unknown',
 
-    publisher:
-      story.publisher ||
-      story.source ||
-      'Unknown Publisher',
+    category,
 
-    publisherUrl:
-      story.publisherUrl ||
-      '',
+    image:
+      FALLBACK_IMAGE,
 
-    publisherDomain:
-      story.publisherDomain ||
-      normalizeDomain(
-        story.publisherUrl
-      ),
+    imageSource:
+      'local-fallback',
 
     publishedAt:
       story.publishedAt ||
       new Date().toISOString(),
 
-    fetchedAt:
-      story.fetchedAt ||
-      new Date().toISOString(),
-
-    image:
-      safeUrl(
-        story.image
-      ),
-
-    category:
-      story.category ||
-      detectCategory(
-        title,
-        content
-      ),
-
-    badge:
-      story.badge ||
-      'Latest',
-
-    author:
-      story.author ||
-      story.publisher ||
-      'Ipapo Broadcast',
-
-    date:
-      story.date ||
-      formatDate(
-        story.publishedAt
-      ),
-
-    readTime:
-      story.readTime ||
-      getReadTime(
-        content
-      ),
-
-    views:
-      Number(
-        story.views || 0
-      ),
-
-    status:
-      story.status ||
-      (
-        scam.scamReviewRequired
-          ? 'pending_review'
-          : 'approved'
-      ),
-
-    scamScore:
-      scam.scamScore,
+    scamScore,
 
     scamRisk:
-      scam.scamRisk,
-
-    scamFlags:
-      scam.scamFlags,
-
-    scamReviewRequired:
-      scam.scamReviewRequired
+      scamScore >= 60
+        ? 'high'
+        : scamScore >= 30
+          ? 'medium'
+          : 'low'
   };
 }
 
-/* =========================================================
-   DUPLICATES
-========================================================= */
-
-function dedupeStories(
-  stories
-) {
-  const seenIds =
-    new Set();
-
-  const seenTitles =
-    new Set();
-
-  const result =
-    [];
-
-  for (
-    const story of stories
-  ) {
-    const id =
-      story.id;
-
-    const title =
-      normalizeTitle(
-        story.title
-      );
-
-    if (
-      id &&
-      seenIds.has(id)
-    ) {
-      continue;
-    }
-
-    if (
-      title &&
-      seenTitles.has(title)
-    ) {
-      continue;
-    }
-
-    if (id) {
-      seenIds.add(id);
-    }
-
-    if (title) {
-      seenTitles.add(title);
-    }
-
-    result.push(
-      story
-    );
-  }
-
-  return result;
-}
-
-/* =========================================================
-   FETCH ONE RSS FEED
-========================================================= */
-
-async function fetchFeed(
-  feed
-) {
-  try {
-    const response =
-      await fetchText(
-        feed.url
-      );
-
-    const stories =
-      parseRssFeed(
-        response.text,
-        feed.name,
-        feed.url
-      );
-
-    console.log(
-      `Fetched ${stories.length} stories from ${feed.name}`
-    );
-
-    return stories;
-
-  } catch (error) {
-    console.log(
-      `RSS feed failed: ${feed.url} ${error.message}`
-    );
-
-    return [];
-  }
-}
-
-/* =========================================================
-   MAIN DAILY FETCH
-========================================================= */
-
 async function fetchDailyStories() {
-  console.log(
-    'Starting daily Ipapo news fetch...'
-  );
-
-  /**
-   * Clear publisher cache at the beginning
-   * of each completely new fetch.
+  /*
+   * Clear feed cache so fresh RSS data
+   * can be retrieved.
    */
-  publisherFeedCache.clear();
+  publisherFeedCache =
+    new Map();
 
   const allFeeds = [
     ...trustedFeeds,
     ...localFeeds
   ];
 
-  /* -----------------------------------------
-     FETCH ALL MAIN FEEDS
-  ----------------------------------------- */
-
   const feedResults =
     await Promise.all(
       allFeeds.map(
-        feed =>
-          fetchFeed(feed)
+        async feed => {
+          const xml =
+            await fetchFeed(
+              feed
+            );
+
+          return parseRss(
+            xml,
+            feed.name
+          );
+        }
       )
     );
 
-  const allStories =
+  let stories =
     feedResults.flat();
 
-  console.log(
-    `Fetched ${allStories.length} RSS stories`
-  );
-
-  /* -----------------------------------------
-     LOCAL FILTER
-  ----------------------------------------- */
-
-  let localStories =
-    allStories.filter(
+  /*
+   * Keep stories relevant to Ipapo/Oyo.
+   */
+  stories =
+    stories.filter(
       isLocalStory
     );
 
-  console.log(
-    `${localStories.length} stories matched local keywords`
-  );
-
-  /* -----------------------------------------
-     DEDUPE
-  ----------------------------------------- */
-
-  localStories =
-    dedupeStories(
-      localStories
+  stories =
+    stories.map(
+      normalizeStory
     );
 
-  /* -----------------------------------------
-     NEWEST FIRST
-  ----------------------------------------- */
+  stories =
+    dedupeStories(
+      stories
+    );
 
-  localStories.sort(
+  /*
+   * Newest stories first.
+   */
+  stories.sort(
     (a, b) =>
       new Date(
-        b.publishedAt
+        b.publishedAt || 0
       ).getTime() -
       new Date(
-        a.publishedAt
+        a.publishedAt || 0
       ).getTime()
   );
 
-  console.log(
-    `After dedupe: ${localStories.length} stories`
-  );
-
-  /* -----------------------------------------
-     IMAGE ENRICHMENT
-  ----------------------------------------- */
-
-  localStories =
-    await enrichImages(
-      localStories
-    );
-
-  /* -----------------------------------------
-     CLEAN STORIES
-  ----------------------------------------- */
-
-  localStories =
-    localStories.map(
-      cleanStory
-    );
-
-  /* -----------------------------------------
-     FINAL DEDUPE
-  ----------------------------------------- */
-
-  localStories =
-    dedupeStories(
-      localStories
-    );
-
-  /* -----------------------------------------
-     SORT AGAIN
-  ----------------------------------------- */
-
-  localStories.sort(
-    (a, b) =>
-      new Date(
-        b.publishedAt
-      ).getTime() -
-      new Date(
-        a.publishedAt
-      ).getTime()
-  );
-
-  /* -----------------------------------------
-     LIMIT RESULTS
-  ----------------------------------------- */
-
-  const finalStories =
-    localStories.slice(
+  /*
+   * Keep the public page manageable.
+   */
+  stories =
+    stories.slice(
       0,
       MAX_STORIES
     );
 
-  /* -----------------------------------------
-     IMAGE COUNT
-  ----------------------------------------- */
+  /*
+   * Force the local fallback image.
+   */
+  stories =
+    await enrichImages(
+      stories
+    );
 
-  const imageCount =
-    finalStories.filter(
-      story =>
-        Boolean(
-          story.image
-        )
-    ).length;
+  /*
+   * Clean the final data.
+   */
+  stories =
+    stories.map(
+      cleanStory
+    );
+
+  stories =
+    dedupeStories(
+      stories
+    );
+
+  stories.sort(
+    (a, b) =>
+      new Date(
+        b.publishedAt || 0
+      ).getTime() -
+      new Date(
+        a.publishedAt || 0
+      ).getTime()
+  );
+
+  /*
+   * FINAL GUARANTEE:
+   * Every story must use broadcast.jpeg.
+   */
+  stories =
+    stories
+      .slice(
+        0,
+        MAX_STORIES
+      )
+      .map(
+        story => ({
+          ...story,
+
+          image:
+            FALLBACK_IMAGE,
+
+          imageSource:
+            'local-fallback'
+        })
+      );
 
   console.log(
-    `Stories with images: ${imageCount}`
+    `Ipapo Broadcast: ${stories.length} stories prepared`
   );
 
   console.log(
-    `Returning ${finalStories.length} stories`
+    `Stories with fallback images: ${
+      stories.filter(
+        story =>
+          story.image ===
+          FALLBACK_IMAGE
+      ).length
+    }`
   );
 
-  return finalStories;
+  console.log(
+    `External images used: 0`
+  );
+
+  console.log(
+    `Local fallback images: ${
+      stories.filter(
+        story =>
+          story.imageSource ===
+          'local-fallback'
+      ).length
+    }`
+  );
+
+  return stories;
 }
-
-/* =========================================================
-   GET DAILY STORIES
-========================================================= */
 
 async function getDailyStories() {
   return fetchDailyStories();
 }
 
-/* =========================================================
-   GREETING
-========================================================= */
-
-function getGreeting(
-  hour = new Date().getHours()
-) {
-  if (
-    hour < 12
-  ) {
-    return 'Good morning';
-  }
-
-  if (
-    hour < 17
-  ) {
-    return 'Good afternoon';
-  }
-
-  return 'Good evening';
-}
-
-/* =========================================================
-   GET NEWS
-========================================================= */
-
-async function getNews() {
-  return fetchDailyStories();
-}
-
-/* =========================================================
-   EXPORTS
-========================================================= */
-
 module.exports = {
-  fetchDailyStories,
   getDailyStories,
-  getNews,
-  getGreeting,
-  fetchFeed,
-  parseRssFeed,
-  isLocalStory,
-  analyzeScamRisk,
-  cleanStory,
-  dedupeStories,
-  extractImageFromRssItem,
-  extractImageFromHtml,
+  fetchDailyStories,
+  findPunchImage,
   titleSimilarity
 };
+
+
+
+
+
+
