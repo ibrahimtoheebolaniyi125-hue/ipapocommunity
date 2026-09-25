@@ -1,3406 +1,1807 @@
-
-<!DOCTYPE html>
+yes here is the file i am talking about there must be this file in the website so you have to tell me whether this should be index or home <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta
         name="description"
-        content="Ipapo Broadcast - The trusted voice of the Ipapo community. News, entertainment, sports, culture and community information."
+        content="Ipapo Broadcast - The official voice and media platform for the people of Ipapo, Oyo State. Local news, 24/7 live community radio, cultural heritage, and resident network."
     >
 
-    <title>
-        Ipapo Broadcast | Voice of the Community
-    </title>
+    <meta
+        name="keywords"
+        content="Ipapo, Ipapo Broadcast, Oyo State, Itesiwaju, Yoruba culture, Eleyinpo of Ipapo, Abuwe soap, community radio"
+    >
+
+    <title>Ipapo Broadcast | Voice of the Community</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
-
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet"
-    >
-
-    <link
-        rel="stylesheet"
-        href="index.css"
-    >
-
-    <link
-        rel="stylesheet"
-        href="css/pages.css"
-    >
-
-    <style>
-
-        /* =====================================================
-           HOME PAGE LATEST NEWS
-           TEXT ONLY - NO IMAGES
-           ===================================================== */
-
-        #homeNewsContainer {
-
-            width: 100%;
-            max-width: 1200px;
-
-            margin: 0 auto;
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(3, minmax(0, 1fr));
-
-            gap: 24px;
-
-            box-sizing: border-box;
-
-        }
-
-
-        /* =====================================================
-           NEWS CARD
-           ===================================================== */
-
-        #homeNewsContainer .news-card {
-
-            width: 100%;
-            min-width: 0;
-            max-width: 100%;
-
-            box-sizing: border-box;
-
-            overflow: hidden;
-
-            display: flex;
-            flex-direction: column;
-
-            background: #10141d;
-
-            border-radius: 20px;
-
-            border: 1px solid rgba(
-                255,
-                255,
-                255,
-                0.08
-            );
-
-            box-shadow:
-                0 10px 35px rgba(
-                    0,
-                    0,
-                    0,
-                    0.25
-                );
-
-            transition:
-                transform 0.35s ease,
-                box-shadow 0.35s ease,
-                border-color 0.35s ease;
-
-        }
-
-
-        #homeNewsContainer .news-card:hover {
-
-            transform: translateY(-7px);
-
-            border-color:
-                rgba(255, 204, 0, 0.25);
-
-            box-shadow:
-                0 20px 45px rgba(
-                    0,
-                    0,
-                    0,
-                    0.30
-                );
-
-        }
-
-
-        /* =====================================================
-           NEWS CONTENT
-           ===================================================== */
-
-        #homeNewsContainer .news-content {
-
-            width: 100%;
-            min-width: 0;
-            max-width: 100%;
-
-            box-sizing: border-box;
-
-            padding: 25px;
-
-            display: flex;
-
-            flex-direction: column;
-
-            flex: 1;
-
-            overflow: hidden;
-
-        }
-
-
-        /* =====================================================
-           CATEGORY
-           ===================================================== */
-
-        #homeNewsContainer .home-news-category {
-
-            display: inline-flex;
-
-            align-items: center;
-
-            width: fit-content;
-
-            max-width: 100%;
-
-            box-sizing: border-box;
-
-            margin-bottom: 12px;
-
-            padding: 6px 12px;
-
-            border-radius: 999px;
-
-            background: #ffcc00;
-
-            color: #111827;
-
-            font-size: 10px;
-
-            font-weight: 800;
-
-            line-height: 1.2;
-
-            white-space: nowrap;
-
-            overflow: hidden;
-
-            text-overflow: ellipsis;
-
-        }
-
-
-        /* =====================================================
-           NEWS META
-           ===================================================== */
-
-        #homeNewsContainer .news-meta {
-
-            width: 100%;
-            max-width: 100%;
-
-            box-sizing: border-box;
-
-            display: flex;
-
-            flex-wrap: wrap;
-
-            align-items: center;
-
-            gap: 8px;
-
-            margin-bottom: 12px;
-
-        }
-
-
-        #homeNewsContainer .news-update {
-
-            color: #ffcc00;
-
-            font-size: 10px;
-
-            font-weight: 700;
-
-            text-transform: uppercase;
-
-            letter-spacing: 0.5px;
-
-        }
-
-
-        #homeNewsContainer .news-meta small {
-
-            color: #94a3b8;
-
-            font-size: 11px;
-
-            line-height: 1.5;
-
-            overflow-wrap: anywhere;
-
-        }
-
-
-        /* =====================================================
-           NEWS TITLE
-           ===================================================== */
-
-        #homeNewsContainer .news-content h3 {
-
-            margin: 0 0 12px;
-
-            color: #f1f5f9;
-
-            font-size: 18px;
-
-            line-height: 1.45;
-
-            overflow-wrap: anywhere;
-
-            word-break: break-word;
-
-        }
-
-
-        /* =====================================================
-           NEWS DESCRIPTION
-           ===================================================== */
-
-        #homeNewsContainer .news-content p {
-
-            margin: 0 0 22px;
-
-            color: #94a3b8;
-
-            font-size: 13px;
-
-            line-height: 1.7;
-
-            overflow-wrap: anywhere;
-
-            word-break: break-word;
-
-        }
-
-
-        /* =====================================================
-           READ STORY
-           ===================================================== */
-
-        #homeNewsContainer .news-read-more {
-
-            display: inline-flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            gap: 8px;
-
-            width: fit-content;
-
-            max-width: 100%;
-
-            box-sizing: border-box;
-
-            margin-top: auto;
-
-            padding: 9px 16px;
-
-            border-radius: 999px;
-
-            background:
-                rgba(
-                    255,
-                    204,
-                    0,
-                    0.08
-                );
-
-            border: 1px solid
-                rgba(
-                    255,
-                    204,
-                    0,
-                    0.25
-                );
-
-            color: #ffcc00;
-
-            font-size: 12px;
-
-            font-weight: 700;
-
-            text-decoration: none;
-
-            transition:
-                background 0.3s ease,
-                transform 0.3s ease;
-
-        }
-
-
-        #homeNewsContainer .news-read-more:hover {
-
-            background:
-                rgba(
-                    255,
-                    204,
-                    0,
-                    0.16
-                );
-
-            transform:
-                translateX(3px);
-
-        }
-
-
-        /* =====================================================
-           LOADING STATE
-           ===================================================== */
-
-        #homeNewsContainer .news-loading {
-
-            grid-column: 1 / -1;
-
-            width: 100%;
-
-            box-sizing: border-box;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            gap: 12px;
-
-            padding: 45px 20px;
-
-            color: #94a3b8;
-
-            text-align: center;
-
-        }
-
-
-        #homeNewsContainer .news-loading-spinner {
-
-            width: 22px;
-
-            height: 22px;
-
-            border: 3px solid
-                rgba(
-                    255,
-                    255,
-                    255,
-                    0.15
-                );
-
-            border-top-color:
-                #ffcc00;
-
-            border-radius: 50%;
-
-            animation:
-                homeNewsSpin 0.8s
-                linear infinite;
-
-        }
-
-
-        @keyframes homeNewsSpin {
-
-            to {
-                transform: rotate(360deg);
-            }
-
-        }
-
-
-        /* =====================================================
-           EMPTY / ERROR STATE
-           ===================================================== */
-
-        #homeNewsContainer .news-empty {
-
-            grid-column: 1 / -1;
-
-            width: 100%;
-
-            box-sizing: border-box;
-
-            padding: 45px 20px;
-
-            text-align: center;
-
-            color: #94a3b8;
-
-        }
-
-
-        #homeNewsContainer .news-empty-icon {
-
-            font-size: 38px;
-
-            margin-bottom: 12px;
-
-        }
-
-
-        #homeNewsContainer .news-empty h3 {
-
-            margin: 0 0 10px;
-
-            color: #f1f5f9;
-
-            font-size: 20px;
-
-        }
-
-
-        #homeNewsContainer .news-empty p {
-
-            margin: 0 0 20px;
-
-            color: #94a3b8;
-
-        }
-
-
-        /* =====================================================
-           TABLET
-           ===================================================== */
-
-        @media (max-width: 960px) {
-
-            #homeNewsContainer {
-
-                grid-template-columns:
-                    repeat(
-                        2,
-                        minmax(0, 1fr)
-                    );
-
-                gap: 20px;
-
-            }
-
-        }
-
-
-        /* =====================================================
-           MOBILE
-           ===================================================== */
-
-        @media (max-width: 640px) {
-
-            #homeNewsContainer {
-
-                width: 100%;
-
-                max-width: 100%;
-
-                grid-template-columns: 1fr;
-
-                gap: 18px;
-
-            }
-
-
-            #homeNewsContainer .news-card {
-
-                width: 100%;
-
-                max-width: 100%;
-
-                border-radius: 18px;
-
-            }
-
-
-            #homeNewsContainer .news-content {
-
-                width: 100%;
-
-                max-width: 100%;
-
-                padding: 21px;
-
-            }
-
-
-            #homeNewsContainer .news-content h3 {
-
-                font-size: 17px;
-
-                line-height: 1.5;
-
-            }
-
-
-            #homeNewsContainer .news-content p {
-
-                font-size: 13px;
-
-                line-height: 1.7;
-
-            }
-
-
-            #homeNewsContainer .news-read-more {
-
-                width: 100%;
-
-                max-width: 100%;
-
-            }
-
-
-            #homeNewsContainer .news-meta {
-
-                align-items: flex-start;
-
-                flex-direction: column;
-
-                gap: 4px;
-
-            }
-
-        }
-
-
-        /* =====================================================
-           SMALL PHONES
-           ===================================================== */
-
-        @media (max-width: 390px) {
-
-            #homeNewsContainer {
-
-                gap: 15px;
-
-            }
-
-
-            #homeNewsContainer .news-content {
-
-                padding: 17px;
-
-            }
-
-
-            #homeNewsContainer .news-content h3 {
-
-                font-size: 16px;
-
-            }
-
-
-            #homeNewsContainer .news-content p {
-
-                font-size: 12.5px;
-
-            }
-
-
-            #homeNewsContainer .home-news-category {
-
-                font-size: 9px;
-
-            }
-
-        }
-
-    </style>
-
-</head>
-
-
-<body>
-
-
-    <!-- =====================================================
-         HEADER
-         ===================================================== -->
-
-    <header
-        class="header"
-        id="header"
-    >
-
-        <a
-            href="home.html"
-            class="logo"
-        >
-            IPAPO <span>Broadcast</span>
-        </a>
-
-
-        <nav
-            class="navbar"
-            id="navbar"
-        >
-
-            <a
-                href="index.html"
-                class="nav-link active"
-            >
-                Home
-            </a>
-
-            <a
-                href="news.html"
-                class="nav-link"
-            >
-                News
-            </a>
-
-            <a
-                href="live.html"
-                class="nav-link"
-            >
-                Live
-            </a>
-
-            <a
-                href="programs.html"
-                class="nav-link"
-            >
-                Programs
-            </a>
-
-            <a
-                href="community.html"
-                class="nav-link"
-            >
-                Community
-            </a>
-
-            <a
-                href="events.html"
-                class="nav-link"
-            >
-                Events
-            </a>
-
-            <a
-                href="gallery.html"
-                class="nav-link"
-            >
-                Gallery
-            </a>
-
-            <a
-                href="about.html"
-                class="nav-link"
-            >
-                About
-            </a>
-
-            <a
-                href="contact.html"
-                class="nav-link"
-            >
-                Contact
-            </a>
-
-            <a
-                href="advertise.html"
-                class="nav-link"
-            >
-                Advertise
-            </a>
-
-        </nav>
-
-
-        <button
-            class="menu-toggle"
-            id="menu-toggle"
-            aria-label="Open navigation menu"
-            aria-expanded="false"
-        >
-            ☰
-        </button>
-
-    </header>
-
-
-
-    <main>
-
-
-        <!-- =================================================
-             HERO
-             ================================================= -->
-
-        <section
-            class="hero"
-            id="home"
-        >
-
-            <div class="overlay"></div>
-
-
-            <div class="hero-content reveal">
-
-                <span class="hero-badge">
-                    📻 YOUR COMMUNITY • YOUR VOICE
-                </span>
-
-
-                <h1>
-                    Voice Of The
-                    <span>Community</span>
-                </h1>
-
-
-                <p>
-                    Bringing trusted news, entertainment, culture,
-                    sports and information to the people of Ipapo
-                    and beyond.
-                </p>
-
-
-                <div class="hero-buttons">
-
-                    <button
-                        class="btn"
-                        id="liveBtn"
-                    >
-                        🔴 Listen Live
-                    </button>
-
-
-                    <a
-                        href="#news"
-                        class="btn-outline"
-                    >
-                        Latest News
-                    </a>
-
-                </div>
-
-
-                <div class="hero-stats">
-
-                    <div>
-
-                        <strong>24/7</strong>
-
-                        <span>
-                            Community Voice
-                        </span>
-
-                    </div>
-
-
-                    <div>
-
-                        <strong>100%</strong>
-
-                        <span>
-                            Local Focus
-                        </span>
-
-                    </div>
-
-
-                    <div>
-
-                        <strong>∞</strong>
-
-                        <span>
-                            Stories
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="scroll-down">
-
-                <span>
-                    Scroll to explore
-                </span>
-
-                <div class="scroll-line"></div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             LIVE
-             ================================================= -->
-
-        <section
-            class="live section"
-            id="live"
-        >
-
-            <div class="section-title reveal">
-
-                <span class="section-label">
-                    LISTEN LIVE
-                </span>
-
-
-                <h2>
-                    Live <span>Broadcast</span>
-                </h2>
-
-
-                <p>
-                    Hear real stories, local updates and conversations
-                    shaping the Ipapo community every day.
-                </p>
-
-            </div>
-
-
-            <div class="live-grid">
-
-
-                <div class="live-player reveal">
-
-                    <div class="player-header">
-
-                        <span class="live-dot"></span>
-
-                        <span>
-                            Streaming Live
-                        </span>
-
-                    </div>
-
-
-                    <h3>
-                        Oke-Ogun FM 96.3 Regional Relay
-                    </h3>
-
-
-                    <p>
-                        Regional radio serving Oke-Ogun, Itesiwaju and
-                        Ipapo with news, music, culture and community voices.
-                    </p>
-
-
-                    <div class="player-controls">
-
-                        <button
-                            class="btn live-toggle"
-                            id="audioToggle"
-                            type="button"
-                        >
-                            <span>▶</span>
-                            Listen Live
-                        </button>
-
-
-                        <audio
-                            id="homeLiveAudio"
-                            preload="none"
-                        ></audio>
-
-
-                        <span class="live-time">
-                            06:30 AM • Daily
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-
-                <div class="schedule-panel reveal">
-
-                    <h3>
-                        Today on Air
-                    </h3>
-
-
-                    <ul class="schedule-list">
-
-                        <li>
-                            <span>06:30</span>
-                            <strong>
-                                Community Morning Brief
-                            </strong>
-                        </li>
-
-                        <li>
-                            <span>08:00</span>
-                            <strong>
-                                News & Analysis
-                            </strong>
-                        </li>
-
-                        <li>
-                            <span>11:00</span>
-                            <strong>
-                                Culture & Heritage
-                            </strong>
-                        </li>
-
-                        <li>
-                            <span>14:00</span>
-                            <strong>
-                                Sports & Youth Talk
-                            </strong>
-                        </li>
-
-                        <li>
-                            <span>18:00</span>
-                            <strong>
-                                Evening Community Dialogue
-                            </strong>
-                        </li>
-
-                    </ul>
-
-
-                    <a
-                        href="#contact"
-                        class="btn-outline dark-btn"
-                    >
-                        Book a Guest
-                    </a>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             ABOUT
-             ================================================= -->
-
-        <section
-            class="about section"
-            id="about"
-        >
-
-            <div class="section-title reveal">
-
-                <span class="section-label">
-                    WHO WE ARE
-                </span>
-
-
-                <h2>
-                    About <span>Ipapo Broadcast</span>
-                </h2>
-
-
-                <p>
-                    Professional broadcasting with passion,
-                    integrity and a commitment to our community.
-                </p>
-
-            </div>
-
-
-            <div class="about-container">
-
-
-                <div class="about-image reveal">
-
-                    <div class="image-frame">
-
-                        <img
-                            src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1000&q=80"
-                            alt="Ipapo Broadcast media team"
-                        >
-
-                    </div>
-
-
-                    <div class="experience-card">
-
-                        <strong>
-                            IPAPO
-                        </strong>
-
-                        <span>
-                            Community First
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-
-                <div class="about-text reveal">
-
-                    <span class="section-label">
-                        OUR MISSION
-                    </span>
-
-
-                    <h3>
-                        We Inform. We Entertain.
-                        <span>We Inspire.</span>
-                    </h3>
-
-
-                    <p>
-                        Ipapo Broadcast is a modern media organization
-                        dedicated to community development, live
-                        broadcasting, educational programs, sports
-                        coverage, music, interviews and local news.
-                    </p>
-
-
-                    <p>
-                        We believe that powerful communities are built
-                        through reliable information, meaningful
-                        conversations and quality entertainment.
-                    </p>
-
-
-                    <div class="about-features">
-
-                        <div class="feature">
-
-                            <div class="feature-icon">
-                                ✓
-                            </div>
-
-                            <div>
-
-                                <h4>
-                                    Trusted Information
-                                </h4>
-
-                                <p>
-                                    News that keeps our community informed.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="feature">
-
-                            <div class="feature-icon">
-                                ✓
-                            </div>
-
-                            <div>
-
-                                <h4>
-                                    Community Focus
-                                </h4>
-
-                                <p>
-                                    Stories that matter to the people.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             PROGRAMS / SERVICES
-             ================================================= -->
-
-        <section
-            class="services section section-dark"
-            id="services"
-        >
-
-            <div class="section-title reveal">
-
-                <span class="section-label">
-                    WHAT WE DO
-                </span>
-
-
-                <h2>
-                    Our <span>Programs</span>
-                </h2>
-
-
-                <p>
-                    Quality broadcasting, meaningful conversations
-                    and content for everyone.
-                </p>
-
-            </div>
-
-
-            <div class="service-grid">
-
-
-                <article class="service-card reveal">
-
-                    <div class="card-number">
-                        01
-                    </div>
-
-                    <div class="service-icon">
-                        📰
-                    </div>
-
-                    <h3>
-                        Morning News
-                    </h3>
-
-                    <p>
-                        Start your day with important local,
-                        national and community updates.
-                    </p>
-
-                    <button
-                        class="card-link"
-                        type="button"
-                        data-title="Morning News"
-                        data-tag="Program"
-                        data-meta="Daily update • 6:30 AM"
-                        data-text="Start your day with trusted local, national and community updates delivered with accuracy, clarity and a strong sense of public awareness."
-                    >
-                        Learn More →
-                    </button>
-
-                </article>
-
-
-
-                <article class="service-card reveal">
-
-                    <div class="card-number">
-                        02
-                    </div>
-
-                    <div class="service-icon">
-                        ⚽
-                    </div>
-
-                    <h3>
-                        Sports Show
-                    </h3>
-
-                    <p>
-                        Football, sports interviews, match analysis
-                        and exciting community sports coverage.
-                    </p>
-
-                    <button
-                        class="card-link"
-                        type="button"
-                        data-title="Sports Show"
-                        data-tag="Sports"
-                        data-meta="Match analysis • Community stories"
-                        data-text="From matchday coverage to community sports conversations, we highlight the passion, talent and pride that fuel local excellence."
-                    >
-                        Learn More →
-                    </button>
-
-                </article>
-
-
-
-                <article class="service-card reveal">
-
-                    <div class="card-number">
-                        03
-                    </div>
-
-                    <div class="service-icon">
-                        🎵
-                    </div>
-
-                    <h3>
-                        Entertainment
-                    </h3>
-
-                    <p>
-                        Music programs, celebrity discussions,
-                        entertainment news and conversations.
-                    </p>
-
-                    <button
-                        class="card-link"
-                        type="button"
-                        data-title="Entertainment"
-                        data-tag="Lifestyle"
-                        data-meta="Music • Talk • Culture"
-                        data-text="Our entertainment programming celebrates the voices, talents and stories that keep the community inspired, entertained and connected."
-                    >
-                        Learn More →
-                    </button>
-
-                </article>
-
-
-
-                <article class="service-card reveal">
-
-                    <div class="card-number">
-                        04
-                    </div>
-
-                    <div class="service-icon">
-                        🎙️
-                    </div>
-
-                    <h3>
-                        Live Interviews
-                    </h3>
-
-                    <p>
-                        Conversations with community leaders,
-                        professionals and inspiring personalities.
-                    </p>
-
-                    <button
-                        class="card-link"
-                        type="button"
-                        data-title="Live Interviews"
-                        data-tag="Interview"
-                        data-meta="Guest conversations • Community leaders"
-                        data-text="We host meaningful discussions with community leaders, professionals and inspiring personalities who are shaping progress and action."
-                    >
-                        Learn More →
-                    </button>
-
-                </article>
-
-
-
-                <article class="service-card reveal">
-
-                    <div class="card-number">
-                        05
-                    </div>
-
-                    <div class="service-icon">
-                        🎓
-                    </div>
-
-                    <h3>
-                        Education Talk
-                    </h3>
-
-                    <p>
-                        Educational programs focused on students,
-                        youth development and learning opportunities.
-                    </p>
-
-                    <button
-                        class="card-link"
-                        type="button"
-                        data-title="Education Talk"
-                        data-tag="Education"
-                        data-meta="Youth • Learning • Development"
-                        data-text="We focus on learning, mentorship and youth empowerment to support the next generation with practical opportunities and fresh ideas."
-                    >
-                        Learn More →
-                    </button>
-
-                </article>
-
-
-
-                <article class="service-card reveal">
-
-                    <div class="card-number">
-                        06
-                    </div>
-
-                    <div class="service-icon">
-                        🌍
-                    </div>
-
-                    <h3>
-                        Culture & Tradition
-                    </h3>
-
-                    <p>
-                        Celebrating Ipapo's rich history, culture,
-                        traditions and heritage.
-                    </p>
-
-                    <button
-                        class="card-link"
-                        type="button"
-                        data-title="Culture & Tradition"
-                        data-tag="Heritage"
-                        data-meta="Legacy • Identity • Community"
-                        data-text="We celebrate Ipapo’s heritage by telling stories, preserving culture and inspiring future generations to protect their identity and values."
-                    >
-                        Learn More →
-                    </button>
-
-                </article>
-
-            </div>
-
-
-
-            <div class="culture-banner reveal">
-
-                <div>
-
-                    <span class="section-label">
-                        IPAPO HERITAGE
-                    </span>
-
-
-                    <h3>
-                        Preserving our culture.
-                        <span>Building our future.</span>
-                    </h3>
-
-
-                    <p>
-                        Ipapo has a rich cultural heritage. Our
-                        programs help preserve and promote this
-                        legacy for future generations.
-                    </p>
-
-                </div>
-
-
-                <a
-                    href="#contact"
-                    class="btn"
-                >
-                    Get Involved
-                </a>
-
-            </div>
-
-
-
-            <!-- =================================================
-                 TRADITIONS
-                 ================================================= -->
-
-            <section
-                class="section"
-                id="traditions"
-                style="background: #10141d;"
-            >
-
-                <div class="section-title reveal">
-
-                    <span class="section-label">
-                        LIVING HERITAGE
-                    </span>
-
-                    <h2>
-                        Traditions that keep
-                        <span>Ipapo connected</span>
-                    </h2>
-
-                    <p>
-                        Explore the festivals, symbols and community
-                        values that carry Ipapo's identity from one
-                        generation to the next.
-                    </p>
-
-                </div>
-
-
-                <div
-                    style="
-                        display:grid;
-                        grid-template-columns:
-                            repeat(
-                                auto-fit,
-                                minmax(220px,1fr)
-                            );
-                        gap:18px;
-                    "
-                >
-
-
-                    <article class="service-card reveal">
-
-                        <div class="card-number">
-                            01
-                        </div>
-
-                        <div class="service-icon">
-                            🎭
-                        </div>
-
-                        <h3>
-                            Egungun Festival
-                        </h3>
-
-                        <p>
-                            Ancestral remembrance expressed through
-                            masquerade, music, dance, colour and family
-                            gathering. It honours those who came before
-                            and brings families together in shared memory.
-                        </p>
-
-                        <div class="culture-image-slot">
-
-                            <img
-                                src="img/egungun.jpg"
-                                alt="Egungun Festival"
-                                loading="lazy"
-                            >
-
-                        </div>
-
-                    </article>
-
-
-
-                    <article class="service-card reveal">
-
-                        <div class="card-number">
-                            02
-                        </div>
-
-                        <div class="service-icon">
-                            🌙
-                        </div>
-
-                        <h3>
-                            Oro Festival
-                        </h3>
-
-                        <p>
-                            A solemn traditional observance connected with
-                            communal order, respect, protection and quiet
-                            reflection. Its customs encourage discipline,
-                            responsibility and respect for the wider community.
-                        </p>
-
-                        <div class="culture-image-slot">
-
-                            <img
-                                src="img/oro.jpg"
-                                alt="Oro Festival"
-                                loading="lazy"
-                                onerror="
-                                    this.style.display='none';
-                                    this.parentElement.classList.add('missing-image');
-                                    this.parentElement.textContent='Add img/oro.jpg';
-                                "
-                            >
-
-                        </div>
-
-                    </article>
-
-
-
-                    <article class="service-card reveal">
-
-                        <div class="card-number">
-                            03
-                        </div>
-
-                        <div class="service-icon">
-                            ⚡
-                        </div>
-
-                        <h3>
-                            Sango Festival
-                        </h3>
-
-                        <p>
-                            A celebration of courage, justice, thunder,
-                            drumming and the enduring strength of Yoruba
-                            heritage. Songs, movement and storytelling keep
-                            the values of bravery and fairness alive.
-                        </p>
-
-                        <div class="culture-image-slot">
-
-                            <img
-                                src="img/sango.jpg"
-                                alt="Sango Festival"
-                                loading="lazy"
-                                onerror="
-                                    this.style.display='none';
-                                    this.parentElement.classList.add('missing-image');
-                                    this.parentElement.textContent='Add img/sango.jpg';
-                                "
-                            >
-
-                        </div>
-
-                    </article>
-
-
-
-                    <article class="service-card reveal">
-
-                        <div class="card-number">
-                            04
-                        </div>
-
-                        <div class="service-icon">
-                            🌿
-                        </div>
-
-                        <h3>
-                            Sanda Festival
-                        </h3>
-
-                        <p>
-                            A place to document local stories, family
-                            traditions and the community meaning of Omo Sanda.
-                            It connects family memory, identity and cultural
-                            continuity across generations.
-                        </p>
-
-                        <div class="culture-image-slot">
-
-                            <img
-                                src="img/sanda.jpg"
-                                alt="Sanda Festival"
-                                loading="lazy"
-                                onerror="
-                                    this.style.display='none';
-                                    this.parentElement.classList.add('missing-image');
-                                    this.parentElement.textContent='Add img/sanda.jpg';
-                                "
-                            >
-
-                        </div>
-
-                    </article>
-
-                </div>
-
-            </section>
-
-
-
-            <!-- =================================================
-                 IPAPO HISTORY
-                 ================================================= -->
-
-            <section
-                class="section"
-                id="ipapo-history"
-            >
-
-                <div class="section-title reveal">
-
-                    <span class="section-label">
-                        COMMUNITY ARCHIVE
-                    </span>
-
-                    <h2>
-                        Where the story of
-                        <span>Ipapo begins</span>
-                    </h2>
-
-                    <p>
-                        Ipapo's history should be preserved through the
-                        voices of elders, families, palace records and
-                        community archives.
-                    </p>
-
-                </div>
-
-
-                <div class="about-container">
-
-
-                    <div class="about-image reveal">
-
-                        <div
-                            class="image-frame culture-history-slot"
-                        >
-
-                            <img
-                                src="img/background.jpg"
-                                alt="Historical Ipapo archive"
-                                loading="lazy"
-                                onerror="
-                                    this.style.display='none';
-                                    this.parentElement.classList.add('missing-image');
-                                    this.parentElement.textContent='Add img/background.jpg';
-                                "
-                            >
-
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="about-text reveal">
-
-                        <span class="section-label">
-                            A HISTORY TO VERIFY TOGETHER
-                        </span>
-
-                        <h3>
-                            From first settlement to
-                            <span>community identity</span>
-                        </h3>
-
-                        <p>
-                            Ipapo's founding account belongs to its oral
-                            traditions and family histories. This archive
-                            will bring together the earliest settlement stories,
-                            the names of founding families, migration routes,
-                            the development of quarters, and the institution
-                            of traditional leadership.
-                        </p>
-
-                        <p>
-                            We will publish the final timeline after it has
-                            been reviewed with elders, the palace, historians
-                            and community associations. That keeps the story
-                            accurate, respectful and owned by the people of Ipapo.
-                        </p>
-
-
-                        <div
-                            style="
-                                display:grid;
-                                gap:10px;
-                                margin-top:18px;
-                            "
-                        >
-
-                            <div>
-                                <strong>
-                                    Origins:
-                                </strong>
-                                founding families and first settlement accounts.
-                            </div>
-
-                            <div>
-                                <strong>
-                                    Growth:
-                                </strong>
-                                quarters, markets, farms, schools and
-                                community institutions.
-                            </div>
-
-                            <div>
-                                <strong>
-                                    Legacy:
-                                </strong>
-                                the Eleyinpo stool, festivals, crafts and
-                                the people shaping Ipapo today.
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-        </section>
-
-
-
-        <!-- =================================================
-             BLACK SOAP
-             ================================================= -->
-
-        <section
-            class="business section"
-            id="business"
-        >
-
-            <div class="section-title reveal">
-
-                <span class="section-label">
-                    LOCAL BUSINESS
-                </span>
-
-                <h2>
-                    Black Soap <span>Business</span>
-                </h2>
-
-                <p>
-                    A traditional, locally-made black soap product developed
-                    by entrepreneurs in Ipapo — natural, sustainable and rooted
-                    in local craft.(OSE ABUWE)
-                </p>
-
-            </div>
-
-
-            <div class="about-container">
-
-
-                <div class="about-image reveal">
-
-                    <div class="image-frame">
-
-                        <img
-                            src="img/black.jpg"
-                            alt="Traditional black soap"
-                        >
-
-                    </div>
-
-                </div>
-
-
-
-                <div class="about-text reveal">
-
-                    <span class="section-label">
-                        SUPPORT LOCAL
-                    </span>
-
-
-                    <h3>
-                        Handmade Black Soap
-                        <span>From Ipapo</span>
-                        (OSE ABUWE)
-                    </h3>
-
-
-                    <p>
-                        Our community producers craft traditional black soap
-                        using local ingredients and time-honored methods.
-                        The soap is gentle, chemical-free, and supports
-                        small businesses and local livelihoods.
-                    </p>
-
-
-                    <p>
-                        Interested in stocking or learning more? Contact
-                        the producers directly to place orders or arrange
-                        a visit to the workshop.
-                    </p>
-
-
-                    <a
-                        href="#contact"
-                        class="btn"
-                    >
-                        Contact Producers
-                    </a>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             COLLEGE
-             ================================================= -->
-
-        <section
-            class="college section"
-            id="college"
-        >
-
-            <div class="section-title reveal">
-
-                <span class="section-label">
-                    EDUCATION DEVELOPMENT
-                </span>
-
-                <h2>
-                    College of <span>Education</span>
-                </h2>
-
-                <p>
-                    Construction of a new College of Education campus is
-                    underway in Ipapo, aimed at expanding teacher training
-                    and higher-education opportunities for the region.
-                </p>
-
-            </div>
-
-
-            <div class="about-container">
-
-
-                <div class="about-image reveal">
-
-                    <div class="image-frame">
-
-                        <img
-                            src="https://image-static.collegedunia.com/public/college_data/images/campusimage/143540526215.jpg"
-                            alt="University Building"
-                        >
-
-                    </div>
-
-
-                    <div class="experience-card">
-
-                        <strong>
-                            DEVELOPMENT
-                        </strong>
-
-                        <span>
-                            Capacity Building
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-
-                <div class="about-text reveal">
-
-                    <span class="section-label">
-                        COMMUNITY GROWTH
-                    </span>
-
-
-                    <h3>
-                        New Campus Construction
-                        <span>For Ipapo</span>
-                    </h3>
-
-
-                    <p>
-                        The project will deliver modern classrooms,
-                        workshops and housing for students and faculty.
-                        It aims to boost local employment, teacher training
-                        and long-term educational access.
-                    </p>
-
-
-                    <p>
-                        Stay tuned for timelines, scholarship opportunities,
-                        and ways the community can get involved.
-                    </p>
-
-
-                    <button
-                        type="button"
-                        class="card-link btn"
-                        data-title="College of Education"
-                        data-tag="Education Development"
-                        data-meta="Construction underway • Ipapo"
-                        data-text="A new College of Education is being built in Ipapo to expand teacher training and higher-education access. The campus will include modern classrooms, workshops, student housing and community facilities. The project is expected to create local jobs during construction and increase long-term educational opportunities and scholarship programs for the region."
-                    >
-                        Learn More
-                    </button>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             TEAM
-             ================================================= -->
-
-        <section
-            class="team section"
-            id="team"
-        >
-
-            <div class="section-title reveal">
-
-                <span class="section-label">
-                    OUR VOICES
-                </span>
-
-                <h2>
-                    Meet the <span>Team</span>
-                </h2>
-
-                <p>
-                    Real people, strong stories and trusted voices
-                    behind every program.
-                </p>
-
-            </div>
-
-
-            <div class="team-grid">
-
-
-                <article class="team-card reveal">
-
-                    <img
-                        src="img/people.jpg"
-                        alt="Host with microphone"
-                    >
-
-                    <div class="team-card-content">
-
-                        <h3 style="color: white;">
-                            Fipsu Member
-                        </h3>
-
-                        <span>
-                            Station Host
-                        </span>
-
-                        <p>
-                            FIPSU stands for the Federation of Ipapo
-                            Students Union, a student organization
-                            representing youth and scholars from Ipapo,
-                            a community in Oyo State, Nigeria.
-                        </p>
-
-                    </div>
-
-                </article>
-
-
-
-                <article class="team-card reveal">
-
-                    <img
-                        src="img/amofin.jpg"
-                        alt="Female presenter"
-                    >
-
-                    <div class="team-card-content">
-
-                        <h3 style="color: white;">
-                            Beulah Adeoye
-                        </h3>
-
-                        <span>
-                            2027 Governorship Candidate
-                        </span>
-
-                        <p>
-                            AI Overview Amofin Beulah Adeoye is a Nigerian
-                            legal and financial expert, philanthropist,
-                            and Peoples Democratic Party (PDP) gubernatorial
-                            aspirant for Oyo State in the 2027 election.
-                        </p>
-
-                    </div>
-
-                </article>
-
-
-
-                <article class="team-card reveal">
-
-                    <img
-                        src="img/DARH7119.JPG"
-                        alt="Hammed Sherrif Olamide"
-                        style="
-                            object-fit: cover;
-                            object-position: center top;
-                            width: 100%;
-                        "
-                    >
-
-                    <div class="team-card-content">
-
-                        <h3 style="color: white;">
-                            Hammed Sherrif Olamide
-                        </h3>
-
-                        <span>
-                            The fipsu president of ipapo
-                        </span>
-
-                        <p>
-                            The president of the Federation of Ipapo
-                            Students Union (FIPSU) for recent terms has
-                            included Salam Waris Abioye (noted in 2024)
-                            and Comr. Hammed Sheriff (noted in 2022)
-                        </p>
-
-                    </div>
-
-                </article>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             GALLERY
-             ================================================= -->
-
-        <section
-            class="gallery section section-dark"
-            id="gallery"
-        >
-
-            <div class="section-title reveal">
-
-                <span class="section-label">
-                    COMMUNITY LIFE
-                </span>
-
-                <h2>
-                    Moments from <span>Ipapo</span>
-                </h2>
-
-                <p>
-                    The people, events and stories that keep our
-                    community alive and connected.
-                </p>
-
-            </div>
-
-
-            <div class="gallery-grid">
-
-                <img
-                    class="reveal"
-                    src="img/group.jpg"
-                    alt="Community gathering"
-                >
-
-                <img
-                    class="reveal"
-                    src="img/amofin.jpg"
-                    alt="Public figure and people"
-                >
-
-                <img
-                    class="reveal"
-                    src="img/school.jpg"
-                    alt="School activity"
-                >
-
-                <img
-                    class="reveal"
-                    src="img/people.jpg"
-                    alt="Community people in discussion"
-                >
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             LATEST NEWS
-             ================================================= -->
-
-        <section
-            class="news section"
-            id="news"
-        >
-
-            <div class="section-title reveal">
-
-                <span class="section-label">
-                    STAY INFORMED
-                </span>
-
-                <h2>
-                    Latest <span>News</span>
-                </h2>
-
-                <p>
-                    Recent updates, stories and events from our community.
-                </p>
-
-            </div>
-
-
-            <div
-                class="news-container"
-                id="homeNewsContainer"
-            ></div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             NEWSLETTER
-             ================================================= -->
-
-        <section
-            class="newsletter section"
-            id="newsletter"
-        >
-
-            <div class="newsletter-box reveal">
-
-                <div class="newsletter-copy">
-
-                    <span class="section-label">
-                        STAY CONNECTED
-                    </span>
-
-                    <h2>
-                        Get the latest stories from Ipapo in your inbox.
-                    </h2>
-
-                </div>
-
-
-                <form
-                    class="newsletter-form"
-                    id="newsletterForm"
-                >
-
-                    <input
-                        type="email"
-                        id="newsletterEmail"
-                        name="email"
-                        placeholder="Enter your email"
-                        required
-                    >
-
-                    <button
-                        type="submit"
-                        class="btn"
-                    >
-                        Subscribe
-                    </button>
-
-                </form>
-
-
-                <p
-                    class="newsletter-success"
-                    id="newsletterSuccess"
-                >
-                    Thanks for subscribing! We’ll keep you updated.
-                </p>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             CONTACT
-             ================================================= -->
-
-        <section
-            class="contact section section-dark"
-            id="contact"
-        >
-
-            <div class="section-title reveal">
-
-                <span class="section-label">
-                    GET IN TOUCH
-                </span>
-
-                <h2>
-                    Contact <span>Us</span>
-                </h2>
-
-                <p>
-                    Have a story, question or idea?
-                    We would love to hear from you.
-                </p>
-
-            </div>
-
-
-            <div class="location-wrap reveal">
-
-                <div class="map-box">
-
-                    <iframe
-                        src="https://www.google.com/maps?q=Ipapo%20Oyo%20State%20Nigeria&z=13&output=embed"
-                        width="100%"
-                        height="420"
-                        style="border:0;"
-                        allowfullscreen=""
-                        loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"
-                        title="Ipapo location map"
-                    ></iframe>
-
-                </div>
-
-
-                <div class="location-info">
-
-                    <h3>
-                        Find Us
-                    </h3>
-
-                    <p>
-                        Ipapo, Oyo State, Nigeria
-                    </p>
-
-                    <p>
-                        Visit the heart of our community to connect,
-                        listen and share stories with Ipapo Broadcast.
-                    </p>
-
-
-                    <a
-                        class="btn"
-                        href="https://www.google.com/maps/search/?api=1&query=Ipapo%20Oyo%20State%20Nigeria"
-                        target="_blank"
-                        rel="noopener"
-                    >
-                        Open in Google Maps
-                    </a>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="contact-container">
-
-
-                <div class="contact-info reveal">
-
-                    <h3>
-                        Let's talk.
-                    </h3>
-
-
-                    <p>
-                        Whether you have a community story,
-                        partnership idea or general enquiry,
-                        reach out to Ipapo Broadcast.
-                    </p>
-
-
-                    <div class="contact-item">
-
-                        <span>
-                            📍
-                        </span>
-
-                        <div>
-
-                            <strong>
-                                Location
-                            </strong>
-
-                            <p>
-                                Ipapo, Oyo State, Nigeria
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="contact-item">
-
-                        <span>
-                            📞
-                        </span>
-
-                        <div>
-
-                            <strong>
-                                WhatsApp
-                            </strong>
-
-                            <p>
-
-                                <a
-                                    href="https://wa.me/08070426269"
-                                    target="_blank"
-                                    rel="noopener"
-                                    class="whatsapp-link"
-                                >
-                                    Chat with us on WhatsApp
-                                </a>
-
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="contact-item">
-
-                        <span>
-                            📧
-                        </span>
-
-                        <div>
-
-                            <strong>
-                                address
-                            </strong>
-
-                            <p>
-                                let's get to know you
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <a
-                        href="https://wa.me/08070426269"
-                        target="_blank"
-                        rel="noopener"
-                        class="whatsapp-btn"
-                    >
-
-                        <span>
-                            💬
-                        </span>
-
-                        Chat on WhatsApp
-
-                    </a>
-
-                </div>
-
-
-
-                <form
-                    class="contact-form reveal"
-                    id="contactForm"
-                    action="https://formsubmit.co/ibrahimtoheebolaniyi125@gmail.com"
-                    method="POST"
-                >
-
-                    <input
-                        type="hidden"
-                        name="_subject"
-                        value="New message from Ipapo Broadcast website"
-                    >
-
-                    <input
-                        type="hidden"
-                        name="_captcha"
-                        value="false"
-                    >
-
-                    <input
-                        type="text"
-                        name="_honey"
-                        style="display:none"
-                    >
-
-
-                    <div class="input-group">
-
-                        <label for="name">
-                            Your Name
-                        </label>
-
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            placeholder="Enter your name"
-                            required
-                        >
-
-                    </div>
-
-
-                    <div class="input-group">
-
-                        <label for="email">
-                            Your Address / Email
-                        </label>
-
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            placeholder="Enter your email"
-                            required
-                        >
-
-                    </div>
-
-
-                    <div class="input-group">
-
-                        <label for="message">
-                            Your Message
-                        </label>
-
-                        <textarea
-                            id="message"
-                            name="message"
-                            placeholder="Write your message..."
-                            required
-                        ></textarea>
-
-                    </div>
-
-
-                    <button
-                        type="submit"
-                        class="btn"
-                        id="submitBtn"
-                    >
-                        Send Message →
-                    </button>
-
-                </form>
-
-
-                <div
-                    class="form-success"
-                    id="formSuccess"
-                >
-                    ✓ Your message has been sent successfully!
-                </div>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-
-    <!-- =====================================================
-         STORY MODAL
-         ===================================================== -->
-
-    <div
-        class="story-modal"
-        id="storyModal"
-        aria-hidden="true"
-    >
-
-        <div
-            class="story-modal-backdrop"
-            data-close="true"
-        ></div>
-
-
-        <div
-            class="story-modal-panel"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="storyTitle"
-        >
-
-            <button
-                class="story-close"
-                type="button"
-                aria-label="Close story"
-            >
-                ×
-            </button>
-
-
-            <span
-                class="story-tag"
-                id="storyTag"
-            >
-                Program
-            </span>
-
-
-            <h3 id="storyTitle">
-                Title
-            </h3>
-
-
-            <p
-                class="story-meta"
-                id="storyMeta"
-            >
-                Meta
-            </p>
-
-
-            <p id="storyText">
-                Story content.
-            </p>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- =====================================================
-         FOOTER
-         ===================================================== -->
-
-    <footer>
-
-        <div class="footer-content">
-
-
-            <div class="footer-brand">
-
-                <a
-                    href="#home"
-                    class="logo"
-                >
-                    IPAPO <span>Broadcast</span>
-                </a>
-
-
-                <p>
-                    Trusted Voice • Professional Media • Community First
-                </p>
-
-            </div>
-
-
-
-            <div class="footer-links">
-
-                <h4>
-                    Platform
-                </h4>
-
-                <a href="index.html">
-                    🏠 Home
-                </a>
-
-                <a href="news.html">
-                    📰 News
-                </a>
-
-                <a href="live.html">
-                    📻 Live Radio
-                </a>
-
-                <a href="programs.html">
-                    📺 Programs
-                </a>
-
-                <a href="events.html">
-                    🎉 Events
-                </a>
-
-            </div>
-
-
-
-            <div class="footer-links">
-
-                <h4>
-                    Community
-                </h4>
-
-                <a href="community.html">
-                    🤝 Community Hub
-                </a>
-
-                <a href="gallery.html">
-                    🖼️ Photo Gallery
-                </a>
-
-                <a href="submit-story.html">
-                    ✍️ Submit Story
-                </a>
-
-                <a href="contact.html">
-                    📞 Contact
-                </a>
-
-            </div>
-
-
-
-            <div class="footer-links">
-
-                <h4>
-                    About
-                </h4>
-
-                <a href="about.html">
-                    👑 About Ipapo
-                </a>
-
-                <a href="about.html#heritage">
-                    🏛️ Royal Heritage
-                </a>
-
-                <a href="about.html#culture">
-                    🎭 Culture & Traditions
-                </a>
-
-            </div>
-
-        </div>
-
-
-
-        <div class="footer-bottom">
-
-            <p>
-                © 2026 Ipapo Broadcast. All Rights Reserved.
-            </p>
-
-            <p>
-                Built with ❤️ for the community.
-            </p>
-
-
-            <a
-                href="admin/admin-login.html"
-                style="
-                    color:rgba(255,255,255,0.3);
-                    font-size:11px;
-                    text-decoration:none;
-                    margin-top:10px;
-                    display:inline-block;
-                "
-            >
-                🔐 Admin Portal
-            </a>
-
-        </div>
-
-
-        <div
-            class="footer-credit"
-            role="contentinfo"
-        >
-
-            <span class="credit-label">
-                @
-            </span>
-
-            <span class="builder">
-                Ibrahim Olaniyi (Programmer)
-            </span>
-
-        </div>
-
-    </footer>
-
-
-
-    <!-- =====================================================
-         ASSISTANT
-         ===================================================== -->
-
-    <div
-        class="assistant"
-        id="assistant"
-    >
-
-        <div
-            class="assistant-panel"
-            id="assistantPanel"
-            aria-hidden="true"
-        >
-
-            <h4>
-                Hi — how can I help?
-            </h4>
-
-
-            <div class="assistant-options">
-
-                <div
-                    class="assistant-option"
-                    data-target="live"
-                >
-                    Take me to Live
-                </div>
-
-                <div
-                    class="assistant-option"
-                    data-target="news"
-                >
-                    Show Latest News
-                </div>
-
-                <div
-                    class="assistant-option"
-                    data-target="services"
-                >
-                    See Programs
-                </div>
-
-                <div
-                    class="assistant-option"
-                    data-target="contact"
-                >
-                    Contact & Submit
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <button
-            class="assistant-btn"
-            id="assistantBtn"
-            aria-expanded="false"
-            aria-label="Open assistant"
-        >
-            💬
-        </button>
-
-    </div>
-
-
-
-    <!-- =====================================================
-         SCROLL TO TOP
-         ===================================================== -->
-
-    <button
-        class="scroll-top"
-        id="scrollTop"
-        aria-label="Scroll to top"
-    >
-        ↑
-    </button>
-
-
-
-    <!-- =====================================================
-         JAVASCRIPT FILES
-         ===================================================== -->
-
-    <script src="js/api-config.js"></script>
-
-    <script src="js/news.js"></script>
-
-    <script src="js/dashboard.js"></script>
-
-    <script src="script.js"></script>
-
-
-
-    <!-- =====================================================
-         HOME NEWS SYSTEM
-         ===================================================== -->
-
-    <script>
-
-        /* =====================================================
-           FORMAT NEWS DATE
-           ===================================================== */
-
-        function formatNewsDate(story) {
-
-            const date =
-                story.fetchedAt ||
-                story.publishedAt;
-
-            if (!date) {
-
-                return 'Latest update';
-
-            }
-
-
-            const parsed =
-                new Date(date);
-
-
-            if (
-                Number.isNaN(
-                    parsed.getTime()
-                )
-            ) {
-
-                return 'Latest update';
-
-            }
-
-
-            return parsed.toLocaleDateString(
-                undefined,
-                {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric'
-                }
-            );
-
-        }
-
-
-
-        /* =====================================================
-           ESCAPE HTML
-           ===================================================== */
-
-        function escapeNewsHTML(value) {
-
-            return String(
-                value ?? ''
-            )
-                .replace(
-                    /&/g,
-                    '&amp;'
-                )
-                .replace(
-                    /</g,
-                    '&lt;'
-                )
-                .replace(
-                    />/g,
-                    '&gt;'
-                )
-                .replace(
-                    /"/g,
-                    '&quot;'
-                )
-                .replace(
-                    /'/g,
-                    '&#039;'
-                );
-
-        }
-
-
-
-        /* =====================================================
-           LOAD HOME NEWS
-           ===================================================== */
-
-        async function loadHomeNews() {
-
-            const container =
-                document.getElementById(
-                    'homeNewsContainer'
-                );
-
-
-            if (!container) {
-
-                console.warn(
-                    'Ipapo Broadcast: homeNewsContainer not found.'
-                );
-
-                return;
-
-            }
-
-
-            /* -----------------------------------------------
-               Loading state
-               ----------------------------------------------- */
-
-            container.innerHTML = `
-
-                <div
-                    class="news-loading"
-                    style="grid-column:1/-1;"
-                >
-
-                    <div
-                        class="news-loading-spinner"
-                    ></div>
-
-                    <span>
-                        Loading the latest Ipapo stories...
-                    </span>
-
-                </div>
-
-            `;
-
-
-            try {
-
-                console.log(
-                    'Ipapo Broadcast: fetching Home news...'
-                );
-
-
-                let apiUrl =
-                    '/api/fetch-news';
-
-
-                if (
-                    window.ipapoApiUrl &&
-                    typeof window.ipapoApiUrl ===
-                    'function'
-                ) {
-
-                    apiUrl =
-                        window.ipapoApiUrl(
-                            '/api/fetch-news'
-                        );
-
-                }
-
-
-                const response =
-                    await fetch(
-                        apiUrl,
-                        {
-                            method: 'GET',
-                            cache: 'no-store',
-                            headers: {
-                                'Accept':
-                                    'application/json'
-                            }
-                        }
-                    );
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        `Home news fetch failed: HTTP ${response.status}`
-                    );
-
-                }
-
-
-                const payload =
-                    await response.json();
-
-
-                const stories =
-                    Array.isArray(
-                        payload.stories
-                    )
-                        ? payload.stories
-                        : [];
-
-
-                if (!stories.length) {
-
-                    showEmptyNewsState(
-                        container
-                    );
-
-                    return;
-
-                }
-
-
-                renderHomeNews(
-                    container,
-                    stories
-                );
-
-
-            } catch (error) {
-
-                console.warn(
-                    'Home news API failed. Trying local NewsService fallback:',
-                    error
-                );
-
-
-                /* -------------------------------------------
-                   Fallback to existing NewsService
-                   ------------------------------------------- */
-
-                try {
-
-                    if (
-                        window.NewsService &&
-                        typeof window.NewsService
-                            .getAllNews ===
-                        'function'
-                    ) {
-
-                        const fallback =
-                            window.NewsService
-                                .getAllNews()
-                                .slice(0, 6);
-
-
-                        if (fallback.length) {
-
-                            renderHomeNews(
-                                container,
-                                fallback
-                            );
-
-                            return;
-
-                        }
-
-                    }
-
-
-                    showNewsError(
-                        container
-                    );
-
-
-                } catch (fallbackError) {
-
-                    console.error(
-                        'News fallback failed:',
-                        fallbackError
-                    );
-
-
-                    showNewsError(
-                        container
-                    );
-
-                }
-
-            }
-
-        }
-
-
-
-        /* =====================================================
-           RENDER HOME NEWS
-           
-           IMPORTANT:
-           THERE IS NO IMAGE HERE.
-           ===================================================== */
-
-        function renderHomeNews(
-            container,
-            stories
-        ) {
-
-            const sortedStories =
-                [...stories]
-                    .sort(
-                        (a, b) => {
-
-                            const dateA =
-                                new Date(
-                                    a.publishedAt ||
-                                    a.fetchedAt ||
-                                    0
-                                ).getTime();
-
-
-                            const dateB =
-                                new Date(
-                                    b.publishedAt ||
-                                    b.fetchedAt ||
-                                    0
-                                ).getTime();
-
-
-                            return dateB - dateA;
-
-                        }
-                    )
-                    .slice(0, 6);
-
-
-            container.innerHTML =
-                sortedStories
-                    .map(
-                        (
-                            story,
-                            index
-                        ) => {
-
-                            const title =
-                                escapeNewsHTML(
-                                    story.title ||
-                                    'Ipapo Community Update'
-                                );
-
-
-                            const summary =
-                                escapeNewsHTML(
-                                    story.summary ||
-                                    story.content ||
-                                    story.description ||
-                                    'Fresh community update from Ipapo.'
-                                );
-
-
-                            const category =
-                                escapeNewsHTML(
-                                    story.category ||
-                                    'Community'
-                                );
-
-
-                            const storyId =
-                                encodeURIComponent(
-                                    story.id ||
-                                    ''
-                                );
-
-
-                            const date =
-                                escapeNewsHTML(
-                                    formatNewsDate(
-                                        story
-                                    )
-                                );
-
-
-                            return `
-
-                                <article
-                                    class="news-card reveal show"
-                                    style="
-                                        --news-delay:${index * 90}ms;
-                                    "
-                                >
-
-                                    <div
-                                        class="news-content"
-                                    >
-
-
-                                        <span
-                                            class="home-news-category"
-                                        >
-                                            ${category}
-                                        </span>
-
-
-                                        <div
-                                            class="news-meta"
-                                        >
-
-                                            <span
-                                                class="news-update"
-                                            >
-                                                Latest update
-                                            </span>
-
-
-                                            <small>
-                                                ${date}
-                                            </small>
-
-                                        </div>
-
-
-                                        <h3>
-                                            ${title}
-                                        </h3>
-
-
-                                        <p>
-                                            ${summary}
-                                        </p>
-
-
-                                        <a
-                                            href="article.html?id=${storyId}"
-                                            class="news-read-more"
-                                            aria-label="Read ${title}"
-                                        >
-
-                                            Read Full Story
-
-                                            <span>
-                                                →
-                                            </span>
-
-                                        </a>
-
-
-                                    </div>
-
-                                </article>
-
-                            `;
-
-                        }
-                    )
-                    .join('');
-
-
-            /* -----------------------------------------------
-               Reveal animation
-               ----------------------------------------------- */
-
-            requestAnimationFrame(
-                () => {
-
-                    const cards =
-                        container.querySelectorAll(
-                            '.news-card'
-                        );
-
-
-                    cards.forEach(
-                        (
-                            card,
-                            index
-                        ) => {
-
-                            setTimeout(
-                                () => {
-
-                                    card.classList.add(
-                                        'news-card-visible'
-                                    );
-
-                                },
-                                index * 90
-                            );
-
-                        }
-                    );
-
-                }
-            );
-
-        }
-
-
-
-        /* =====================================================
-           EMPTY NEWS STATE
-           ===================================================== */
-
-        function showEmptyNewsState(
-            container
-        ) {
-
-            container.innerHTML = `
-
-                <div
-                    class="news-empty"
-                    style="grid-column:1/-1;"
-                >
-
-                    <div
-                        class="news-empty-icon"
-                    >
-                        📰
-                    </div>
-
-
-                    <h3>
-                        No fresh stories yet
-                    </h3>
-
-
-                    <p>
-                        Check back soon for the latest
-                        Ipapo community updates.
-                    </p>
-
-
-                    <button
-                        type="button"
-                        class="btn"
-                        onclick="loadHomeNews()"
-                    >
-                        Refresh News
-                    </button>
-
-                </div>
-
-            `;
-
-        }
-
-
-
-        /* =====================================================
-           ERROR STATE
-           ===================================================== */
-
-        function showNewsError(
-            container
-        ) {
-
-            container.innerHTML = `
-
-                <div
-                    class="news-empty"
-                    style="grid-column:1/-1;"
-                >
-
-                    <div
-                        class="news-empty-icon"
-                    >
-                        ⚠️
-                    </div>
-
-
-                    <h3>
-                        Unable to load news
-                    </h3>
-
-
-                    <p>
-                        We couldn't load the latest stories.
-                        Please try again.
-                    </p>
-
-
-                    <button
-                        type="button"
-                        class="btn"
-                        onclick="loadHomeNews()"
-                    >
-                        Try Again
-                    </button>
-
-                </div>
-
-            `;
-
-        }
-
-
-
-        /* =====================================================
-           START HOME NEWS
-           ===================================================== */
-
-        document.addEventListener(
-            'DOMContentLoaded',
-            loadHomeNews
-        );
-
-    </script>
-
-
-</body>
-
-</html>
-
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" 
+        rel="stylesheet" 
+    > 
+ 
+    <link rel="stylesheet" href="index.css"> 
+    <link rel="stylesheet" href="css/landing.css"> 
+</head> 
+ 
+<body class="landing-page-body"> 
+ 
+    <!-- ========================================================= 
+         CAROUSEL 
+         ========================================================= --> 
+ 
+    <div class="carousel-status-bar" id="carouselStatusBar"></div> 
+ 
+    <div 
+        class="carousel-viewport" 
+        id="landingViewport" 
+        aria-hidden="true" 
+    > 
+        <div id="carouselContainer"> 
+ 
+            <div class="carousel-slide active" data-index="0"> 
+                <img 
+                    class="carousel-slide-img" 
+                    src="img/ipapo_gateway.jpg" 
+                    alt="Welcome to Ipapo Monument" 
+                > 
+            </div> 
+ 
+            <div class="carousel-slide" data-index="1"> 
+                <img 
+                    class="carousel-slide-img" 
+                    src="img/ippao.jpg" 
+                    alt="Oba of Ipapo in Royal Regalia" 
+                > 
+            </div> 
+ 
+            <div class="carousel-slide" data-index="2"> 
+                <img 
+                    class="carousel-slide-img" 
+                    src="img/ipapo_aerial.jpg" 
+                    alt="Sunset Aerial View of Ipapo" 
+                > 
+            </div> 
+ 
+            <div class="carousel-slide" data-index="3"> 
+                <img 
+                    class="carousel-slide-img" 
+                    src="img/abuwe.jpg" 
+                    alt="Abuwe Black Soap Making in Ipapo" 
+                > 
+            </div> 
+ 
+            <div class="carousel-slide" data-index="4"> 
+                <img 
+                    class="carousel-slide-img" 
+                    src="img/building.jpg" 
+                    alt="Ipapo College of Education Building" 
+                > 
+            </div> 
+ 
+            <div class="carousel-slide" data-index="5"> 
+                <img 
+                    class="carousel-slide-img" 
+                    src="img/school.jpg" 
+                    alt="Ipapo Community Sports Festival" 
+                > 
+            </div> 
+ 
+            <div class="carousel-slide" data-index="6"> 
+                <img 
+                    class="carousel-slide-img" 
+                    src="img/sport.jpg" 
+                    alt="Ipapo Sports Champions" 
+                > 
+            </div> 
+ 
+            <div class="carousel-slide" data-index="7"> 
+                <img 
+                    class="carousel-slide-img" 
+                    src="img/field.jpg" 
+                    alt="Community Football Match at Ipapo Field" 
+                > 
+            </div> 
+ 
+            <div class="carousel-slide" data-index="8"> 
+                <img 
+                    class="carousel-slide-img" 
+                    src="img/group.jpg" 
+                    alt="Ipapo Scholarship Program" 
+                > 
+            </div> 
+ 
+            <div class="carousel-slide" data-index="9"> 
+                <img 
+                    class="carousel-slide-img" 
+                    src="img/DARH7119.JPG" 
+                    alt="Federation of Ipapo Students Union" 
+                > 
+            </div> 
+ 
+        </div> 
+ 
+        <div class="carousel-overlay"></div> 
+    </div> 
+ 
+    <button 
+        class="carousel-nav-btn prev" 
+        id="prevSlideBtn" 
+        type="button" 
+        aria-label="Previous Ipapo Scene" 
+    > 
+        ‹ 
+    </button> 
+ 
+    <button 
+        class="carousel-nav-btn next" 
+        id="nextSlideBtn" 
+        type="button" 
+        aria-label="Next Ipapo Scene" 
+    > 
+        › 
+    </button> 
+ 
+    <div class="carousel-caption-card" id="carouselCaptionCard"> 
+ 
+        <div class="caption-meta"> 
+            <span class="caption-tag">Town Monument</span> 
+            <span class="caption-location"> 
+                📍 Town Entrance, Ipapo 
+            </span> 
+        </div> 
+ 
+        <h4 class="caption-title"> 
+            Welcome to Ipapo: The Home of Art & Culture 
+        </h4> 
+ 
+        <p class="caption-desc"> 
+            The historic gateway welcoming all residents, visitors, and 
+            descendants to the peaceful town of Ipapo, Oyo State. 
+        </p> 
+ 
+    </div> 
+ 
+    <nav 
+        class="carousel-thumbs-wrapper" 
+        id="carouselThumbs" 
+        aria-label="Ipapo Photo Gallery Selector" 
+    > 
+    </nav> 
+ 
+ 
+    <!-- ========================================================= 
+         HEADER 
+         ========================================================= --> 
+ 
+    <header class="lp-header" id="lpHeader"> 
+ 
+        <a href="index.html" class="lp-logo-link"> 
+ 
+            <div class="lp-logo-icon">📻</div> 
+ 
+            <div> 
+                <div class="lp-logo-text"> 
+                    IPAPO <span>Broadcast</span> 
+                </div> 
+ 
+                <span class="lp-logo-sub"> 
+                    Oyo State, Nigeria 
+                </span> 
+            </div> 
+ 
+        </a> 
+ 
+        <nav class="lp-nav-links"> 
+ 
+            <a href="news.html" class="lp-nav-item"> 
+                📰 News 
+            </a> 
+ 
+            <a href="live.html" class="lp-nav-item"> 
+                📻 Live Radio 
+            </a> 
+ 
+            <a href="events.html" class="lp-nav-item"> 
+                🎉 Events 
+            </a> 
+ 
+            <a href="community.html" class="lp-nav-item"> 
+                🤝 Community 
+            </a> 
+ 
+            <a href="about.html" class="lp-nav-item"> 
+                👑 About 
+            </a> 
+ 
+            <a href="contact.html" class="lp-nav-item"> 
+                📞 Contact 
+            </a> 
+ 
+        </nav> 
+ 
+        <div class="lp-auth-actions"> 
+ 
+            <a 
+                href="dashboard.html" 
+                class="lp-btn-login" 
+            > 
+                👤 Member Area 
+            </a> 
+ 
+            <a 
+                href="register.html" 
+                class="lp-btn-signup" 
+            > 
+                ✨ Join Community 
+            </a> 
+ 
+        </div> 
+ 
+        <button 
+            type="button" 
+            class="lp-menu-btn" 
+            id="lpMenuBtn" 
+            aria-label="Open navigation menu" 
+            aria-expanded="false" 
+        > 
+            ☰ 
+        </button> 
+ 
+    </header> 
+ 
+ 
+    <!-- ========================================================= 
+         MOBILE MENU 
+         ========================================================= --> 
+ 
+    <div 
+        class="lp-mobile-menu" 
+        id="lpMobileMenu" 
+        aria-hidden="true" 
+    > 
+ 
+        <a href="news.html"> 
+            News 
+        </a> 
+ 
+        <a href="live.html"> 
+            Live Radio 
+        </a> 
+ 
+        <a href="events.html"> 
+            Events 
+        </a> 
+ 
+        <a href="community.html"> 
+            Community 
+        </a> 
+ 
+        <a href="about.html"> 
+            About 
+        </a> 
+ 
+        <a href="contact.html"> 
+            Contact 
+        </a> 
+ 
+        <div class="lp-mobile-menu-actions"> 
+ 
+            <a 
+                href="dashboard.html" 
+                class="lp-btn-login" 
+            > 
+                Member Area 
+            </a> 
+ 
+            <a 
+                href="register.html" 
+                class="lp-btn-signup" 
+            > 
+                Join Community 
+            </a> 
+ 
+        </div> 
+ 
+    </div> 
+ 
+ 
+    <!-- ========================================================= 
+         HERO 
+         ========================================================= --> 
+ 
+    <main class="lp-content-container"> 
+ 
+        <div class="hero-pill-badge"> 
+ 
+            <span class="pulsing-dot"></span> 
+ 
+            <span> 
+                VOICE OF THE COMMUNITY • IPAPO, OYO STATE 
+            </span> 
+ 
+        </div> 
+ 
+        <h1 class="hero-main-title"> 
+            The Heartbeat, Culture & News of 
+            <span class="highlight">Ipapo.</span> 
+        </h1> 
+ 
+        <p class="hero-lead-text"> 
+            Connecting our people through trusted local journalism, 
+            24/7 live community radio, youth empowerment, cultural 
+            heritage, and civic dialogue across Ipapo and to the world. 
+        </p> 
+ 
+        <div class="hero-cta-group"> 
+ 
+            <a 
+                href="register.html" 
+                class="btn-hero-primary" 
+            > 
+                <span> 
+                    ✨ Join the Ipapo Community 
+                </span> 
+ 
+                <span> 
+                    → 
+                </span> 
+            </a> 
+ 
+            <a 
+                href="news.html" 
+                class="btn-hero-secondary" 
+            > 
+                <span> 
+                    🧭 Explore Town Platform ↓ 
+                </span> 
+            </a> 
+ 
+        </div> 
+ 
+        <div class="hero-stats-ribbon"> 
+ 
+            <div class="stat-box"> 
+                <div class="stat-number"> 
+                    24/7 
+                </div> 
+ 
+                <div class="stat-label"> 
+                    Live Community Radio 
+                </div> 
+            </div> 
+ 
+            <div class="stat-box"> 
+                <div class="stat-number"> 
+                    10+ 
+                </div> 
+ 
+                <div class="stat-label"> 
+                    Town Quarters & Baales 
+                </div> 
+            </div> 
+ 
+            <div class="stat-box"> 
+                <div class="stat-number"> 
+                    5,000+ 
+                </div> 
+ 
+                <div class="stat-label"> 
+                    Resident Network 
+                </div> 
+            </div> 
+ 
+            <div class="stat-box"> 
+                <div class="stat-number"> 
+                    100% 
+                </div> 
+ 
+                <div class="stat-label"> 
+                    Verified Local Focus 
+                </div> 
+            </div> 
+ 
+        </div> 
+ 
+    </main> 
+ 
+ 
+    <!-- ========================================================= 
+         MAIN CONTENT 
+         ========================================================= --> 
+ 
+    <div class="lp-section-wrap" id="features"> 
+ 
+        <div class="lp-section-inner"> 
+ 
+ 
+            <!-- ================================================= 
+                 FEATURES 
+                 ================================================= --> 
+ 
+            <div class="section-head"> 
+ 
+                <span class="sub-tag"> 
+                    Ipapo Broadcast Platform 
+                </span> 
+ 
+                <h2> 
+                    Everything Your Community Needs in One Hub 
+                </h2> 
+ 
+                <p> 
+                    Designed specifically for the civic development, 
+                    information, and cultural unity of Ipapo descendants 
+                    everywhere. 
+                </p> 
+ 
+            </div> 
+ 
+ 
+            <div class="features-grid"> 
+ 
+                <div class="feature-card"> 
+ 
+                    <div class="feature-icon-bubble"> 
+                        📻 
+                    </div> 
+ 
+                    <h3> 
+                        24/7 Live Radio 
+                    </h3> 
+ 
+                    <p> 
+                        Stream live audio broadcasts, cultural music, 
+                        talk shows, and morning briefs from Ipapo studio 
+                        anywhere in the world. 
+                    </p> 
+ 
+                </div> 
+ 
+ 
+                <div class="feature-card"> 
+ 
+                    <div class="feature-icon-bubble"> 
+                        📰 
+                    </div> 
+ 
+                    <h3> 
+                        Verified Local News 
+                    </h3> 
+ 
+                    <p> 
+                        Get real-time updates on township infrastructure, 
+                        chieftaincy affairs, local politics, markets, 
+                        and education. 
+                    </p> 
+ 
+                </div> 
+ 
+ 
+                <div class="feature-card"> 
+ 
+                    <div class="feature-icon-bubble"> 
+                        👑 
+                    </div> 
+ 
+                    <h3> 
+                        Culture & Heritage 
+                    </h3> 
+ 
+                    <p> 
+                        Celebrate our monarch Kabiyesi Oba of Ipapo, 
+                        our historic Abuwe black soap craft, masquerade 
+                        festivals, and traditions. 
+                    </p> 
+ 
+                </div> 
+ 
+ 
+                <div class="feature-card"> 
+ 
+                    <div class="feature-icon-bubble"> 
+                        🎓 
+                    </div> 
+ 
+                    <h3> 
+                        Youth & Scholarships 
+                    </h3> 
+ 
+                    <p> 
+                        Direct access to FLDG Ipapo scholarships, 
+                        FIPSU forums, sports tournaments, and student 
+                        empowerment programs. 
+                    </p> 
+ 
+                </div> 
+ 
+            </div> 
+ 
+ 
+            <!-- ================================================= 
+                 TRADITIONAL CULTURE 
+                 ================================================= --> 
+ 
+            <section 
+                class="traditional-culture-section" 
+                id="traditional-culture" 
+                aria-labelledby="traditional-culture-title" 
+            > 
+ 
+                <div class="traditional-culture-image"> 
+ 
+                    <img 
+                        src="img/ippao.jpg" 
+                        alt="Yoruba royal traditional regalia at a community ceremony" 
+                        loading="lazy" 
+                    > 
+ 
+                </div> 
+ 
+                <div class="traditional-culture-copy"> 
+ 
+                    <span class="sub-tag"> 
+                        Living Heritage 
+                    </span> 
+ 
+                    <h2 id="traditional-culture-title"> 
+                        Traditional Culture of Ipapo 
+                    </h2> 
+ 
+                    <p> 
+                        Discover the stories, symbols and celebrations 
+                        that connect Ipapo to the wider Yoruba cultural 
+                        world. 
+                    </p> 
+ 
+ 
+                    <div class="tradition-list"> 
+ 
+                        <article class="tradition-item"> 
+ 
+                            <span class="tradition-mark"> 
+                                01 
+                            </span> 
+ 
+                            <div> 
+ 
+                                <h3> 
+                                    Sango 
+                                </h3> 
+ 
+                                <p> 
+                                    Remembering Sango through thunder, 
+                                    courage, drums, dance and the Yoruba 
+                                    traditions of leadership and justice. 
+                                </p> 
+ 
+                            </div> 
+ 
+                        </article> 
+ 
+ 
+                        <article class="tradition-item"> 
+ 
+                            <span class="tradition-mark"> 
+                                02 
+                            </span> 
+ 
+                            <div> 
+ 
+                                <h3> 
+                                    Egungun 
+                                </h3> 
+ 
+                                <p> 
+                                    Honouring ancestral presence through 
+                                    masquerade, music, movement, colour 
+                                    and community gathering. 
+                                </p> 
+ 
+                            </div> 
+ 
+                        </article> 
+ 
+ 
+                        <article class="tradition-item"> 
+ 
+                            <span class="tradition-mark"> 
+                                03 
+                            </span> 
+ 
+                            <div> 
+ 
+                                <h3> 
+                                    Omo Sanda 
+                                </h3> 
+ 
+                                <p> 
+                                    Celebrating Omo Sanda as part of 
+                                    Ipapo identity, family memory, 
+                                    local storytelling and cultural 
+                                    continuity. 
+                                </p> 
+ 
+                            </div> 
+ 
+                        </article> 
+ 
+                    </div> 
+ 
+ 
+                    <a 
+                        href="about.html#culture" 
+                        class="btn-hero-secondary" 
+                    > 
+                        Explore Ipapo Heritage &rarr; 
+                    </a> 
+ 
+                </div> 
+ 
+            </section> 
+ 
+ 
+            <!-- ================================================= 
+                 FESTIVAL CALENDAR 
+                 ================================================= --> 
+ 
+            <section 
+                class="section" 
+                id="festival-calendar" 
+                aria-labelledby="festival-calendar-title" 
+            > 
+ 
+                <div class="section-head"> 
+ 
+                    <span class="sub-tag"> 
+                        Living Heritage 
+                    </span> 
+ 
+                    <h2 id="festival-calendar-title"> 
+                        Festivals of Ipapo 
+                    </h2> 
+ 
+                    <p> 
+                        A growing community archive for the celebrations, 
+                        rituals and stories that keep Ipapo's identity alive. 
+                    </p> 
+ 
+                </div> 
+ 
+ 
+                <div class="features-grid"> 
+ 
+                    <article class="feature-card"> 
+ 
+                        <div class="feature-icon-bubble"> 
+                            🎭 
+                        </div> 
+ 
+                        <h3> 
+                            Egungun Festival 
+                        </h3> 
+ 
+                        <p> 
+                            Ancestral remembrance through masquerade, 
+                            music, dance, colour and family gathering. 
+                            It honours those who came before and brings 
+                            families together in shared memory. 
+                        </p> 
+ 
+                        <div class="culture-image-slot"> 
+ 
+                            <img 
+                                src="img/egungun.jpg" 
+                                alt="Egungun Festival" 
+                                loading="lazy" 
+                            > 
+ 
+                        </div> 
+ 
+                    </article> 
+ 
+ 
+                    <article class="feature-card"> 
+ 
+                        <div class="feature-icon-bubble"> 
+                            🌙 
+                        </div> 
+ 
+                        <h3> 
+                            Oro Festival 
+                        </h3> 
+ 
+                        <p> 
+                            A solemn traditional observance connected 
+                            with communal order, respect, protection 
+                            and reflection. Its customs encourage 
+                            discipline, responsibility and respect 
+                            for the wider community. 
+                        </p> 
+ 
+                        <div class="culture-image-slot"> 
+ 
+                            <img 
+                                src="img/oro.jpg" 
+                                alt="Oro Festival" 
+                                loading="lazy" 
+                            > 
+ 
+                        </div> 
+ 
+                    </article> 
+ 
+ 
+                    <article class="feature-card"> 
+ 
+                        <div class="feature-icon-bubble"> 
+                            ⚡ 
+                        </div> 
+ 
+                        <h3> 
+                            Sango Festival 
+                        </h3> 
+ 
+                        <p> 
+                            A celebration of courage, justice, thunder, 
+                            drumming and Yoruba heritage. Songs, 
+                            movement and storytelling keep the values 
+                            of bravery and fairness alive. 
+                        </p> 
+ 
+                        <div class="culture-image-slot"> 
+ 
+                            <img 
+                                src="img/sango.jpg" 
+                                alt="Sango Festival" 
+                                loading="lazy" 
+                            > 
+ 
+                        </div> 
+ 
+                    </article> 
+ 
+ 
+                    <article class="feature-card"> 
+ 
+                        <div class="feature-icon-bubble"> 
+                            🌿 
+                        </div> 
+ 
+                        <h3> 
+                            Sanda Festival 
+                        </h3> 
+ 
+                        <p> 
+                            A place to document local stories, family 
+                            traditions and the community meaning of 
+                            Omo Sanda. It connects family memory, 
+                            identity and cultural continuity across 
+                            generations. 
+                        </p> 
+ 
+                        <div class="culture-image-slot"> 
+ 
+                            <img 
+                                src="img/sanda.jpg" 
+                                alt="Sanda Festival" 
+                                loading="lazy" 
+                            > 
+ 
+                        </div> 
+ 
+                    </article> 
+ 
+                </div> 
+ 
+            </section> 
+ 
+ 
+            <!-- ================================================= 
+                 HISTORY OF IPAPO 
+                 ================================================= --> 
+ 
+            <section 
+                class="traditional-culture-section" 
+                id="ipapo-origins" 
+                aria-labelledby="ipapo-origins-title" 
+            > 
+ 
+                <div class="traditional-culture-image"> 
+ 
+                    <div class="culture-history-slot"> 
+ 
+                        <img 
+                            src="img/background.jpg" 
+                            alt="Historical Ipapo archive" 
+                            loading="lazy" 
+                            onerror="this.style.display='none'; this.parentElement.classList.add('missing-image'); this.parentElement.textContent='Add img/background.jpg';" 
+                        > 
+ 
+                    </div> 
+ 
+                </div> 
+ 
+ 
+                <div class="traditional-culture-copy"> 
+ 
+                    <span class="sub-tag"> 
+                        Community Archive 
+                    </span> 
+ 
+                    <h2 id="ipapo-origins-title"> 
+                        The History of Ipapo 
+                    </h2> 
+ 
+                    <p> 
+                        Ipapo's founding story should be preserved through 
+                        the voices of elders, family histories, palace records 
+                        and community archives. 
+                    </p> 
+ 
+                    <p> 
+                        We will document the first settlement accounts, 
+                        founding families, migration routes, development 
+                        of the quarters, traditional leadership and the 
+                        people shaping Ipapo today. The final timeline 
+                        should be reviewed by elders, historians and 
+                        community associations before publication. 
+                    </p> 
+ 
+                    <a 
+                        href="contact.html" 
+                        class="btn-hero-secondary" 
+                    > 
+                        Share a Family History &rarr; 
+                    </a> 
+ 
+                </div> 
+ 
+            </section> 
+ 
+ 
+            <!-- ================================================= 
+                 PHOTO SHOWCASE 
+                 ================================================= --> 
+ 
+            <div 
+                class="section-head" 
+                id="gallery-showcase" 
+                style="margin-top: 40px;" 
+            > 
+ 
+                <span class="sub-tag"> 
+                    Visual Heritage 
+                </span> 
+ 
+                <h2> 
+                    Captured in Ipapo 
+                </h2> 
+ 
+                <p> 
+                    Click any photograph to instantly project it onto 
+                    the background carousel. 
+                </p> 
+ 
+            </div> 
+ 
+ 
+            <div class="photo-showcase-grid"> 
+ 
+                <div 
+                    class="photo-card" 
+                    data-slide-target="0" 
+                > 
+ 
+                    <img 
+                        src="img/ipapo_gateway.jpg" 
+                        alt="Welcome to Ipapo" 
+                        loading="lazy" 
+                    > 
+ 
+                    <div class="photo-card-overlay"> 
+ 
+                        <div class="photo-card-title"> 
+                            Welcome Gate 
+                        </div> 
+ 
+                        <div class="photo-card-subtitle"> 
+                            Town Entrance 
+                        </div> 
+ 
+                    </div> 
+ 
+                </div> 
+ 
+ 
+                <div 
+                    class="photo-card" 
+                    data-slide-target="1" 
+                > 
+ 
+                    <img 
+                        src="img/ippao.jpg" 
+                        alt="Oba of Ipapo" 
+                        loading="lazy" 
+                    > 
+ 
+                    <div class="photo-card-overlay"> 
+ 
+                        <div class="photo-card-title"> 
+                            Royal Majesty 
+                        </div> 
+ 
+                        <div class="photo-card-subtitle"> 
+                            Oba of Ipapo 
+                        </div> 
+ 
+                    </div> 
+ 
+                </div> 
+ 
+ 
+                <div 
+                    class="photo-card" 
+                    data-slide-target="2" 
+                > 
+ 
+                    <img 
+                        src="img/ipapo_aerial.jpg" 
+                        alt="Aerial Panorama" 
+                        loading="lazy" 
+                    > 
+ 
+                    <div class="photo-card-overlay"> 
+ 
+                        <div class="photo-card-title"> 
+                            Sunset Panorama 
+                        </div> 
+ 
+                        <div class="photo-card-subtitle"> 
+                            Itesiwaju Hills 
+                        </div> 
+ 
+                    </div> 
+ 
+                </div> 
+ 
+ 
+                <div 
+                    class="photo-card" 
+                    data-slide-target="3" 
+                > 
+ 
+                    <img 
+                        src="img/abuwe.jpg" 
+                        alt="Abuwe Soap Craft" 
+                        loading="lazy" 
+                    > 
+ 
+                    <div class="photo-card-overlay"> 
+ 
+                        <div class="photo-card-title"> 
+                            Abuwe Soap Craft 
+                        </div> 
+ 
+                        <div class="photo-card-subtitle"> 
+                            Isale Baale Quarters 
+                        </div> 
+ 
+                    </div> 
+ 
+                </div> 
+ 
+ 
+                <div 
+                    class="photo-card" 
+                    data-slide-target="4" 
+                > 
+ 
+                    <img 
+                        src="img/building.jpg" 
+                        alt="College of Education" 
+                        loading="lazy" 
+                    > 
+ 
+                    <div class="photo-card-overlay"> 
+ 
+                        <div class="photo-card-title"> 
+                            College of Education 
+                        </div> 
+ 
+                        <div class="photo-card-subtitle"> 
+                            Campus Development 
+                        </div> 
+ 
+                    </div> 
+ 
+                </div> 
+ 
+ 
+                <div 
+                    class="photo-card" 
+                    data-slide-target="5" 
+                > 
+ 
+                    <img 
+                        src="img/school.jpg" 
+                        alt="Youth Sports Meet" 
+                        loading="lazy" 
+                    > 
+ 
+                    <div class="photo-card-overlay"> 
+ 
+                        <div class="photo-card-title"> 
+                            Inter-House Sports 
+                        </div> 
+ 
+                        <div class="photo-card-subtitle"> 
+                            Muslim High School 
+                        </div> 
+ 
+                    </div> 
+ 
+                </div> 
+ 
+ 
+                <div 
+                    class="photo-card" 
+                    data-slide-target="6" 
+                > 
+ 
+                    <img 
+                        src="img/sport.jpg" 
+                        alt="Sports Laurels" 
+                        loading="lazy" 
+                    > 
+ 
+                    <div class="photo-card-overlay"> 
+ 
+                        <div class="photo-card-title"> 
+                            Town Champions 
+                        </div> 
+ 
+                        <div class="photo-card-subtitle"> 
+                            Football Laurels 
+                        </div> 
+ 
+                    </div> 
+ 
+                </div> 
+ 
+ 
+                <div 
+                    class="photo-card" 
+                    data-slide-target="7" 
+                > 
+ 
+                    <img 
+                        src="img/field.jpg" 
+                        alt="Community Match" 
+                        loading="lazy" 
+                    > 
+ 
+                    <div class="photo-card-overlay"> 
+ 
+                        <div class="photo-card-title"> 
+                            Community Matchday 
+                        </div> 
+ 
+                        <div class="photo-card-subtitle"> 
+                            Ipapo Central Field 
+                        </div> 
+ 
+                    </div> 
+ 
+                </div> 
+ 
+ 
+                <div 
+                    class="photo-card" 
+                    data-slide-target="8" 
+                > 
+ 
+                    <img 
+                        src="img/group.jpg" 
+                        alt="Ipapo Scholarships" 
+                        loading="lazy" 
+                    > 
+ 
+                    <div class="photo-card-overlay"> 
+ 
+                        <div class="photo-card-title"> 
+                            FLDG Scholarships 
+                        </div> 
+ 
+                        <div class="photo-card-subtitle"> 
+                            Education Fund 
+                        </div> 
+ 
+                    </div> 
+ 
+                </div> 
+ 
+ 
+                <div 
+                    class="photo-card" 
+                    data-slide-target="9" 
+                > 
+ 
+                    <img 
+                        src="img/DARH7119.JPG" 
+                        alt="FIPSU Leadership" 
+                        loading="lazy" 
+                    > 
+ 
+                    <div class="photo-card-overlay"> 
+ 
+                        <div class="photo-card-title"> 
+                            FIPSU Leadership 
+                        </div> 
+ 
+                        <div class="photo-card-subtitle"> 
+                            Students' Union 
+                        </div> 
+ 
+                    </div> 
+ 
+                </div> 
+ 
+            </div> 
+ 
+ 
+            <!-- ================================================= 
+                 LATEST NEWS 
+                 ================================================= --> 
+ 
+            <section 
+                class="landing-news-section" 
+                id="latest-news" 
+                aria-labelledby="landing-news-title" 
+            > 
+ 
+                <div class="section-head"> 
+ 
+                    <span class="sub-tag"> 
+                        Live Community News 
+                    </span> 
+ 
+                    <h2 id="landing-news-title"> 
+                        Latest from Ipapo 
+                    </h2> 
+ 
+                    <p> 
+                        Fresh Oyo, Itesiwaju and Ipapo stories fetched 
+                        from our news feed. 
+                    </p> 
+ 
+                </div> 
+ 
+ 
+                <div 
+                    class="landing-news-grid" 
+                    id="landingNewsGrid" 
+                > 
+ 
+                    <p class="landing-news-status"> 
+                        Loading latest stories... 
+                    </p> 
+ 
+                </div> 
+ 
+ 
+                <a 
+                    href="news.html" 
+                    class="btn-hero-secondary landing-news-link" 
+                > 
+                    View All News &rarr; 
+                </a> 
+ 
+            </section> 
+ 
+ 
+            <!-- ================================================= 
+                 CTA 
+                 ================================================= --> 
+ 
+            <div 
+                class="lp-cta-banner" 
+                id="about-ipapo" 
+            > 
+ 
+                <span 
+                    style=" 
+                        font-size:12px; 
+                        font-weight:700; 
+                        color:var(--lp-primary); 
+                        letter-spacing:1px; 
+                    " 
+                > 
+                    READY TO CONNECT? 
+                </span> 
+ 
+                <h2> 
+                    Be Part of the Story of Ipapo 
+                </h2> 
+ 
+                <p> 
+                    Join thousands of residents, community elders, 
+                    students, and descendants in Oyo State and abroad 
+                    staying informed and united. 
+                </p> 
+ 
+                <div 
+                    style=" 
+                        display:flex; 
+                        justify-content:center; 
+                        gap:14px; 
+                        flex-wrap:wrap; 
+                    " 
+                > 
+ 
+                    <a 
+                        href="news.html" 
+                        class="btn-hero-primary" 
+                    > 
+                        Read Latest News → 
+                    </a> 
+ 
+                    <a 
+                        href="community.html" 
+                        class="btn-hero-secondary" 
+                    > 
+                        Join Community 
+                    </a> 
+ 
+                </div> 
+ 
+            </div> 
+ 
+ 
+            <!-- ================================================= 
+                 FOOTER 
+                 ================================================= --> 
+ 
+            <footer 
+                class="lp-footer" 
+                id="faq" 
+            > 
+ 
+                <div 
+                    style=" 
+                        display:flex; 
+                        gap:30px; 
+                        flex-wrap:wrap; 
+                        justify-content:center; 
+                        margin-bottom:20px; 
+                    " 
+                > 
+ 
+                    <div style="text-align:center;"> 
+ 
+                        <h4 
+                            style=" 
+                                color:var(--lp-primary); 
+                                margin-bottom:10px; 
+                                font-size:14px; 
+                            " 
+                        > 
+                            Platform 
+                        </h4> 
+ 
+                        <div 
+                            style=" 
+                                display:flex; 
+                                flex-direction:column; 
+                                gap:8px; 
+                            " 
+                        > 
+ 
+                            <a href="news.html"> 
+                                📰 News 
+                            </a> 
+ 
+                            <a href="live.html"> 
+                                📻 Live Radio 
+                            </a> 
+ 
+                            <a href="events.html"> 
+                                🎉 Events 
+                            </a> 
+ 
+                            <a href="programs.html"> 
+                                📺 Programs 
+                            </a> 
+ 
+                        </div> 
+ 
+                    </div> 
+ 
+ 
+                    <div style="text-align:center;"> 
+ 
+                        <h4 
+                            style=" 
+                                color:var(--lp-primary); 
+                                margin-bottom:10px; 
+                                font-size:14px; 
+                            " 
+                        > 
+                            Community 
+                        </h4> 
+ 
+                        <div 
+                            style=" 
+                                display:flex; 
+                                flex-direction:column; 
+                                gap:8px; 
+                            " 
+                        > 
+ 
+                            <a href="community.html"> 
+                                🤝 Community Hub 
+                            </a> 
+ 
+                            <a href="gallery.html"> 
+                                🖼️ Photo Gallery 
+                            </a> 
+ 
+                            <a href="submit-story.html"> 
+                                ✍️ Submit Story 
+                            </a> 
+ 
+                            <a href="contact.html"> 
+                                📞 Contact Us 
+                            </a> 
+ 
+                        </div> 
+ 
+                    </div> 
+ 
+ 
+                    <div style="text-align:center;"> 
+ 
+                        <h4 
+                            style=" 
+                                color:var(--lp-primary); 
+                                margin-bottom:10px; 
+                                font-size:14px; 
+                            " 
+                        > 
+                            About 
+                        </h4> 
+ 
+                        <div 
+                            style=" 
+                                display:flex; 
+                                flex-direction:column; 
+                                gap:8px; 
+                            " 
+                        > 
+ 
+                            <a href="about.html"> 
+                                👑 About Ipapo 
+                            </a> 
+ 
+                            <a href="about.html#heritage"> 
+                                🏛️ Royal Heritage 
+                            </a> 
+ 
+                            <a href="about.html#culture"> 
+                                🎭 Culture & Traditions 
+                            </a> 
+ 
+                        </div> 
+ 
+                    </div> 
+ 
+                </div> 
+ 
+ 
+                <p> 
+                    © 2026 Ipapo Broadcast • Voice of the Community • 
+                    Oyo State, Nigeria 
+                </p> 
+ 
+                <p 
+                    style=" 
+                        opacity:0.75; 
+                        font-size:11.5px; 
+                    " 
+                > 
+                    Designed & Developed by Ibrahim Olaniyi (Programmer) 
+                </p> 
+ 
+ 
+                <div 
+                    style=" 
+                        margin-top:15px; 
+                        padding-top:15px; 
+                        border-top:1px solid rgba(255,255,255,0.1); 
+                    " 
+                > 
+ 
+                    <a 
+                        href="admin/admin-login.html" 
+                        style=" 
+                            color:rgba(255,255,255,0.4); 
+                            font-size:11px; 
+                            text-decoration:none; 
+                        " 
+                    > 
+                        🔐 Admin Portal 
+                    </a> 
+ 
+                </div> 
+ 
+            </footer> 
+ 
+        </div> 
+ 
+    </div> 
+ 
+ 
+    <!-- ========================================================= 
+         SCRIPTS 
+         ========================================================= --> 
+ 
+    <script src="js/api-config.js"></script> 
+ 
+    <script src="js/landing.js"></script> 
+ 
+ 
+    <!-- ========================================================= 
+         HOME PAGE NEWS FETCHER 
+         ========================================================= --> 
+ 
+    <script> 
+ 
+        /* 
+         * ======================================================== 
+         * IPAPO BROADCAST - HOME PAGE NEWS 
+         * ======================================================== 
+         * 
+         * IMPORTANT: 
+         * This uses the existing: 
+         * 
+         * /api/fetch-news 
+         * 
+         * Do not replace this with another endpoint. 
+         * ======================================================== 
+         */ 
+ 
+        async function loadLandingNews() { 
+ 
+            const grid = document.getElementById('landingNewsGrid'); 
+ 
+            if (!grid) { 
+                console.warn( 
+                    'Ipapo Broadcast: landingNewsGrid was not found.' 
+                ); 
+                return; 
+            } 
+ 
+ 
+            /* 
+             * Show loading state while the API request is running. 
+             */ 
+ 
+            grid.innerHTML = ` 
+                <p class="landing-news-status"> 
+                    Loading latest stories... 
+                </p> 
+            `; 
+ 
+ 
+            try { 
+ 
+                console.log( 
+                    'Ipapo Broadcast: fetching latest news...' 
+                ); 
+ 
+ 
+                /* 
+                 * Use the existing fetch-news endpoint directly. 
+                 * 
+                 * We intentionally removed: 
+                 * 
+                 * ?force=1 
+                 * 
+                 * because the normal endpoint already returns the 
+                 * current stories correctly. 
+                 */ 
+ 
+                const response = await fetch( 
+                    '/api/fetch-news', 
+                    { 
+                        method: 'GET', 
+                        cache: 'no-store', 
+                        headers: { 
+                            'Accept': 'application/json' 
+                        } 
+                    } 
+                ); 
+ 
+ 
+                console.log( 
+                    'Ipapo Broadcast: news API status:', 
+                    response.status 
+                ); 
+ 
+ 
+                if (!response.ok) { 
+ 
+                    throw new Error( 
+                        `News API returned HTTP ${response.status}` 
+                    ); 
+ 
+                } 
+ 
+ 
+                const payload = await response.json(); 
+ 
+ 
+                console.log( 
+                    'Ipapo Broadcast: news API response:', 
+                    payload 
+                ); 
+ 
+ 
+                /* 
+                 * Make sure the backend returned an array. 
+                 */ 
+ 
+                const stories = Array.isArray(payload.stories) 
+                    ? payload.stories 
+                    : []; 
+ 
+ 
+                if (!stories.length) { 
+ 
+                    grid.innerHTML = ` 
+                        <p class="landing-news-status"> 
+                            No fresh stories are available right now. 
+                            Please check again soon. 
+                        </p> 
+                    `; 
+ 
+                    return; 
+                } 
+ 
+ 
+                /* 
+                 * Display the newest stories first. 
+                 * 
+                 * We keep stories with real images first, 
+                 * but do not remove stories just because their image 
+                 * is the broadcast fallback. 
+                 */ 
+ 
+                const sortedStories = [...stories] 
+                    .sort((a, b) => { 
+ 
+                        const dateA = new Date( 
+                            a.publishedAt || 
+                            a.fetchedAt || 
+                            0 
+                        ).getTime(); 
+ 
+                        const dateB = new Date( 
+                            b.publishedAt || 
+                            b.fetchedAt || 
+                            0 
+                        ).getTime(); 
+ 
+                        return dateB - dateA; 
+ 
+                    }) 
+                    .slice(0, 6); 
+ 
+ 
+                /* 
+                 * Build the cards. 
+                 */ 
+ 
+                grid.innerHTML = sortedStories.map((story) => { 
+ 
+                    const title = 
+                        story.title || 
+                        'Ipapo Community Update'; 
+ 
+ 
+                    const description = 
+                        story.summary || 
+                        story.content || 
+                        story.description || 
+                        'Fresh community update from Ipapo.'; 
+ 
+ 
+                    const category = 
+                        story.category || 
+                        'Community'; 
+ 
+ 
+                    const dateValue = 
+                        story.fetchedAt || 
+                        story.publishedAt; 
+ 
+ 
+                    let formattedDate = 
+                        'Latest update'; 
+ 
+ 
+                    if (dateValue) { 
+ 
+                        const parsedDate = 
+                            new Date(dateValue); 
+ 
+ 
+                        if (!Number.isNaN( 
+                            parsedDate.getTime() 
+                        )) { 
+ 
+                            formattedDate = 
+                                `Updated ${parsedDate.toLocaleDateString( 
+                                    undefined, 
+                                    { 
+                                        day: 'numeric', 
+                                        month: 'long', 
+                                        year: 'numeric' 
+                                    } 
+                                )}`; 
+ 
+                        } 
+ 
+                    } 
+ 
+ 
+                    const storyId = 
+                        encodeURIComponent( 
+                            story.id || '' 
+                        ); 
+ 
+ 
+                    return ` 
+                        <article class="landing-news-card"> 
+ 
+                            <div class="landing-news-card-body"> 
+ 
+                                <span> 
+                                    ${escapeLandingNewsHtml(category)} 
+                                </span> 
+ 
+                                <small> 
+                                    ${escapeLandingNewsHtml(formattedDate)} 
+                                </small> 
+ 
+                                <h3> 
+                                    ${escapeLandingNewsHtml(title)} 
+                                </h3> 
+ 
+                                <p> 
+                                    ${escapeLandingNewsHtml(description)} 
+                                </p> 
+ 
+                                <a 
+                                    href="article.html?id=${storyId}" 
+                                > 
+                                    Read Story &rarr; 
+                                </a> 
+ 
+                            </div> 
+ 
+                        </article> 
+                    `; 
+ 
+                }).join(''); 
+ 
+ 
+                console.log( 
+                    `Ipapo Broadcast: ${sortedStories.length} news cards displayed on Home page.` 
+                ); 
+ 
+            } 
+ 
+ 
+            catch (error) { 
+ 
+                console.error( 
+                    'Ipapo Broadcast: Home news could not load:', 
+                    error 
+                ); 
+ 
+ 
+                grid.innerHTML = ` 
+                    <div 
+                        class="landing-news-status" 
+                        style=" 
+                            grid-column:1 / -1; 
+                            text-align:center; 
+                            padding:30px 20px; 
+                        " 
+                    > 
+                        <p> 
+                            Latest stories are temporarily unavailable. 
+                        </p> 
+ 
+                        <p 
+                            style=" 
+                                margin-top:8px; 
+                                opacity:0.7; 
+                                font-size:13px; 
+                            " 
+                        > 
+                            Please refresh the page or open the full 
+                            news page. 
+                        </p> 
+ 
+                        <a 
+                            href="news.html" 
+                            class="btn-hero-secondary" 
+                            style=" 
+                                display:inline-flex; 
+                                margin-top:15px; 
+                            " 
+                        > 
+                            Open News Page &rarr; 
+                        </a> 
+ 
+                    </div> 
+                `; 
+ 
+            } 
+ 
+        } 
+ 
+ 
+        /* 
+         * ======================================================== 
+         * HTML ESCAPE 
+         * ======================================================== 
+         * 
+         * The news comes from external feeds, so escape the text 
+         * before placing it inside innerHTML. 
+         */ 
+ 
+        function escapeLandingNewsHtml(value) { 
+ 
+            return String(value ?? '') 
+                .replace(/&/g, '&amp;') 
+                .replace(/</g, '&lt;') 
+                .replace(/>/g, '&gt;') 
+                .replace(/"/g, '&quot;') 
+                .replace(/'/g, '&#039;'); 
+ 
+        } 
+ 
+ 
+        /* 
+         * ======================================================== 
+         * START NEWS LOADING 
+         * ======================================================== 
+         */ 
+ 
+        if ( 
+            document.readyState === 'loading' 
+        ) { 
+ 
+            document.addEventListener( 
+                'DOMContentLoaded', 
+                loadLandingNews 
+            ); 
+ 
+        } else { 
+ 
+            loadLandingNews(); 
+ 
+        } 
+ 
+    </script> 
+ 
+</body> 
+</html> 
 
