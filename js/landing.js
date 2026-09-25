@@ -74,7 +74,7 @@
             desc: 'Fostering academic excellence, tuition support, and student mentorship for higher education aspirations.'
         },
         {
-            image: 'img/fipsupro.jpg',
+            image: 'img/DARH7119.JPG',
             tag: 'Youth Leadership',
             location: 'Civic Assembly Hall',
             title: 'Federation of Ipapo Students’ Union (FIPSU)',

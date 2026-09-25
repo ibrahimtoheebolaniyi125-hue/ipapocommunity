@@ -89,7 +89,7 @@
             author: 'Student Union Bureau',
             date: 'September 2026',
             readTime: '4 min read',
-            image: 'img/fipsupro.jpg',
+            image: 'img/DARH7119.JPG',
             summary: 'FIPSU President Salam Waris Abioye outlines new campus outreach, free JAMB/WAEC forms, and digital skills training for local youth.',
             content: `
                 <p>The Federation of Ipapo Students Union (FIPSU), representing university, polytechnic, and college students across Nigeria, has officially launched its 2026 Academic Support and Career Orientation campaign.</p>

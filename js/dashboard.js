@@ -40,7 +40,7 @@
             time: '09:00 AM WAT',
             venue: 'Ipapo Community Town Hall, Center Point',
             category: 'Education',
-            image: 'img/fipsupro.jpg',
+            image: 'img/DARH7119.JPG',
             description: 'Hands-on digital training in web development, smartphone media production, and freelancing skills organized by FIPSU & partners.',
             attendees: 92
         },
