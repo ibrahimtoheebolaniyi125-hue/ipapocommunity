@@ -1414,3 +1414,850 @@ body.landing-page-body {
     .carousel-nav-btn.prev { left: 6px; }
     .carousel-nav-btn.next { right: 6px; }
 }
+
+
+/* =========================================================
+   IPAPO BROADCAST - LATEST NEWS
+   Responsive desktop + tablet + mobile
+   ========================================================= */
+
+.landing-news-grid {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto 30px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    align-items: stretch;
+}
+
+.landing-news-card {
+    min-width: 0;
+    width: 100%;
+    background: rgba(14, 18, 27, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.28);
+    transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease,
+        border-color 0.35s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.landing-news-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255, 204, 0, 0.35);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.40);
+}
+
+/* News image */
+
+.landing-news-card-image {
+    position: relative;
+    width: 100%;
+    height: 210px;
+    overflow: hidden;
+    background: #111520;
+    flex-shrink: 0;
+}
+
+.landing-news-card-image img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center center;
+    transition: transform 0.6s ease;
+}
+
+.landing-news-card:hover .landing-news-card-image img {
+    transform: scale(1.05);
+}
+
+/* Category badge */
+
+.landing-news-card-category {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    max-width: calc(100% - 28px);
+    padding: 6px 11px;
+    border-radius: 999px;
+    background: rgba(255, 204, 0, 0.95);
+    color: #111827;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Card content */
+
+.landing-news-card-body {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: visible;
+}
+
+/* This is the category if the JS still outputs a normal span */
+
+.landing-news-card-body > span {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    max-width: 100%;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    border-radius: 999px;
+    background: rgba(255, 204, 0, 0.13);
+    border: 1px solid rgba(255, 204, 0, 0.25);
+    color: var(--lp-primary);
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1.3;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Updated date */
+
+.landing-news-card-body small {
+    display: block;
+    position: relative;
+    clear: both;
+    margin: 0 0 12px;
+    color: #94a3b8;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+/* Headline */
+
+.landing-news-card-body h3 {
+    margin: 0 0 12px;
+    color: #f8fafc;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+/* Description */
+
+.landing-news-card-body p {
+    margin: 0 0 20px;
+    color: #94a3b8;
+    font-size: 13px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+/* Read Story */
+
+.landing-news-card-body a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    min-height: 40px;
+    margin-top: auto;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: rgba(255, 204, 0, 0.10);
+    border: 1px solid rgba(255, 204, 0, 0.28);
+    color: var(--lp-primary);
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.landing-news-card-body a:hover {
+    background: var(--lp-primary);
+    color: #07090e;
+    border-color: var(--lp-primary);
+    transform: translateY(-2px);
+}
+
+/* Loading / empty / error message */
+
+.landing-news-status {
+    width: 100%;
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 40px 20px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+/* View all news button */
+
+.landing-news-link {
+    display: flex;
+    width: fit-content;
+    margin: 10px auto 0;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 960px) {
+
+    .landing-news-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .landing-news-card-image {
+        height: 200px;
+    }
+
+    .landing-news-card-body {
+        padding: 20px;
+    }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 640px) {
+
+    .landing-news-grid {
+        width: 100%;
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .landing-news-card {
+        width: 100%;
+        border-radius: 18px;
+    }
+
+    .landing-news-card-image {
+        height: 210px;
+    }
+
+    .landing-news-card-body {
+        padding: 20px;
+    }
+
+    .landing-news-card-body h3 {
+        font-size: 17px;
+        line-height: 1.45;
+    }
+
+    .landing-news-card-body p {
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .landing-news-card-body a {
+        width: 100%;
+    }
+
+    .landing-news-link {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 390px) {
+
+    .landing-news-grid {
+        gap: 15px;
+    }
+
+    .landing-news-card-image {
+        height: 190px;
+    }
+
+    .landing-news-card-body {
+        padding: 17px;
+    }
+
+    .landing-news-card-body h3 {
+        font-size: 16px;
+    }
+
+    .landing-news-card-body p {
+        font-size: 12.5px;
+    }
+}
+
+
+.landing-news-section {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.landing-news-grid {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto 30px;
+
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    gap: 24px;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   NEWS CARD
+   ========================================================= */
+
+.landing-news-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    background: rgba(14, 18, 27, 0.92);
+
+    border: 1px solid rgba(255, 255, 255, 0.10);
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+
+    box-shadow:
+        0 12px 35px rgba(0, 0, 0, 0.28);
+
+    transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease,
+        border-color 0.35s ease;
+}
+
+
+.landing-news-card:hover {
+    transform: translateY(-6px);
+
+    border-color:
+        rgba(255, 204, 0, 0.35);
+
+    box-shadow:
+        0 20px 45px rgba(0, 0, 0, 0.40);
+}
+
+
+/* =========================================================
+   IMAGE CONTAINER
+   ========================================================= */
+
+.landing-news-card-image {
+    position: relative;
+
+    width: 100%;
+    max-width: 100%;
+
+    height: 210px;
+
+    overflow: hidden;
+
+    flex-shrink: 0;
+
+    background: #111520;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   NEWS IMAGE
+   ========================================================= */
+
+.landing-news-card-image img {
+    display: block;
+
+    width: 100%;
+    max-width: 100%;
+
+    height: 100%;
+
+    min-width: 0;
+
+    object-fit: cover;
+
+    object-position: center center;
+
+    box-sizing: border-box;
+
+    transition:
+        transform 0.6s ease;
+}
+
+
+.landing-news-card:hover
+.landing-news-card-image img {
+    transform: scale(1.05);
+}
+
+
+/* =========================================================
+   CATEGORY
+   ========================================================= */
+
+.landing-news-card-category {
+    position: absolute;
+
+    top: 14px;
+    left: 14px;
+
+    z-index: 2;
+
+    max-width:
+        calc(100% - 28px);
+
+    padding: 6px 11px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(255, 204, 0, 0.95);
+
+    color: #111827;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    line-height: 1.2;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.landing-news-card-body {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    padding: 22px;
+
+    display: flex;
+    flex-direction: column;
+
+    flex: 1;
+
+    overflow: hidden;
+}
+
+
+.landing-news-card-body small {
+    display: block;
+
+    margin:
+        0 0 12px;
+
+    color: #94a3b8;
+
+    font-size: 11px;
+
+    line-height: 1.5;
+
+    overflow-wrap: anywhere;
+}
+
+
+.landing-news-card-body h3 {
+    margin:
+        0 0 12px;
+
+    color: #f8fafc;
+
+    font-size: 18px;
+
+    line-height: 1.4;
+
+    overflow-wrap: anywhere;
+
+    word-break: break-word;
+}
+
+
+.landing-news-card-body p {
+    margin:
+        0 0 20px;
+
+    color: #94a3b8;
+
+    font-size: 13px;
+
+    line-height: 1.7;
+
+    overflow-wrap: anywhere;
+
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   READ STORY
+   ========================================================= */
+
+.landing-news-card-body a {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    align-self: flex-start;
+
+    width: fit-content;
+
+    max-width: 100%;
+
+    margin-top: auto;
+
+    padding: 9px 16px;
+
+    min-height: 40px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(255, 204, 0, 0.10);
+
+    border:
+        1px solid rgba(255, 204, 0, 0.28);
+
+    color: #ffcc00;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   LOADING / ERROR
+   ========================================================= */
+
+.landing-news-status {
+    width: 100%;
+    max-width: 100%;
+
+    grid-column: 1 / -1;
+
+    box-sizing: border-box;
+
+    margin: 0;
+
+    padding: 40px 20px;
+
+    text-align: center;
+
+    color: #94a3b8;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   VIEW ALL NEWS
+   ========================================================= */
+
+.landing-news-link {
+    display: flex;
+
+    width: fit-content;
+
+    max-width: 100%;
+
+    margin:
+        10px auto 0;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 960px) {
+
+    .landing-news-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 20px;
+    }
+
+
+    .landing-news-card-image {
+        height: 200px;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 640px) {
+
+    .landing-news-section {
+        width: 100%;
+        max-width: 100%;
+
+        overflow: hidden;
+
+        box-sizing: border-box;
+    }
+
+
+    .landing-news-grid {
+        width: 100%;
+        max-width: 100%;
+
+        margin: 0 auto 25px;
+
+        padding: 0;
+
+        grid-template-columns:
+            minmax(0, 1fr);
+
+        gap: 18px;
+
+        box-sizing: border-box;
+
+        overflow: hidden;
+    }
+
+
+    .landing-news-card {
+        width: 100%;
+        max-width: 100%;
+
+        min-width: 0;
+
+        border-radius: 18px;
+
+        overflow: hidden;
+
+        box-sizing: border-box;
+    }
+
+
+    .landing-news-card-image {
+        width: 100%;
+        max-width: 100%;
+
+        height: 210px;
+
+        overflow: hidden;
+
+        box-sizing: border-box;
+    }
+
+
+    .landing-news-card-image img {
+        display: block;
+
+        width: 100%;
+        max-width: 100%;
+
+        height: 100%;
+
+        min-width: 0;
+
+        object-fit: cover;
+
+        box-sizing: border-box;
+    }
+
+
+    .landing-news-card-body {
+        width: 100%;
+        max-width: 100%;
+
+        min-width: 0;
+
+        padding: 20px;
+
+        box-sizing: border-box;
+
+        overflow: hidden;
+    }
+
+
+    .landing-news-card-body h3 {
+        font-size: 17px;
+
+        line-height: 1.45;
+
+        overflow-wrap: anywhere;
+
+        word-break: break-word;
+    }
+
+
+    .landing-news-card-body p {
+        font-size: 13px;
+
+        line-height: 1.7;
+
+        overflow-wrap: anywhere;
+
+        word-break: break-word;
+    }
+
+
+    .landing-news-card-body a {
+        width: 100%;
+        max-width: 100%;
+
+        box-sizing: border-box;
+    }
+
+
+    .landing-news-link {
+        width: 100%;
+        max-width: 100%;
+
+        justify-content: center;
+
+        box-sizing: border-box;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 390px) {
+
+    .landing-news-grid {
+        gap: 15px;
+    }
+
+
+    .landing-news-card {
+        border-radius: 16px;
+    }
+
+
+    .landing-news-card-image {
+        height: 190px;
+    }
+
+
+    .landing-news-card-body {
+        padding: 17px;
+    }
+
+
+    .landing-news-card-body h3 {
+        font-size: 16px;
+
+        line-height: 1.45;
+    }
+
+
+    .landing-news-card-body p {
+        font-size: 12.5px;
+
+        line-height: 1.7;
+    }
+
+
+    .landing-news-card-category {
+        top: 10px;
+        left: 10px;
+
+        max-width:
+            calc(100% - 20px);
+    }
+
+}
+
+
+.landing-news-section *,
+.landing-news-section img {
+    box-sizing: border-box;
+}
+
+
+.landing-news-section img {
+    max-width: 100%;
+}
+
+
+@media (max-width: 640px) {
+
+    .landing-news-card {
+        overflow: hidden !important;
+    }
+
+
+    .landing-news-card-image {
+        overflow: hidden !important;
+    }
+
+
+    .landing-news-card-image img {
+        display: block !important;
+
+        width: 100% !important;
+        max-width: 100% !important;
+
+        height: 100% !important;
+
+        object-fit: cover !important;
+    }
+
+}
+

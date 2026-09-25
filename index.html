@@ -1453,148 +1453,149 @@
 
     <script src="js/landing.js"></script>
 
+<script>
 
-    <!-- =========================================================
-         HOME PAGE NEWS FETCHER
-         ========================================================= -->
 
-    <script>
+
+    async function loadLandingNews() {
+
+        const grid =
+            document.getElementById('landingNewsGrid');
+
 
         /*
-         * ========================================================
-         * IPAPO BROADCAST - HOME PAGE NEWS
-         * ========================================================
-         *
-         * IMPORTANT:
-         * This uses the existing:
-         *
-         * /api/fetch-news
-         *
-         * Do not replace this with another endpoint.
-         * ========================================================
+         * Make sure the news container exists.
          */
 
-        async function loadLandingNews() {
+        if (!grid) {
 
-            const grid = document.getElementById('landingNewsGrid');
+            console.warn(
+                'Ipapo Broadcast: landingNewsGrid was not found.'
+            );
 
-            if (!grid) {
-                console.warn(
-                    'Ipapo Broadcast: landingNewsGrid was not found.'
+            return;
+        }
+
+
+        /*
+         * Loading state.
+         */
+
+        grid.innerHTML = `
+            <p class="landing-news-status">
+                Loading latest stories...
+            </p>
+        `;
+
+
+        try {
+
+            console.log(
+                'Ipapo Broadcast: fetching latest news...'
+            );
+
+
+            /*
+             * Use the existing news API.
+             *
+             * Do NOT change this endpoint.
+             */
+
+            const response = await fetch(
+                '/api/fetch-news',
+                {
+                    method: 'GET',
+                    cache: 'no-store',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                }
+            );
+
+
+            console.log(
+                'Ipapo Broadcast: news API status:',
+                response.status
+            );
+
+
+            /*
+             * Check HTTP response.
+             */
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `News API returned HTTP ${response.status}`
                 );
+
+            }
+
+
+            /*
+             * Read JSON.
+             */
+
+            const payload =
+                await response.json();
+
+
+            console.log(
+                'Ipapo Broadcast: news API response:',
+                payload
+            );
+
+
+            /*
+             * Make sure stories is an array.
+             */
+
+            const stories =
+                Array.isArray(payload.stories)
+                    ? payload.stories
+                    : [];
+
+
+            /*
+             * No stories.
+             */
+
+            if (!stories.length) {
+
+                grid.innerHTML = `
+                    <p class="landing-news-status">
+                        No fresh stories are available right now.
+                        Please check again soon.
+                    </p>
+                `;
+
                 return;
             }
 
 
             /*
-             * Show loading state while the API request is running.
+             * Sort newest stories first.
              */
 
-            grid.innerHTML = `
-                <p class="landing-news-status">
-                    Loading latest stories...
-                </p>
-            `;
-
-
-            try {
-
-                console.log(
-                    'Ipapo Broadcast: fetching latest news...'
-                );
-
-
-                /*
-                 * Use the existing fetch-news endpoint directly.
-                 *
-                 * We intentionally removed:
-                 *
-                 * ?force=1
-                 *
-                 * because the normal endpoint already returns the
-                 * current stories correctly.
-                 */
-
-                const response = await fetch(
-                    '/api/fetch-news',
-                    {
-                        method: 'GET',
-                        cache: 'no-store',
-                        headers: {
-                            'Accept': 'application/json'
-                        }
-                    }
-                );
-
-
-                console.log(
-                    'Ipapo Broadcast: news API status:',
-                    response.status
-                );
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        `News API returned HTTP ${response.status}`
-                    );
-
-                }
-
-
-                const payload = await response.json();
-
-
-                console.log(
-                    'Ipapo Broadcast: news API response:',
-                    payload
-                );
-
-
-                /*
-                 * Make sure the backend returned an array.
-                 */
-
-                const stories = Array.isArray(payload.stories)
-                    ? payload.stories
-                    : [];
-
-
-                if (!stories.length) {
-
-                    grid.innerHTML = `
-                        <p class="landing-news-status">
-                            No fresh stories are available right now.
-                            Please check again soon.
-                        </p>
-                    `;
-
-                    return;
-                }
-
-
-                /*
-                 * Display the newest stories first.
-                 *
-                 * We keep stories with real images first,
-                 * but do not remove stories just because their image
-                 * is the broadcast fallback.
-                 */
-
-                const sortedStories = [...stories]
+            const sortedStories =
+                [...stories]
                     .sort((a, b) => {
 
-                        const dateA = new Date(
-                            a.publishedAt ||
-                            a.fetchedAt ||
-                            0
-                        ).getTime();
+                        const dateA =
+                            new Date(
+                                a.publishedAt ||
+                                a.fetchedAt ||
+                                0
+                            ).getTime();
 
-                        const dateB = new Date(
-                            b.publishedAt ||
-                            b.fetchedAt ||
-                            0
-                        ).getTime();
+
+                        const dateB =
+                            new Date(
+                                b.publishedAt ||
+                                b.fetchedAt ||
+                                0
+                            ).getTime();
+
 
                         return dateB - dateA;
 
@@ -1602,16 +1603,26 @@
                     .slice(0, 6);
 
 
-                /*
-                 * Build the cards.
-                 */
+            /*
+             * Build the Home page news cards.
+             */
 
-                grid.innerHTML = sortedStories.map((story) => {
+            grid.innerHTML =
+                sortedStories.map((story) => {
+
+
+                    /*
+                     * Story title.
+                     */
 
                     const title =
                         story.title ||
                         'Ipapo Community Update';
 
+
+                    /*
+                     * Story description.
+                     */
 
                     const description =
                         story.summary ||
@@ -1620,14 +1631,37 @@
                         'Fresh community update from Ipapo.';
 
 
+                    /*
+                     * Story category.
+                     */
+
                     const category =
                         story.category ||
                         'Community';
 
 
+                    /*
+                     * Story image.
+                     *
+                     * Backend image priority is respected.
+                     *
+                     * If there is no image, use:
+                     *
+                     * /img/broadcast.jpeg
+                     */
+
+                    const image =
+                        story.image ||
+                        '/img/broadcast.jpeg';
+
+
+                    /*
+                     * Story date.
+                     */
+
                     const dateValue =
-                        story.fetchedAt ||
-                        story.publishedAt;
+                        story.publishedAt ||
+                        story.fetchedAt;
 
 
                     let formattedDate =
@@ -1640,9 +1674,11 @@
                             new Date(dateValue);
 
 
-                        if (!Number.isNaN(
-                            parsedDate.getTime()
-                        )) {
+                        if (
+                            !Number.isNaN(
+                                parsedDate.getTime()
+                            )
+                        ) {
 
                             formattedDate =
                                 `Updated ${parsedDate.toLocaleDateString(
@@ -1659,32 +1695,84 @@
                     }
 
 
+                    /*
+                     * Story ID.
+                     */
+
                     const storyId =
                         encodeURIComponent(
                             story.id || ''
                         );
 
 
+                    /*
+                     * Return the complete card.
+                     *
+                     * IMPORTANT:
+                     * The image is inside a fixed-height
+                     * container.
+                     *
+                     * This prevents the image from expanding
+                     * outside the screen on mobile.
+                     */
+
                     return `
-                        <article class="landing-news-card">
+                        <article
+                            class="landing-news-card"
+                        >
 
-                            <div class="landing-news-card-body">
+                            <!-- NEWS IMAGE -->
 
-                                <span>
+                            <div
+                                class="landing-news-card-image"
+                            >
+
+                                <img
+                                    src="${escapeLandingNewsHtml(image)}"
+                                    alt="${escapeLandingNewsHtml(title)}"
+                                    loading="lazy"
+                                    decoding="async"
+                                    onerror="
+                                        this.onerror=null;
+                                        this.src='/img/broadcast.jpeg';
+                                    "
+                                >
+
+                                <span
+                                    class="landing-news-card-category"
+                                >
                                     ${escapeLandingNewsHtml(category)}
                                 </span>
 
+                            </div>
+
+
+                            <!-- NEWS CONTENT -->
+
+                            <div
+                                class="landing-news-card-body"
+                            >
+
                                 <small>
-                                    ${escapeLandingNewsHtml(formattedDate)}
+                                    ${escapeLandingNewsHtml(
+                                        formattedDate
+                                    )}
                                 </small>
 
+
                                 <h3>
-                                    ${escapeLandingNewsHtml(title)}
+                                    ${escapeLandingNewsHtml(
+                                        title
+                                    )}
                                 </h3>
 
+
                                 <p>
-                                    ${escapeLandingNewsHtml(description)}
+                                    ${escapeLandingNewsHtml(
+                                        description
+                                    )}
                                 </p>
+
 
                                 <a
                                     href="article.html?id=${storyId}"
@@ -1697,110 +1785,121 @@
                         </article>
                     `;
 
-                }).join('');
+                })
+                .join('');
 
 
-                console.log(
-                    `Ipapo Broadcast: ${sortedStories.length} news cards displayed on Home page.`
-                );
-
-            }
-
-
-            catch (error) {
-
-                console.error(
-                    'Ipapo Broadcast: Home news could not load:',
-                    error
-                );
-
-
-                grid.innerHTML = `
-                    <div
-                        class="landing-news-status"
-                        style="
-                            grid-column:1 / -1;
-                            text-align:center;
-                            padding:30px 20px;
-                        "
-                    >
-                        <p>
-                            Latest stories are temporarily unavailable.
-                        </p>
-
-                        <p
-                            style="
-                                margin-top:8px;
-                                opacity:0.7;
-                                font-size:13px;
-                            "
-                        >
-                            Please refresh the page or open the full
-                            news page.
-                        </p>
-
-                        <a
-                            href="news.html"
-                            class="btn-hero-secondary"
-                            style="
-                                display:inline-flex;
-                                margin-top:15px;
-                            "
-                        >
-                            Open News Page &rarr;
-                        </a>
-
-                    </div>
-                `;
-
-            }
-
-        }
-
-
-        /*
-         * ========================================================
-         * HTML ESCAPE
-         * ========================================================
-         *
-         * The news comes from external feeds, so escape the text
-         * before placing it inside innerHTML.
-         */
-
-        function escapeLandingNewsHtml(value) {
-
-            return String(value ?? '')
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
-
-        }
-
-
-        /*
-         * ========================================================
-         * START NEWS LOADING
-         * ========================================================
-         */
-
-        if (
-            document.readyState === 'loading'
-        ) {
-
-            document.addEventListener(
-                'DOMContentLoaded',
-                loadLandingNews
+            console.log(
+                `Ipapo Broadcast: ${sortedStories.length} news cards displayed on Home page.`
             );
 
-        } else {
+        }
 
-            loadLandingNews();
+
+        catch (error) {
+
+            console.error(
+                'Ipapo Broadcast: Home news could not load:',
+                error
+            );
+
+
+            /*
+             * Friendly error state.
+             */
+
+            grid.innerHTML = `
+                <div
+                    class="landing-news-status"
+                    style="
+                        grid-column:1 / -1;
+                        text-align:center;
+                        padding:30px 20px;
+                    "
+                >
+
+                    <p>
+                        Latest stories are temporarily unavailable.
+                    </p>
+
+                    <p
+                        style="
+                            margin-top:8px;
+                            opacity:0.7;
+                            font-size:13px;
+                        "
+                    >
+                        Please refresh the page or open the full
+                        news page.
+                    </p>
+
+                    <a
+                        href="news.html"
+                        class="btn-hero-secondary"
+                        style="
+                            display:inline-flex;
+                            margin-top:15px;
+                        "
+                    >
+                        Open News Page &rarr;
+                    </a>
+
+                </div>
+            `;
 
         }
 
-    </script>
+    }
+
+
+    /*
+     * ========================================================
+     * HTML ESCAPE
+     * ========================================================
+     *
+     * News comes from external feeds.
+     *
+     * Escape the text before putting it inside innerHTML.
+     * ========================================================
+     */
+
+    function escapeLandingNewsHtml(value) {
+
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+
+    }
+
+
+    /*
+     * ========================================================
+     * START NEWS LOADING
+     * ========================================================
+     */
+
+    if (
+        document.readyState === 'loading'
+    ) {
+
+        document.addEventListener(
+            'DOMContentLoaded',
+            loadLandingNews
+        );
+
+    } else {
+
+        loadLandingNews();
+
+    }
+
+</script>
+
+
+
 
 </body>
 </html>
