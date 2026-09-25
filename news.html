@@ -1,79 +1,328 @@
 <!DOCTYPE html>
-
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta
-    name="description"
-    content="Ipapo Broadcast News - Stay informed with breaking news, community updates, politics, education and sports across Ipapo, Oyo State."
->
-<title>News & Stories | Ipapo Broadcast</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet"
->
+    <meta
+        name="description"
+        content="Ipapo Broadcast News - Stay informed with breaking news, community updates, politics, education and sports across Ipapo, Oyo State."
+    >
 
-<link rel="stylesheet" href="index.css">
-<link rel="stylesheet" href="css/pages.css">
+    <title>News & Stories | Ipapo Broadcast</title>
+
+
+    <!-- ================= GOOGLE FONTS ================= -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- ================= SITE CSS ================= -->
+
+    <link rel="stylesheet" href="index.css">
+
+    <link rel="stylesheet" href="css/pages.css">
+
+
+    <!-- =========================================================
+         NEWS PAGE FIX
+         Keeps "Read Full Story" visible even if global .btn
+         styles or card overlays try to override it.
+    ========================================================== -->
+
+    <style>
+
+        /* =====================================================
+           NEWS CARD
+        ===================================================== */
+
+        .news-card {
+            position: relative !important;
+            overflow: hidden;
+        }
+
+
+        /* =====================================================
+           NEWS CONTENT
+        ===================================================== */
+
+        .news-card .news-content {
+            position: relative !important;
+            z-index: 20 !important;
+            background: #111722 !important;
+        }
+
+
+        /*
+         * Prevent pseudo-elements from covering
+         * the content or button.
+         */
+
+        .news-card .news-content::before,
+        .news-card .news-content::after {
+            display: none !important;
+            content: none !important;
+        }
+
+
+        /* =====================================================
+           READ FULL STORY BUTTON
+        ===================================================== */
+
+        .news-read-more {
+            position: relative !important;
+            z-index: 100 !important;
+
+            display: inline-flex !important;
+
+            align-items: center !important;
+            justify-content: center !important;
+
+            width: fit-content !important;
+            min-height: 40px !important;
+
+            padding: 0 18px !important;
+
+            margin-top: 6px !important;
+
+            border-radius: 8px !important;
+
+            background: rgba(0, 198, 255, 0.10) !important;
+
+            border: 1px solid rgba(0, 198, 255, 0.40) !important;
+
+            color: #ffffff !important;
+
+            text-decoration: none !important;
+
+            font-family: 'Poppins', sans-serif !important;
+
+            font-size: 12.5px !important;
+
+            font-weight: 700 !important;
+
+            line-height: 1 !important;
+
+            opacity: 1 !important;
+
+            visibility: visible !important;
+
+            text-shadow: none !important;
+
+            box-shadow: none !important;
+
+            transition:
+                background 0.25s ease,
+                border-color 0.25s ease,
+                transform 0.25s ease,
+                color 0.25s ease !important;
+        }
+
+
+        /*
+         * Make sure nested text also stays white.
+         */
+
+        .news-read-more,
+        .news-read-more *,
+        .news-read-more:visited,
+        .news-read-more:link {
+            color: #ffffff !important;
+        }
+
+
+        /*
+         * Hover
+         */
+
+        .news-read-more:hover {
+            background: rgba(0, 198, 255, 0.20) !important;
+
+            border-color: rgba(0, 198, 255, 0.75) !important;
+
+            color: #ffffff !important;
+
+            transform: translateY(-2px) !important;
+
+            text-decoration: none !important;
+        }
+
+
+        /*
+         * Keyboard focus
+         */
+
+        .news-read-more:focus-visible {
+            outline: 2px solid #00c6ff !important;
+
+            outline-offset: 3px !important;
+
+            color: #ffffff !important;
+        }
+
+
+        /* =====================================================
+           NEWS IMAGE
+        ===================================================== */
+
+        .news-card .news-image {
+            position: relative !important;
+            z-index: 5 !important;
+            overflow: hidden;
+        }
+
+
+        .news-card .news-image img {
+            display: block;
+            width: 100%;
+        }
+
+
+        /* =====================================================
+           MOBILE BUTTON
+        ===================================================== */
+
+        @media (max-width: 600px) {
+
+            .news-read-more {
+                min-height: 42px !important;
+
+                padding: 0 16px !important;
+
+                font-size: 12px !important;
+
+                width: auto !important;
+
+                max-width: 100% !important;
+            }
+
+        }
+
+    </style>
 
 </head>
 
+
 <body>
 
-<!-- ================= HEADER ================= -->
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
 
 <header class="header" id="header">
 
-    <a href="index.html" class="logo">
+    <a
+        href="index.html"
+        class="logo"
+    >
         IPAPO <span>Broadcast</span>
     </a>
 
-    <nav class="navbar" id="navbar">
 
-        <a href="index.html" class="nav-link">
+    <nav
+        class="navbar"
+        id="navbar"
+    >
+
+        <a
+            href="index.html"
+            class="nav-link"
+        >
             Home
         </a>
 
-        <a href="news.html" class="nav-link active">
+
+        <a
+            href="news.html"
+            class="nav-link active"
+        >
             News
         </a>
 
-        <a href="live.html" class="nav-link">
+
+        <a
+            href="live.html"
+            class="nav-link"
+        >
             Live
         </a>
 
-        <a href="programs.html" class="nav-link">
+
+        <a
+            href="programs.html"
+            class="nav-link"
+        >
             Programs
         </a>
 
-        <a href="community.html" class="nav-link">
+
+        <a
+            href="community.html"
+            class="nav-link"
+        >
             Community
         </a>
 
-        <a href="events.html" class="nav-link">
+
+        <a
+            href="events.html"
+            class="nav-link"
+        >
             Events
         </a>
 
-        <a href="gallery.html" class="nav-link">
+
+        <a
+            href="gallery.html"
+            class="nav-link"
+        >
             Gallery
         </a>
 
-        <a href="about.html" class="nav-link">
+
+        <a
+            href="about.html"
+            class="nav-link"
+        >
             About
         </a>
 
-        <a href="contact.html" class="nav-link">
+
+        <a
+            href="contact.html"
+            class="nav-link"
+        >
             Contact
         </a>
-        
-         <a href="advertise.html" class="nav-link">Advertise</a>
+
+
+        <a
+            href="advertise.html"
+            class="nav-link"
+        >
+            Advertise
+        </a>
 
     </nav>
+
 
     <button
         class="menu-toggle"
@@ -87,7 +336,9 @@
 </header>
 
 
-<!-- ================= BREAKING NEWS ================= -->
+<!-- =========================================================
+     BREAKING NEWS
+========================================================= -->
 
 <div
     class="breaking-ticker"
@@ -95,9 +346,13 @@
 >
 
     <div class="ticker-label">
+
         <span>🔴</span>
+
         Breaking News
+
     </div>
+
 
     <div
         class="ticker-track"
@@ -108,9 +363,11 @@
             Community Development: Ipapo Scholarship Award Ceremony 2026 announced
         </a>
 
+
         <a href="article.html?id=art-008">
             Education Development: Construction of College of Education campus progresses steadily
         </a>
+
 
         <a href="article.html?id=art-005">
             KAP Film Village & Resort: Expanding tourism and jobs in Ipapo/Itesiwaju axis
@@ -121,7 +378,9 @@
 </div>
 
 
-<!-- ================= HERO ================= -->
+<!-- =========================================================
+     HERO
+========================================================= -->
 
 <section class="page-hero">
 
@@ -131,9 +390,11 @@
             STAY INFORMED • LOCAL & TIMELY
         </span>
 
+
         <h1>
             Latest <span>News & Updates</span>
         </h1>
+
 
         <p>
             Reliable journalism, community development stories,
@@ -146,7 +407,9 @@
 </section>
 
 
-<!-- ================= TOOLBAR ================= -->
+<!-- =========================================================
+     TOOLBAR
+========================================================= -->
 
 <div class="content-toolbar">
 
@@ -163,6 +426,7 @@
             All News
         </button>
 
+
         <button
             type="button"
             class="filter-pill"
@@ -170,6 +434,7 @@
         >
             Community
         </button>
+
 
         <button
             type="button"
@@ -179,6 +444,7 @@
             Politics
         </button>
 
+
         <button
             type="button"
             class="filter-pill"
@@ -186,6 +452,7 @@
         >
             Sports
         </button>
+
 
         <button
             type="button"
@@ -195,6 +462,7 @@
             Education
         </button>
 
+
         <button
             type="button"
             class="filter-pill"
@@ -202,6 +470,7 @@
         >
             Culture
         </button>
+
 
         <button
             type="button"
@@ -220,6 +489,7 @@
             🔍
         </span>
 
+
         <input
             type="text"
             id="newsSearchInput"
@@ -232,7 +502,9 @@
 </div>
 
 
-<!-- ================= NEWS STATUS ================= -->
+<!-- =========================================================
+     NEWS STATUS
+========================================================= -->
 
 <div
     id="newsStatus"
@@ -248,7 +520,9 @@
 </div>
 
 
-<!-- ================= NEWS GRID ================= -->
+<!-- =========================================================
+     NEWS GRID
+========================================================= -->
 
 <main
     class="news-grid-page"
@@ -269,11 +543,14 @@
 </main>
 
 
-<!-- ================= FOOTER ================= -->
+<!-- =========================================================
+     FOOTER
+========================================================= -->
 
 <footer>
 
     <div class="footer-content">
+
 
         <div class="footer-brand">
 
@@ -283,6 +560,7 @@
             >
                 IPAPO <span>Broadcast</span>
             </a>
+
 
             <p>
                 Trusted Voice • Professional Media • Community First
@@ -297,21 +575,26 @@
                 Platform
             </h4>
 
+
             <a href="index.html">
                 🏠 Home
             </a>
+
 
             <a href="news.html">
                 📰 News
             </a>
 
+
             <a href="live.html">
                 📻 Live Radio
             </a>
 
+
             <a href="programs.html">
                 📺 Programs
             </a>
+
 
             <a href="events.html">
                 🎉 Events
@@ -326,17 +609,21 @@
                 Community
             </h4>
 
+
             <a href="community.html">
                 🤝 Community Hub
             </a>
+
 
             <a href="gallery.html">
                 🖼️ Photo Gallery
             </a>
 
+
             <a href="submit-story.html">
                 ✍️ Submit Story
             </a>
+
 
             <a href="contact.html">
                 📞 Contact
@@ -351,13 +638,16 @@
                 About
             </h4>
 
+
             <a href="about.html">
                 👑 About Ipapo
             </a>
 
+
             <a href="about.html#heritage">
                 🏛️ Royal Heritage
             </a>
+
 
             <a href="about.html#culture">
                 🎭 Culture & Traditions
@@ -374,9 +664,11 @@
             © 2026 Ipapo Broadcast. All Rights Reserved.
         </p>
 
+
         <p>
             Built with ❤️ for the community.
         </p>
+
 
         <a
             href="admin/admin-login.html"
@@ -400,6 +692,7 @@
             @
         </span>
 
+
         <span class="builder">
             Ibrahim Olaniyi (Programmer)
         </span>
@@ -409,1267 +702,1295 @@
 </footer>
 
 
-<!-- ================= EXISTING SITE JAVASCRIPT ================= -->
+<!-- =========================================================
+     EXISTING SITE JAVASCRIPT
+========================================================= -->
 
 <script src="script.js"></script>
 
 
-<!-- ================= NEWS PAGE JAVASCRIPT ================= -->
+<!-- =========================================================
+     NEWS PAGE JAVASCRIPT
+========================================================= -->
 
 <script>
 
-    'use strict';
+'use strict';
 
 
-    /* =====================================================
-       STATE
-    ===================================================== */
+/* =========================================================
+   STATE
+========================================================= */
 
-    let currentCategory = 'all';
+let currentCategory = 'all';
 
-    let currentSearch = '';
+let currentSearch = '';
 
-    let allUnseenArticles = [];
+let allUnseenArticles = [];
 
-    let isLoadingNews = false;
+let isLoadingNews = false;
 
-    let readHistoryAvailable = true;
-
-
-    /* =====================================================
-       ELEMENTS
-    ===================================================== */
-
-    const newsGrid =
-        document.getElementById('newsGrid');
-
-    const newsStatus =
-        document.getElementById('newsStatus');
-
-    const categoryPills =
-        document.querySelectorAll('.filter-pill');
-
-    const searchInput =
-        document.getElementById('newsSearchInput');
+let readHistoryAvailable = true;
 
 
-    /* =====================================================
-       ANONYMOUS VISITOR ID
-    ===================================================== */
+/* =========================================================
+   ELEMENTS
+========================================================= */
 
-    function getVisitorId() {
-
-        const storageKey =
-            'ipapo_broadcast_visitor_id';
-
-        let visitorId =
-            localStorage.getItem(storageKey);
+const newsGrid =
+    document.getElementById('newsGrid');
 
 
-        if (visitorId) {
-            return visitorId;
-        }
+const newsStatus =
+    document.getElementById('newsStatus');
 
 
-        if (
-            window.crypto &&
-            typeof window.crypto.randomUUID === 'function'
-        ) {
-
-            visitorId =
-                window.crypto.randomUUID();
-
-        } else {
-
-            visitorId =
-                'visitor-' +
-                Date.now() +
-                '-' +
-                Math.random()
-                    .toString(36)
-                    .substring(2, 14);
-
-        }
+const categoryPills =
+    document.querySelectorAll('.filter-pill');
 
 
-        localStorage.setItem(
-            storageKey,
-            visitorId
-        );
+const searchInput =
+    document.getElementById('newsSearchInput');
 
+
+/* =========================================================
+   ANONYMOUS VISITOR ID
+========================================================= */
+
+function getVisitorId() {
+
+    const storageKey =
+        'ipapo_broadcast_visitor_id';
+
+
+    let visitorId =
+        localStorage.getItem(storageKey);
+
+
+    if (visitorId) {
 
         return visitorId;
 
     }
 
 
-    /* =====================================================
-       ESCAPE HTML
-    ===================================================== */
+    if (
+        window.crypto &&
+        typeof window.crypto.randomUUID === 'function'
+    ) {
 
-    function escapeHtml(value) {
+        visitorId =
+            window.crypto.randomUUID();
 
-        return String(value ?? '')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
+    } else {
 
-    }
-
-
-    /* =====================================================
-       IMAGE HANDLING
-    ===================================================== */
-
-    function getStoryImage(image) {
-
-        if (!image) {
-            return 'img/group.jpg';
-        }
-
-
-        const value =
-            String(image).trim();
-
-
-        if (!value) {
-            return 'img/group.jpg';
-        }
-
-
-        return value;
+        visitorId =
+            'visitor-' +
+            Date.now() +
+            '-' +
+            Math.random()
+                .toString(36)
+                .substring(2, 14);
 
     }
 
 
-    /* =====================================================
-       DATE FORMAT
-    ===================================================== */
-
-    function formatNewsDate(article) {
-
-        const date =
-            article.publishedAt ||
-            article.fetchedAt ||
-            article.date;
+    localStorage.setItem(
+        storageKey,
+        visitorId
+    );
 
 
-        if (!date) {
-            return 'Latest update';
+    return visitorId;
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(value) {
+
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+}
+
+
+/* =========================================================
+   IMAGE HANDLING
+========================================================= */
+
+function getStoryImage(image) {
+
+    if (!image) {
+
+        return 'img/group.jpg';
+
+    }
+
+
+    const value =
+        String(image).trim();
+
+
+    if (!value) {
+
+        return 'img/group.jpg';
+
+    }
+
+
+    return value;
+
+}
+
+
+/* =========================================================
+   DATE FORMAT
+========================================================= */
+
+function formatNewsDate(article) {
+
+    const date =
+        article.publishedAt ||
+        article.fetchedAt ||
+        article.date;
+
+
+    if (!date) {
+
+        return 'Latest update';
+
+    }
+
+
+    const parsed =
+        new Date(date);
+
+
+    if (
+        Number.isNaN(
+            parsed.getTime()
+        )
+    ) {
+
+        return escapeHtml(
+            String(date)
+        );
+
+    }
+
+
+    return `Updated ${parsed.toLocaleDateString(
+        undefined,
+        {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
         }
+    )}`;
+
+}
 
 
-        const parsed =
-            new Date(date);
+/* =========================================================
+   LOAD DAILY NEWS
+========================================================= */
 
+async function loadNormalNews() {
 
-        if (
-            Number.isNaN(
-                parsed.getTime()
-            )
-        ) {
-
-            return escapeHtml(
-                String(date)
-            );
-
-        }
-
-
-        return `Updated ${parsed.toLocaleDateString(
-            undefined,
+    const response =
+        await fetch(
+            '/api/fetch-news',
             {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
+                method: 'GET',
+                cache: 'no-store'
             }
-        )}`;
+        );
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            `News request failed: ${response.status}`
+        );
 
     }
 
 
-    /* =====================================================
-       LOAD DAILY NEWS
-    ===================================================== */
-
-    async function loadNormalNews() {
-
-        const response =
-            await fetch(
-                '/api/fetch-news',
-                {
-                    method: 'GET',
-                    cache: 'no-store'
-                }
-            );
+    const payload =
+        await response.json();
 
 
-        if (!response.ok) {
+    if (
+        !payload ||
+        !Array.isArray(payload.stories)
+    ) {
 
-            throw new Error(
-                `News request failed: ${response.status}`
-            );
-
-        }
-
-
-        const payload =
-            await response.json();
-
-
-        if (
-            !payload ||
-            !Array.isArray(payload.stories)
-        ) {
-
-            throw new Error(
-                'Invalid news response'
-            );
-
-        }
-
-
-        return payload.stories;
+        throw new Error(
+            'Invalid news response'
+        );
 
     }
 
 
-    /* =====================================================
-       LOAD UNSEEN STORIES
-    ===================================================== */
+    return payload.stories;
 
-    async function loadUnseenStories() {
-
-        const visitorId =
-            getVisitorId();
+}
 
 
-        const endpoint =
-            `/api/news?action=unseen&visitorId=${encodeURIComponent(visitorId)}`;
+/* =========================================================
+   LOAD UNSEEN STORIES
+========================================================= */
+
+async function loadUnseenStories() {
+
+    const visitorId =
+        getVisitorId();
 
 
-        const response =
-            await fetch(
-                endpoint,
-                {
-                    method: 'GET',
-                    cache: 'no-store'
-                }
-            );
+    const endpoint =
+        `/api/news?action=unseen&visitorId=${encodeURIComponent(visitorId)}`;
 
 
-        if (!response.ok) {
-
-            throw new Error(
-                `Read history request failed: ${response.status}`
-            );
-
-        }
-
-
-        const payload =
-            await response.json();
-
-
-        if (
-            !payload ||
-            payload.success !== true
-        ) {
-
-            throw new Error(
-                payload?.error ||
-                'Read history request failed'
-            );
-
-        }
-
-
-        if (
-            !Array.isArray(payload.stories)
-        ) {
-
-            throw new Error(
-                'Invalid read history response'
-            );
-
-        }
-
-
-        return payload.stories;
-
-    }
-
-
-    /* =====================================================
-       LOAD LOCAL FALLBACK
-    ===================================================== */
-
-    function loadLocalNews() {
-
-        if (
-            window.NewsService &&
-            typeof window.NewsService.getAllNews === 'function'
-        ) {
-
-            const localNews =
-                window.NewsService.getAllNews();
-
-
-            if (Array.isArray(localNews)) {
-                return localNews;
+    const response =
+        await fetch(
+            endpoint,
+            {
+                method: 'GET',
+                cache: 'no-store'
             }
+        );
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            `Read history request failed: ${response.status}`
+        );
+
+    }
+
+
+    const payload =
+        await response.json();
+
+
+    if (
+        !payload ||
+        payload.success !== true
+    ) {
+
+        throw new Error(
+            payload?.error ||
+            'Read history request failed'
+        );
+
+    }
+
+
+    if (
+        !Array.isArray(payload.stories)
+    ) {
+
+        throw new Error(
+            'Invalid read history response'
+        );
+
+    }
+
+
+    return payload.stories;
+
+}
+
+
+/* =========================================================
+   LOAD LOCAL FALLBACK
+========================================================= */
+
+function loadLocalNews() {
+
+    if (
+        window.NewsService &&
+        typeof window.NewsService.getAllNews === 'function'
+    ) {
+
+        const localNews =
+            window.NewsService.getAllNews();
+
+
+        if (Array.isArray(localNews)) {
+
+            return localNews;
 
         }
 
+    }
+
+
+    return [];
+
+}
+
+
+/* =========================================================
+   GET UNREAD STORIES
+========================================================= */
+
+async function fetchNewsForVisitor() {
+
+    const dailyNews =
+        await loadNormalNews();
+
+
+    if (!Array.isArray(dailyNews)) {
 
         return [];
 
     }
 
 
-    /* =====================================================
-       GET UNREAD STORIES
-       
-       IMPORTANT:
-       We first load today's real news.
+    try {
 
-       Then we ask the backend which stories
-       this visitor has already seen.
-
-       This prevents the site from becoming blank
-       simply because a story has a different
-       backend status.
-    ===================================================== */
-
-    async function fetchNewsForVisitor() {
-
-        const dailyNews =
-            await loadNormalNews();
+        const unseen =
+            await loadUnseenStories();
 
 
-        if (!Array.isArray(dailyNews)) {
-            return [];
-        }
+        readHistoryAvailable = true;
 
 
-        try {
+        const unseenIds =
+            new Set(
+                unseen
+                    .filter(
+                        story =>
+                            story &&
+                            story.id
+                    )
+                    .map(
+                        story =>
+                            String(story.id)
+                    )
+            );
 
-            const unseen =
-                await loadUnseenStories();
+
+        return dailyNews.filter(
+            story => {
+
+                if (
+                    !story ||
+                    !story.id
+                ) {
+
+                    return false;
+
+                }
 
 
-            readHistoryAvailable = true;
-
-
-            /*
-             * Create a Set of IDs returned by
-             * the anonymous read-history endpoint.
-             */
-
-            const unseenIds =
-                new Set(
-                    unseen
-                        .filter(
-                            story =>
-                                story &&
-                                story.id
-                        )
-                        .map(
-                            story =>
-                                String(story.id)
-                        )
+                return unseenIds.has(
+                    String(story.id)
                 );
 
-
-            /*
-             * Keep only today's API stories
-             * that the visitor has NOT read.
-             */
-
-            return dailyNews.filter(
-                story => {
-
-                    if (
-                        !story ||
-                        !story.id
-                    ) {
-                        return false;
-                    }
+            }
+        );
 
 
-                    return unseenIds.has(
-                        String(story.id)
+    } catch (historyError) {
+
+        readHistoryAvailable = false;
+
+
+        console.warn(
+            'Anonymous read history unavailable. Showing daily news:',
+            historyError
+        );
+
+
+        return dailyNews;
+
+    }
+
+}
+
+
+/* =========================================================
+   FILTER STORIES
+========================================================= */
+
+function getFilteredArticles() {
+
+    let articles =
+        Array.isArray(allUnseenArticles)
+            ? [...allUnseenArticles]
+            : [];
+
+
+    /* CATEGORY */
+
+    if (
+        currentCategory !== 'all'
+    ) {
+
+        articles =
+            articles.filter(
+                article => {
+
+                    return String(
+                        article.category || ''
+                    )
+                    .toLowerCase() ===
+                    currentCategory.toLowerCase();
+
+                }
+            );
+
+    }
+
+
+    /* SEARCH */
+
+    if (currentSearch) {
+
+        const query =
+            currentSearch.toLowerCase();
+
+
+        articles =
+            articles.filter(
+                article => {
+
+                    const title =
+                        String(
+                            article.title || ''
+                        ).toLowerCase();
+
+
+                    const summary =
+                        String(
+                            article.summary || ''
+                        ).toLowerCase();
+
+
+                    const description =
+                        String(
+                            article.description || ''
+                        ).toLowerCase();
+
+
+                    const author =
+                        String(
+                            article.author || ''
+                        ).toLowerCase();
+
+
+                    const category =
+                        String(
+                            article.category || ''
+                        ).toLowerCase();
+
+
+                    return (
+                        title.includes(query) ||
+                        summary.includes(query) ||
+                        description.includes(query) ||
+                        author.includes(query) ||
+                        category.includes(query)
                     );
 
                 }
             );
 
-        } catch (historyError) {
-
-            /*
-             * Read history is unavailable.
-             *
-             * Do NOT destroy the news page.
-             * Show the daily news normally instead.
-             */
-
-            readHistoryAvailable = false;
+    }
 
 
-            console.warn(
-                'Anonymous read history unavailable. Showing daily news:',
-                historyError
-            );
+    return articles;
+
+}
 
 
-            return dailyNews;
+/* =========================================================
+   STATUS MESSAGE
+========================================================= */
+
+function updateNewsStatus(count) {
+
+    if (!newsStatus) {
+
+        return;
+
+    }
+
+
+    if (!readHistoryAvailable) {
+
+        newsStatus.innerHTML =
+            'Showing the latest available stories.';
+
+        return;
+
+    }
+
+
+    if (count === 0) {
+
+        newsStatus.innerHTML =
+            'No unread stories are available right now.';
+
+        return;
+
+    }
+
+
+    newsStatus.innerHTML =
+        `Showing <strong>${count}</strong> fresh ${
+            count === 1 ? 'story' : 'stories'
+        } you haven't read yet.`;
+
+}
+
+
+/* =========================================================
+   LOADING SCREEN
+========================================================= */
+
+function showLoading() {
+
+    if (!newsGrid) {
+
+        return;
+
+    }
+
+
+    newsGrid.innerHTML = `
+
+        <div
+            style="
+                grid-column:1 / -1;
+                text-align:center;
+                padding:70px 20px;
+                color:#94a3b8;
+            "
+        >
+
+            <div
+                style="
+                    font-size:42px;
+                    margin-bottom:14px;
+                "
+            >
+                📰
+            </div>
+
+
+            <p>
+                Loading today's Ipapo Broadcast news...
+            </p>
+
+        </div>
+
+    `;
+
+
+    if (newsStatus) {
+
+        newsStatus.textContent =
+            'Checking for fresh stories...';
+
+    }
+
+}
+
+
+/* =========================================================
+   ERROR SCREEN
+========================================================= */
+
+function showError() {
+
+    if (!newsGrid) {
+
+        return;
+
+    }
+
+
+    newsGrid.innerHTML = `
+
+        <div
+            style="
+                grid-column:1 / -1;
+                text-align:center;
+                padding:60px 20px;
+                background:#10141d;
+                border-radius:16px;
+                border:1px solid rgba(255,255,255,0.1);
+            "
+        >
+
+            <div
+                style="
+                    font-size:40px;
+                    margin-bottom:12px;
+                "
+            >
+                ⚠️
+            </div>
+
+
+            <h3
+                style="
+                    margin:0 0 8px;
+                    color:#f1f5f9;
+                "
+            >
+                News temporarily unavailable
+            </h3>
+
+
+            <p
+                style="
+                    color:#94a3b8;
+                    font-size:14px;
+                    margin-bottom:18px;
+                "
+            >
+                We couldn't load the latest
+                Ipapo Broadcast stories right now.
+            </p>
+
+
+            <button
+                class="btn"
+                type="button"
+                id="retryNewsButton"
+                style="
+                    font-size:13px;
+                "
+            >
+                Try Again
+            </button>
+
+        </div>
+
+    `;
+
+
+    if (newsStatus) {
+
+        newsStatus.textContent =
+            'Unable to load the latest stories.';
+
+    }
+
+
+    const retryButton =
+        document.getElementById(
+            'retryNewsButton'
+        );
+
+
+    if (retryButton) {
+
+        retryButton.addEventListener(
+            'click',
+            renderArticles
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   ALL CAUGHT UP
+========================================================= */
+
+function showAllCaughtUp() {
+
+    if (!newsGrid) {
+
+        return;
+
+    }
+
+
+    newsGrid.innerHTML = `
+
+        <div
+            style="
+                grid-column:1 / -1;
+                text-align:center;
+                padding:70px 20px;
+                background:#10141d;
+                border-radius:18px;
+                border:1px solid rgba(255,255,255,0.1);
+            "
+        >
+
+            <div
+                style="
+                    font-size:48px;
+                    margin-bottom:14px;
+                "
+            >
+                ✅
+            </div>
+
+
+            <h3
+                style="
+                    margin:0 0 10px;
+                    color:#f1f5f9;
+                    font-size:22px;
+                "
+            >
+                You're all caught up
+            </h3>
+
+
+            <p
+                style="
+                    color:#94a3b8;
+                    font-size:14px;
+                    max-width:520px;
+                    margin:0 auto;
+                    line-height:1.8;
+                "
+            >
+                You've already read all the latest
+                stories available to you.
+                Check back later for fresh
+                Ipapo Broadcast updates.
+            </p>
+
+
+            <button
+                class="btn"
+                type="button"
+                id="refreshNewsButton"
+                style="
+                    margin-top:20px;
+                    font-size:13px;
+                "
+            >
+                Check for New Stories
+            </button>
+
+        </div>
+
+    `;
+
+
+    if (newsStatus) {
+
+        newsStatus.textContent =
+            'You are up to date with today\'s stories.';
+
+    }
+
+
+    const refreshButton =
+        document.getElementById(
+            'refreshNewsButton'
+        );
+
+
+    if (refreshButton) {
+
+        refreshButton.addEventListener(
+            'click',
+            renderArticles
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   NO SEARCH RESULTS
+========================================================= */
+
+function showNoResults() {
+
+    if (!newsGrid) {
+
+        return;
+
+    }
+
+
+    newsGrid.innerHTML = `
+
+        <div
+            style="
+                grid-column:1 / -1;
+                text-align:center;
+                padding:60px 20px;
+                background:#10141d;
+                border-radius:16px;
+                border:1px solid rgba(255,255,255,0.1);
+            "
+        >
+
+            <div
+                style="
+                    font-size:40px;
+                    margin-bottom:10px;
+                "
+            >
+                🔍
+            </div>
+
+
+            <h3
+                style="
+                    margin:0 0 8px;
+                    color:#f1f5f9;
+                "
+            >
+                No matching stories
+            </h3>
+
+
+            <p
+                style="
+                    color:#94a3b8;
+                    font-size:14px;
+                "
+            >
+                Try another search term or category.
+            </p>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   RENDER STORIES
+========================================================= */
+
+function renderFilteredStories() {
+
+    if (!newsGrid) {
+
+        return;
+
+    }
+
+
+    const articles =
+        getFilteredArticles();
+
+
+    updateNewsStatus(
+        articles.length
+    );
+
+
+    /*
+     * No stories at all.
+     */
+
+    if (!articles.length) {
+
+        if (
+            currentCategory === 'all' &&
+            !currentSearch
+        ) {
+
+            if (readHistoryAvailable) {
+
+                showAllCaughtUp();
+
+            } else {
+
+                showNoResults();
+
+            }
+
+            return;
 
         }
+
+
+        showNoResults();
+
+        return;
 
     }
 
 
     /* =====================================================
-       FILTER STORIES
+       CREATE STORY CARDS
     ===================================================== */
 
-    function getFilteredArticles() {
+    newsGrid.innerHTML =
+        articles.map(article => {
 
-        let articles =
+            const displayDate =
+                formatNewsDate(article);
+
+
+            const image =
+                getStoryImage(
+                    article.image
+                );
+
+
+            const title =
+                article.title ||
+                'Untitled Story';
+
+
+            const summary =
+                article.summary ||
+                article.description ||
+                'Fresh community update from Ipapo.';
+
+
+            const category =
+                article.category ||
+                'News';
+
+
+            const storyId =
+                article.id ||
+                '';
+
+
+            const safeTitle =
+                escapeHtml(title);
+
+
+            const safeSummary =
+                escapeHtml(summary);
+
+
+            const safeCategory =
+                escapeHtml(category);
+
+
+            const safeReadTime =
+                escapeHtml(
+                    article.readTime ||
+                    '4 min read'
+                );
+
+
+            const safeImage =
+                escapeHtml(image);
+
+
+            return `
+
+                <article
+                    class="news-card reveal show"
+                    style="
+                        opacity:1;
+                        transform:none;
+                        position:relative;
+                    "
+                >
+
+
+                    <!-- =========================
+                         NEWS IMAGE
+                    ========================== -->
+
+                    <div class="news-image">
+
+                        <img
+                            src="${safeImage}"
+                            alt="${safeTitle}"
+                            loading="lazy"
+                            onerror="
+                                this.onerror=null;
+                                this.src='img/group.jpg';
+                            "
+                        >
+
+
+                        <span class="news-tag">
+                            ${safeCategory}
+                        </span>
+
+                    </div>
+
+
+                    <!-- =========================
+                         NEWS CONTENT
+                    ========================== -->
+
+                    <div class="news-content">
+
+                        <small>
+                            ${displayDate}
+                            •
+                            ${safeReadTime}
+                        </small>
+
+
+                        <h3
+                            style="
+                                font-size:18px;
+                                margin:8px 0 10px;
+                                line-height:1.35;
+                            "
+                        >
+                            ${safeTitle}
+                        </h3>
+
+
+                        <p
+                            style="
+                                font-size:13.5px;
+                                color:#94a3b8;
+                                margin-bottom:18px;
+                            "
+                        >
+                            ${safeSummary}
+                        </p>
+
+
+                        <!-- =====================
+                             FIXED READ BUTTON
+                        ====================== -->
+
+                        <a
+                            href="article.html?id=${encodeURIComponent(storyId)}"
+                            class="news-read-more"
+                            aria-label="Read full story: ${safeTitle}"
+                        >
+                            Read Full Story →
+                        </a>
+
+                    </div>
+
+                </article>
+
+            `;
+
+        }).join('');
+
+}
+
+
+/* =========================================================
+   MAIN LOAD FUNCTION
+========================================================= */
+
+async function renderArticles() {
+
+    if (
+        !newsGrid ||
+        isLoadingNews
+    ) {
+
+        return;
+
+    }
+
+
+    isLoadingNews = true;
+
+
+    showLoading();
+
+
+    try {
+
+        allUnseenArticles =
+            await fetchNewsForVisitor();
+
+
+        allUnseenArticles =
             Array.isArray(allUnseenArticles)
-                ? [...allUnseenArticles]
+                ? allUnseenArticles.filter(
+                    article =>
+                        article &&
+                        article.id
+                )
                 : [];
 
 
-        /* CATEGORY */
+        renderFilteredStories();
 
-        if (
-            currentCategory !== 'all'
-        ) {
+    } catch (error) {
 
-            articles =
-                articles.filter(
-                    article => {
-
-                        return String(
-                            article.category || ''
-                        )
-                        .toLowerCase() ===
-                        currentCategory.toLowerCase();
-
-                    }
-                );
-
-        }
-
-
-        /* SEARCH */
-
-        if (currentSearch) {
-
-            const query =
-                currentSearch.toLowerCase();
-
-
-            articles =
-                articles.filter(
-                    article => {
-
-                        const title =
-                            String(
-                                article.title || ''
-                            ).toLowerCase();
-
-
-                        const summary =
-                            String(
-                                article.summary || ''
-                            ).toLowerCase();
-
-
-                        const description =
-                            String(
-                                article.description || ''
-                            ).toLowerCase();
-
-
-                        const author =
-                            String(
-                                article.author || ''
-                            ).toLowerCase();
-
-
-                        const category =
-                            String(
-                                article.category || ''
-                            ).toLowerCase();
-
-
-                        return (
-                            title.includes(query) ||
-                            summary.includes(query) ||
-                            description.includes(query) ||
-                            author.includes(query) ||
-                            category.includes(query)
-                        );
-
-                    }
-                );
-
-        }
-
-
-        return articles;
-
-    }
-
-
-    /* =====================================================
-       STATUS MESSAGE
-    ===================================================== */
-
-    function updateNewsStatus(count) {
-
-        if (!newsStatus) {
-            return;
-        }
-
-
-        if (!readHistoryAvailable) {
-
-            newsStatus.innerHTML =
-                'Showing the latest available stories.';
-
-            return;
-
-        }
-
-
-        if (count === 0) {
-
-            newsStatus.innerHTML =
-                'No unread stories are available right now.';
-
-            return;
-
-        }
-
-
-        newsStatus.innerHTML =
-            `Showing <strong>${count}</strong> fresh ${
-                count === 1 ? 'story' : 'stories'
-            } you haven't read yet.`;
-
-    }
-
-
-    /* =====================================================
-       LOADING SCREEN
-    ===================================================== */
-
-    function showLoading() {
-
-        if (!newsGrid) {
-            return;
-        }
-
-
-        newsGrid.innerHTML = `
-
-            <div
-                style="
-                    grid-column:1 / -1;
-                    text-align:center;
-                    padding:70px 20px;
-                    color:#94a3b8;
-                "
-            >
-
-                <div
-                    style="
-                        font-size:42px;
-                        margin-bottom:14px;
-                    "
-                >
-                    📰
-                </div>
-
-                <p>
-                    Loading today's Ipapo Broadcast news...
-                </p>
-
-            </div>
-
-        `;
-
-
-        if (newsStatus) {
-
-            newsStatus.textContent =
-                'Checking for fresh stories...';
-
-        }
-
-    }
-
-
-    /* =====================================================
-       ERROR SCREEN
-    ===================================================== */
-
-    function showError() {
-
-        if (!newsGrid) {
-            return;
-        }
-
-
-        newsGrid.innerHTML = `
-
-            <div
-                style="
-                    grid-column:1 / -1;
-                    text-align:center;
-                    padding:60px 20px;
-                    background:#10141d;
-                    border-radius:16px;
-                    border:1px solid rgba(255,255,255,0.1);
-                "
-            >
-
-                <div
-                    style="
-                        font-size:40px;
-                        margin-bottom:12px;
-                    "
-                >
-                    ⚠️
-                </div>
-
-                <h3
-                    style="
-                        margin:0 0 8px;
-                        color:#f1f5f9;
-                    "
-                >
-                    News temporarily unavailable
-                </h3>
-
-                <p
-                    style="
-                        color:#94a3b8;
-                        font-size:14px;
-                        margin-bottom:18px;
-                    "
-                >
-                    We couldn't load the latest
-                    Ipapo Broadcast stories right now.
-                </p>
-
-                <button
-                    class="btn"
-                    type="button"
-                    id="retryNewsButton"
-                    style="
-                        font-size:13px;
-                    "
-                >
-                    Try Again
-                </button>
-
-            </div>
-
-        `;
-
-
-        if (newsStatus) {
-
-            newsStatus.textContent =
-                'Unable to load the latest stories.';
-
-        }
-
-
-        const retryButton =
-            document.getElementById(
-                'retryNewsButton'
-            );
-
-
-        if (retryButton) {
-
-            retryButton.addEventListener(
-                'click',
-                renderArticles
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       ALL CAUGHT UP
-    ===================================================== */
-
-    function showAllCaughtUp() {
-
-        if (!newsGrid) {
-            return;
-        }
-
-
-        newsGrid.innerHTML = `
-
-            <div
-                style="
-                    grid-column:1 / -1;
-                    text-align:center;
-                    padding:70px 20px;
-                    background:#10141d;
-                    border-radius:18px;
-                    border:1px solid rgba(255,255,255,0.1);
-                "
-            >
-
-                <div
-                    style="
-                        font-size:48px;
-                        margin-bottom:14px;
-                    "
-                >
-                    ✅
-                </div>
-
-                <h3
-                    style="
-                        margin:0 0 10px;
-                        color:#f1f5f9;
-                        font-size:22px;
-                    "
-                >
-                    You're all caught up
-                </h3>
-
-                <p
-                    style="
-                        color:#94a3b8;
-                        font-size:14px;
-                        max-width:520px;
-                        margin:0 auto;
-                        line-height:1.8;
-                    "
-                >
-                    You've already read all the latest
-                    stories available to you.
-                    Check back later for fresh
-                    Ipapo Broadcast updates.
-                </p>
-
-                <button
-                    class="btn"
-                    type="button"
-                    id="refreshNewsButton"
-                    style="
-                        margin-top:20px;
-                        font-size:13px;
-                    "
-                >
-                    Check for New Stories
-                </button>
-
-            </div>
-
-        `;
-
-
-        if (newsStatus) {
-
-            newsStatus.textContent =
-                'You are up to date with today\'s stories.';
-
-        }
-
-
-        const refreshButton =
-            document.getElementById(
-                'refreshNewsButton'
-            );
-
-
-        if (refreshButton) {
-
-            refreshButton.addEventListener(
-                'click',
-                renderArticles
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       NO SEARCH RESULTS
-    ===================================================== */
-
-    function showNoResults() {
-
-        if (!newsGrid) {
-            return;
-        }
-
-
-        newsGrid.innerHTML = `
-
-            <div
-                style="
-                    grid-column:1 / -1;
-                    text-align:center;
-                    padding:60px 20px;
-                    background:#10141d;
-                    border-radius:16px;
-                    border:1px solid rgba(255,255,255,0.1);
-                "
-            >
-
-                <div
-                    style="
-                        font-size:40px;
-                        margin-bottom:10px;
-                    "
-                >
-                    🔍
-                </div>
-
-                <h3
-                    style="
-                        margin:0 0 8px;
-                        color:#f1f5f9;
-                    "
-                >
-                    No matching stories
-                </h3>
-
-                <p
-                    style="
-                        color:#94a3b8;
-                        font-size:14px;
-                    "
-                >
-                    Try another search term or category.
-                </p>
-
-            </div>
-
-        `;
-
-    }
-
-
-    /* =====================================================
-       RENDER STORIES
-    ===================================================== */
-
-    function renderFilteredStories() {
-
-        if (!newsGrid) {
-            return;
-        }
-
-
-        const articles =
-            getFilteredArticles();
-
-
-        updateNewsStatus(
-            articles.length
+        console.error(
+            'Could not load Ipapo Broadcast news:',
+            error
         );
 
 
         /*
-         * No stories at all.
+         * Final local fallback.
          */
 
-        if (!articles.length) {
+        try {
 
-            if (
-                currentCategory === 'all' &&
-                !currentSearch
-            ) {
+            const localNews =
+                loadLocalNews();
 
-                if (readHistoryAvailable) {
 
-                    showAllCaughtUp();
+            if (localNews.length) {
 
-                } else {
+                allUnseenArticles =
+                    localNews.filter(
+                        article =>
+                            article &&
+                            article.id
+                    );
 
-                    showNoResults();
 
-                }
+                readHistoryAvailable =
+                    false;
+
+
+                renderFilteredStories();
 
                 return;
 
             }
 
-
-            showNoResults();
-
-            return;
-
-        }
-
-
-        /* =================================================
-           CREATE STORY CARDS
-        ================================================= */
-
-        newsGrid.innerHTML =
-            articles.map(article => {
-
-                const displayDate =
-                    formatNewsDate(article);
-
-
-                const image =
-                    getStoryImage(
-                        article.image
-                    );
-
-
-                const title =
-                    article.title ||
-                    'Untitled Story';
-
-
-                const summary =
-                    article.summary ||
-                    article.description ||
-                    'Fresh community update from Ipapo.';
-
-
-                const category =
-                    article.category ||
-                    'News';
-
-
-                const storyId =
-                    article.id ||
-                    '';
-
-
-                const safeTitle =
-                    escapeHtml(title);
-
-
-                const safeSummary =
-                    escapeHtml(summary);
-
-
-                const safeCategory =
-                    escapeHtml(category);
-
-
-                const safeReadTime =
-                    escapeHtml(
-                        article.readTime ||
-                        '4 min read'
-                    );
-
-
-                const safeImage =
-                    escapeHtml(image);
-
-
-                return `
-
-                    <article
-                        class="news-card reveal show"
-                        style="
-                            opacity:1;
-                            transform:none;
-                            position:relative;
-                        "
-                    >
-
-                        <div class="news-image">
-
-                            <img
-                                src="${safeImage}"
-                                alt="${safeTitle}"
-                                loading="lazy"
-                                onerror="
-                                    this.onerror=null;
-                                    this.src='img/group.jpg';
-                                "
-                            >
-
-                            <span class="news-tag">
-                                ${safeCategory}
-                            </span>
-
-                        </div>
-
-
-                        <div class="news-content">
-
-                            <small>
-                                ${displayDate}
-                                •
-                                ${safeReadTime}
-                            </small>
-
-
-                            <h3
-                                style="
-                                    font-size:18px;
-                                    margin:8px 0 10px;
-                                    line-height:1.35;
-                                "
-                            >
-                                ${safeTitle}
-                            </h3>
-
-
-                            <p
-                                style="
-                                    font-size:13.5px;
-                                    color:#94a3b8;
-                                    margin-bottom:18px;
-                                "
-                            >
-                                ${safeSummary}
-                            </p>
-
-
-                            <a
-                                href="article.html?id=${encodeURIComponent(storyId)}"
-                                class="btn"
-                                style="
-                                    min-height:38px;
-                                    padding:0 18px;
-                                    font-size:12.5px;
-                                    display:inline-flex;
-                                    align-items:center;
-                                "
-                            >
-                                Read Full Story →
-                            </a>
-
-                        </div>
-
-                    </article>
-
-                `;
-
-            }).join('');
-
-    }
-
-
-    /* =====================================================
-       MAIN LOAD FUNCTION
-    ===================================================== */
-
-    async function renderArticles() {
-
-        if (
-            !newsGrid ||
-            isLoadingNews
-        ) {
-            return;
-        }
-
-
-        isLoadingNews = true;
-
-
-        showLoading();
-
-
-        try {
-
-            allUnseenArticles =
-                await fetchNewsForVisitor();
-
-
-            allUnseenArticles =
-                Array.isArray(allUnseenArticles)
-                    ? allUnseenArticles.filter(
-                        article =>
-                            article &&
-                            article.id
-                    )
-                    : [];
-
-
-            renderFilteredStories();
-
-        } catch (error) {
+        } catch (fallbackError) {
 
             console.error(
-                'Could not load Ipapo Broadcast news:',
-                error
+                'Local news fallback failed:',
+                fallbackError
             );
 
-
-            /*
-             * Final local fallback.
-             */
-
-            try {
-
-                const localNews =
-                    loadLocalNews();
-
-
-                if (localNews.length) {
-
-                    allUnseenArticles =
-                        localNews.filter(
-                            article =>
-                                article &&
-                                article.id
-                        );
-
-
-                    readHistoryAvailable =
-                        false;
-
-
-                    renderFilteredStories();
-
-                    return;
-
-                }
-
-            } catch (fallbackError) {
-
-                console.error(
-                    'Local news fallback failed:',
-                    fallbackError
-                );
-
-            }
-
-
-            allUnseenArticles = [];
-
-
-            showError();
-
-        } finally {
-
-            isLoadingNews = false;
-
         }
+
+
+        allUnseenArticles = [];
+
+
+        showError();
+
+    } finally {
+
+        isLoadingNews = false;
 
     }
 
-
-    /* =====================================================
-       CATEGORY BUTTONS
-    ===================================================== */
-
-    categoryPills.forEach(
-        pill => {
-
-            pill.addEventListener(
-                'click',
-                () => {
-
-                    categoryPills.forEach(
-                        button => {
-
-                            button.classList.remove(
-                                'active'
-                            );
-
-                        }
-                    );
+}
 
 
-                    pill.classList.add(
-                        'active'
-                    );
+/* =========================================================
+   CATEGORY BUTTONS
+========================================================= */
 
+categoryPills.forEach(
+    pill => {
 
-                    currentCategory =
-                        pill.dataset.cat ||
-                        'all';
+        pill.addEventListener(
+            'click',
+            () => {
 
+                categoryPills.forEach(
+                    button => {
 
-                    renderFilteredStories();
+                        button.classList.remove(
+                            'active'
+                        );
 
-                }
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       SEARCH
-    ===================================================== */
-
-    if (searchInput) {
-
-        let searchTimer;
-
-
-        searchInput.addEventListener(
-            'input',
-            event => {
-
-                clearTimeout(
-                    searchTimer
+                    }
                 );
 
 
-                currentSearch =
-                    event.target.value.trim();
+                pill.classList.add(
+                    'active'
+                );
 
 
-                searchTimer =
-                    setTimeout(
-                        () => {
+                currentCategory =
+                    pill.dataset.cat ||
+                    'all';
 
-                            renderFilteredStories();
 
-                        },
-                        150
-                    );
+                renderFilteredStories();
 
             }
         );
 
     }
+);
 
 
-    /* =====================================================
-       INITIAL LOAD
-    ===================================================== */
+/* =========================================================
+   SEARCH
+========================================================= */
 
-    document.addEventListener(
-        'DOMContentLoaded',
-        () => {
+if (searchInput) {
 
-            /*
-             * Create visitor ID before
-             * requesting news.
-             */
-
-            getVisitorId();
+    let searchTimer;
 
 
-            renderArticles();
+    searchInput.addEventListener(
+        'input',
+        event => {
+
+            clearTimeout(
+                searchTimer
+            );
+
+
+            currentSearch =
+                event.target.value.trim();
+
+
+            searchTimer =
+                setTimeout(
+                    () => {
+
+                        renderFilteredStories();
+
+                    },
+                    150
+                );
 
         }
     );
 
+}
+
+
+/* =========================================================
+   INITIAL LOAD
+========================================================= */
+
+document.addEventListener(
+    'DOMContentLoaded',
+    () => {
+
+        /*
+         * Create visitor ID before
+         * requesting news.
+         */
+
+        getVisitorId();
+
+
+        renderArticles();
+
+    }
+);
+
 </script>
+
 
 </body>
 </html>
