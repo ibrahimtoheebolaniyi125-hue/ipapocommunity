@@ -655,7 +655,7 @@
                 <article class="team-card reveal">
                     <img src="img/people.jpg" alt="Host with microphone">
                     <div class="team-card-content">
-                        <h3>Fipsu Member</h3>
+                        <h3 style="color: white;">Fipsu Member</h3>
                         <span>Station Host</span>
                         <p>FIPSU stands for the Federation of Ipapo Students Union, a student organization representing youth and scholars from Ipapo, a community in Oyo State, Nigeria.</p>
                     </div>
@@ -664,20 +664,28 @@
                 <article class="team-card reveal">
                     <img src="img/amofin.jpg" alt="Female presenter">
                     <div class="team-card-content">
-                        <h3>Beulah Adeoye</h3>
+                        <h3 style="color: white;"> Beulah Adeoye</h3>
                         <span>2027 Governorship Candidate </span>
                         <p>AI Overview        Amofin Beulah Adeoye is a Nigerian legal and financial expert, philanthropist, and Peoples Democratic Party (PDP) gubernatorial aspirant for Oyo State in the 2027 election.</p>
                     </div>
                 </article>
 
-                <article class="team-card reveal">
-                    <img src="img/DARH7119.JPG"alt="Presenter smiling">
-                    <div class="team-card-content">
-                        <h3>Hammed Sherrif Olamide</h3>
-                        <span>The fipsu president of ipapo</span>
-                        <p>The president of the Federation of Ipapo Students Union (FIPSU) for recent terms has included Salam Waris Abioye (noted in 2024) and Comr. Hammed Sheriff (noted in 2022)</p>
-                    </div>
-                </article>
+               <article class="team-card reveal">
+    <img
+        src="img/DARH7119.JPG"
+        alt="Hammed Sherrif Olamide"
+        style="
+            object-fit: cover;
+            object-position: center top;
+            width: 100%;
+        "
+    >
+    <div class="team-card-content">
+        <h3 style="color: white;">Hammed Sherrif Olamide</h3>
+        <span>The fipsu president of ipapo</span>
+        <p>The president of the Federation of Ipapo Students Union (FIPSU) for recent terms has included Salam Waris Abioye (noted in 2024) and Comr. Hammed Sheriff (noted in 2022)</p>
+    </div>
+</article>
 
             </div>
 
@@ -1076,51 +1084,315 @@
         }
 
         async function loadHomeNews() {
-            const container = document.getElementById('homeNewsContainer');
-            if (!container || !window.NewsService) return;
+    const container = document.getElementById('homeNewsContainer');
 
-            try {
-                const response = await fetch(window.ipapoApiUrl('/api/fetch-news'));
-                if (!response.ok) throw new Error('Home news fetch failed');
-                const payload = await response.json();
-                const stories = Array.isArray(payload.stories) ? payload.stories : [];
+    if (!container || !window.NewsService) return;
 
-                if (!stories.length) {
-                    container.innerHTML = '<div style="grid-column:1 / -1; text-align:center; padding:40px; color:#94a3b8;">No fresh stories available right now. Please check again soon.</div>';
-                    return;
-                }
+    // Premium loading state
+    container.innerHTML = `
+        <div class="news-loading" style="grid-column:1/-1;">
+            <div class="news-loading-spinner"></div>
+            <span>Loading the latest Ipapo stories...</span>
+        </div>
+    `;
 
-                container.innerHTML = stories.slice(0, 6).map((story) => `
-                    <article class="news-card reveal show">
-                        <div class="news-content">
-                            <span class="news-tag">${story.category || 'Community'}</span>
-                            <small>${formatNewsDate(story)}</small>
-                            <h3>${story.title}</h3>
-                            <p>${story.summary || story.content || 'Fresh community update from Ipapo.'}</p>
-                            <a href="article.html?id=${story.id}" class="btn" style="min-height:40px; padding:0 20px; font-size:13px; text-decoration:none; display:inline-flex;">
-                                Read Full Story →
-                            </a>
-                        </div>
-                    </article>
-                `).join('');
-            } catch (error) {
-                console.warn('Home news fallback used:', error);
-                const fallback = window.NewsService.getAllNews().slice(0, 6);
-                container.innerHTML = fallback.map((story) => `
-                    <article class="news-card reveal show">
-                        <div class="news-content">
-                            <span class="news-tag">${story.category || 'Community'}</span>
-                            <small>${formatNewsDate(story)}</small>
-                            <h3>${story.title}</h3>
-                            <p>${story.summary || 'Fresh community update from Ipapo.'}</p>
-                            <a href="article.html?id=${story.id}" class="btn" style="min-height:40px; padding:0 20px; font-size:13px; text-decoration:none; display:inline-flex;">
-                                Read Full Story →
-                            </a>
-                        </div>
-                    </article>
-                `).join('');
-            }
+    try {
+        const response = await fetch(
+            window.ipapoApiUrl('/api/fetch-news')
+        );
+
+        if (!response.ok) {
+            throw new Error('Home news fetch failed');
         }
+
+        const payload = await response.json();
+
+        const stories = Array.isArray(payload.stories)
+            ? payload.stories
+            : [];
+
+        if (!stories.length) {
+            showEmptyNewsState(container);
+            return;
+        }
+
+        renderPremiumNews(container, stories);
+
+    } catch (error) {
+
+        console.warn(
+            'Home news fallback used:',
+            error
+        );
+
+        try {
+
+            const fallback =
+                window.NewsService
+                    .getAllNews()
+                    .slice(0, 6);
+
+            if (!fallback.length) {
+                showEmptyNewsState(container);
+                return;
+            }
+
+            renderPremiumNews(container, fallback);
+
+        } catch (fallbackError) {
+
+            console.error(
+                'News fallback failed:',
+                fallbackError
+            );
+
+            showNewsError(container);
+        }
+    }
+}
+
+
+/* =========================================================
+   PREMIUM NEWS CARD RENDERER
+   ========================================================= */
+
+function renderPremiumNews(container, stories) {
+
+    container.innerHTML = stories
+        .slice(0, 6)
+        .map((story, index) => {
+
+            const title =
+                escapeNewsHTML(
+                    story.title ||
+                    'Ipapo Community Update'
+                );
+
+            const summary =
+                escapeNewsHTML(
+                    story.summary ||
+                    story.content ||
+                    'Fresh community update from Ipapo.'
+                );
+
+            const category =
+                escapeNewsHTML(
+                    story.category ||
+                    'Community'
+                );
+
+            const storyId =
+                encodeURIComponent(
+                    story.id || ''
+                );
+
+            const image =
+                story.image ||
+                story.imageUrl ||
+                'img/broadcast.jpeg';
+
+            const date =
+                formatNewsDate(story);
+
+            return `
+                <article
+                    class="news-card premium-news-card reveal show"
+                    style="--news-delay:${index * 90}ms;"
+                >
+
+                    <div class="news-card-image">
+
+                        <img
+                            src="${image}"
+                            alt="${title}"
+                            loading="lazy"
+                            onerror="
+                                this.onerror=null;
+                                this.src='img/broadcast.jpeg';
+                            "
+                        >
+
+                        <span class="news-card-category">
+                            ${category}
+                        </span>
+
+                    </div>
+
+                    <div class="news-content">
+
+                        <div class="news-meta">
+                            <span class="news-update">
+                                Latest update
+                            </span>
+
+                            <small>
+                                ${date}
+                            </small>
+                        </div>
+
+                        <h3>
+                            ${title}
+                        </h3>
+
+                        <p>
+                            ${summary}
+                        </p>
+
+                        <a
+                            href="article.html?id=${storyId}"
+                            class="news-read-more"
+                            aria-label="Read ${title}"
+                        >
+                            Read Full Story
+                            <span>→</span>
+                        </a>
+
+                    </div>
+
+                </article>
+            `;
+        })
+        .join('');
+
+    // Trigger premium reveal animation
+    requestAnimationFrame(() => {
+
+        const cards =
+            container.querySelectorAll(
+                '.premium-news-card'
+            );
+
+        cards.forEach((card, index) => {
+
+            setTimeout(() => {
+
+                card.classList.add(
+                    'news-card-visible'
+                );
+
+            }, index * 90);
+        });
+    });
+}
+
+
+/* =========================================================
+   NEWS DATE
+   ========================================================= */
+
+function formatNewsDate(story) {
+
+    const date =
+        story.fetchedAt ||
+        story.publishedAt;
+
+    if (!date) {
+        return 'Recently';
+    }
+
+    const parsed =
+        new Date(date);
+
+    if (Number.isNaN(parsed.getTime())) {
+        return 'Recently';
+    }
+
+    return parsed.toLocaleDateString(
+        undefined,
+        {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        }
+    );
+}
+
+
+/* =========================================================
+   SAFE HTML
+   ========================================================= */
+
+function escapeNewsHTML(value) {
+
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+function showEmptyNewsState(container) {
+
+    container.innerHTML = `
+        <div
+            class="news-empty"
+            style="grid-column:1/-1;"
+        >
+
+            <div class="news-empty-icon">
+                📰
+            </div>
+
+            <h3>
+                No fresh stories yet
+            </h3>
+
+            <p>
+                Check back soon for the latest
+                Ipapo community updates.
+            </p>
+
+            <button
+                type="button"
+                class="btn"
+                onclick="loadHomeNews()"
+            >
+                Refresh News
+            </button>
+
+        </div>
+    `;
+}
+
+
+function showNewsError(container) {
+
+    container.innerHTML = `
+        <div
+            class="news-empty"
+            style="grid-column:1/-1;"
+        >
+
+            <div class="news-empty-icon">
+                ⚠️
+            </div>
+
+            <h3>
+                Unable to load news
+            </h3>
+
+            <p>
+                We couldn't load the latest stories.
+                Please try again.
+            </p>
+
+            <button
+                type="button"
+                class="btn"
+                onclick="loadHomeNews()"
+            >
+                Try Again
+            </button>
+
+        </div>
+    `;
+}
 
         document.addEventListener('DOMContentLoaded', loadHomeNews);
     </script>
