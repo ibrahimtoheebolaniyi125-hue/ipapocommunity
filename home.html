@@ -25,6 +25,7 @@
     <style>
         /* =========================================================
            HOME PAGE FETCHED NEWS
+           TEXT ONLY — NO NEWS IMAGES
            ========================================================= */
 
         .news-container {
@@ -45,42 +46,14 @@
             height: 100%;
             min-width: 0;
             border-radius: 18px;
+            background: #111722;
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.18);
         }
 
         /*
-         * IMPORTANT:
-         * The image has its own fixed area.
-         * It cannot extend into the news text area.
-         */
-        .premium-news-card .news-card-image {
-            position: relative;
-            width: 100%;
-            height: 230px;
-            min-height: 230px;
-            overflow: hidden;
-            flex-shrink: 0;
-            isolation: isolate;
-        }
-
-        .premium-news-card .news-card-image img {
-            display: block;
-            width: 100%;
-            height: 100%;
-            max-width: 100%;
-            object-fit: cover;
-            object-position: center;
-        }
-
-        .premium-news-card .news-card-category {
-            position: absolute;
-            top: 14px;
-            left: 14px;
-            z-index: 3;
-        }
-
-        /*
-         * NEWS CONTENT IS A SEPARATE AREA.
-         * The image cannot cover this section.
+         * TEXT CONTENT ONLY.
+         * No image area is created for fetched news.
          */
         .premium-news-card .news-content {
             position: relative;
@@ -89,8 +62,20 @@
             flex-direction: column;
             flex: 1;
             min-width: 0;
-            padding: 20px;
+            padding: 22px;
             background: #111722;
+            isolation: isolate;
+        }
+
+        /*
+         * Keeps the text area completely solid.
+         */
+        .premium-news-card .news-content::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: #111722;
+            z-index: -1;
         }
 
         .premium-news-card .news-meta {
@@ -100,7 +85,7 @@
             align-items: center;
             justify-content: space-between;
             gap: 12px;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             min-height: 26px;
         }
 
@@ -133,13 +118,13 @@
             margin: 0 0 12px;
             color: #fff;
             font-size: 19px;
-            line-height: 1.4;
+            line-height: 1.45;
         }
 
         .premium-news-card p {
             position: relative;
             z-index: 5;
-            margin: 0 0 20px;
+            margin: 0 0 22px;
             color: rgba(255, 255, 255, 0.68);
             font-size: 14px;
             line-height: 1.7;
@@ -147,16 +132,26 @@
 
         .premium-news-card .news-read-more {
             position: relative;
-            z-index: 5;
+            z-index: 10;
             display: inline-flex;
             align-items: center;
             justify-content: space-between;
             gap: 10px;
             margin-top: auto;
+            width: fit-content;
+            padding: 10px 0;
             color: #00c6ff;
             text-decoration: none;
             font-size: 13px;
             font-weight: 700;
+            transition:
+                color 0.25s ease,
+                transform 0.25s ease;
+        }
+
+        .premium-news-card .news-read-more:hover {
+            color: #ffffff;
+            transform: translateX(3px);
         }
 
         .premium-news-card .news-read-more span {
@@ -257,11 +252,6 @@
                 grid-template-columns: 1fr;
                 gap: 18px;
                 margin-top: 30px;
-            }
-
-            .premium-news-card .news-card-image {
-                height: 210px;
-                min-height: 210px;
             }
 
             .premium-news-card .news-content {
@@ -677,17 +667,11 @@
 
             <article class="service-card reveal">
 
-                <div class="card-number">
-                    01
-                </div>
+                <div class="card-number">01</div>
 
-                <div class="service-icon">
-                    📰
-                </div>
+                <div class="service-icon">📰</div>
 
-                <h3>
-                    Morning News
-                </h3>
+                <h3>Morning News</h3>
 
                 <p>
                     Start your day with important local,
@@ -710,17 +694,11 @@
 
             <article class="service-card reveal">
 
-                <div class="card-number">
-                    02
-                </div>
+                <div class="card-number">02</div>
 
-                <div class="service-icon">
-                    ⚽
-                </div>
+                <div class="service-icon">⚽</div>
 
-                <h3>
-                    Sports Show
-                </h3>
+                <h3>Sports Show</h3>
 
                 <p>
                     Football, sports interviews, match analysis
@@ -743,17 +721,11 @@
 
             <article class="service-card reveal">
 
-                <div class="card-number">
-                    03
-                </div>
+                <div class="card-number">03</div>
 
-                <div class="service-icon">
-                    🎵
-                </div>
+                <div class="service-icon">🎵</div>
 
-                <h3>
-                    Entertainment
-                </h3>
+                <h3>Entertainment</h3>
 
                 <p>
                     Music programs, celebrity discussions,
@@ -776,17 +748,11 @@
 
             <article class="service-card reveal">
 
-                <div class="card-number">
-                    04
-                </div>
+                <div class="card-number">04</div>
 
-                <div class="service-icon">
-                    🎙️
-                </div>
+                <div class="service-icon">🎙️</div>
 
-                <h3>
-                    Live Interviews
-                </h3>
+                <h3>Live Interviews</h3>
 
                 <p>
                     Conversations with community leaders,
@@ -809,17 +775,11 @@
 
             <article class="service-card reveal">
 
-                <div class="card-number">
-                    05
-                </div>
+                <div class="card-number">05</div>
 
-                <div class="service-icon">
-                    🎓
-                </div>
+                <div class="service-icon">🎓</div>
 
-                <h3>
-                    Education Talk
-                </h3>
+                <h3>Education Talk</h3>
 
                 <p>
                     Educational programs focused on students,
@@ -842,17 +802,11 @@
 
             <article class="service-card reveal">
 
-                <div class="card-number">
-                    06
-                </div>
+                <div class="card-number">06</div>
 
-                <div class="service-icon">
-                    🌍
-                </div>
+                <div class="service-icon">🌍</div>
 
-                <h3>
-                    Culture & Tradition
-                </h3>
+                <h3>Culture & Tradition</h3>
 
                 <p>
                     Celebrating Ipapo's rich history, culture,
@@ -946,17 +900,11 @@
 
                 <article class="service-card reveal">
 
-                    <div class="card-number">
-                        01
-                    </div>
+                    <div class="card-number">01</div>
 
-                    <div class="service-icon">
-                        🎭
-                    </div>
+                    <div class="service-icon">🎭</div>
 
-                    <h3>
-                        Egungun Festival
-                    </h3>
+                    <h3>Egungun Festival</h3>
 
                     <p>
                         Ancestral remembrance expressed through
@@ -980,17 +928,11 @@
 
                 <article class="service-card reveal">
 
-                    <div class="card-number">
-                        02
-                    </div>
+                    <div class="card-number">02</div>
 
-                    <div class="service-icon">
-                        🌙
-                    </div>
+                    <div class="service-icon">🌙</div>
 
-                    <h3>
-                        Oro Festival
-                    </h3>
+                    <h3>Oro Festival</h3>
 
                     <p>
                         A solemn traditional observance connected
@@ -1020,17 +962,11 @@
 
                 <article class="service-card reveal">
 
-                    <div class="card-number">
-                        03
-                    </div>
+                    <div class="card-number">03</div>
 
-                    <div class="service-icon">
-                        ⚡
-                    </div>
+                    <div class="service-icon">⚡</div>
 
-                    <h3>
-                        Sango Festival
-                    </h3>
+                    <h3>Sango Festival</h3>
 
                     <p>
                         A celebration of courage, justice, thunder,
@@ -1059,17 +995,11 @@
 
                 <article class="service-card reveal">
 
-                    <div class="card-number">
-                        04
-                    </div>
+                    <div class="card-number">04</div>
 
-                    <div class="service-icon">
-                        🌿
-                    </div>
+                    <div class="service-icon">🌿</div>
 
-                    <h3>
-                        Sanda Festival
-                    </h3>
+                    <h3>Sanda Festival</h3>
 
                     <p>
                         A place to document local stories, family
@@ -1613,7 +1543,10 @@
 
         <!--
             ONLY FETCHED NEWS IS INSERTED HERE.
-            No static image is placed inside this section.
+
+            IMPORTANT:
+            The fetched stories are intentionally TEXT ONLY.
+            No story image is rendered here.
         -->
         <div
             class="news-container"
@@ -2448,6 +2381,7 @@ async function loadHomeNews() {
 
 /* =========================================================
    PREMIUM NEWS CARD RENDERER
+   TEXT ONLY
    ========================================================= */
 
 function renderPremiumNews(
@@ -2489,24 +2423,24 @@ function renderPremiumNews(
                         );
 
 
-                    /*
-                     * Image priority:
-                     *
-                     * 1. story.image
-                     * 2. story.imageUrl
-                     * 3. broadcast fallback
-                     */
-                    const image =
-                        story.image ||
-                        story.imageUrl ||
-                        'img/broadcast.jpeg';
-
-
                     const date =
                         formatNewsDate(
                             story
                         );
 
+
+                    /*
+                     * IMPORTANT:
+                     *
+                     * No image is read.
+                     * No image is displayed.
+                     * Even if the API returns:
+                     *
+                     * story.image
+                     * story.imageUrl
+                     *
+                     * they are intentionally ignored here.
+                     */
 
                     return `
 
@@ -2515,39 +2449,11 @@ function renderPremiumNews(
                             style="--news-delay:${index * 90}ms;"
                         >
 
-                            <!-- IMAGE AREA ONLY -->
-                            <div
-                                class="news-card-image"
-                            >
-
-                                <img
-                                    src="${image}"
-                                    alt="${title}"
-                                    loading="lazy"
-                                    onerror="
-                                        this.onerror=null;
-                                        this.src='img/broadcast.jpeg';
-                                    "
-                                >
-
-                                <span
-                                    class="news-card-category"
-                                >
-                                    ${category}
-                                </span>
-
-                            </div>
-
-
-                            <!-- TEXT AREA -->
+                            <!-- TEXT ONLY NEWS CARD -->
                             <div
                                 class="news-content"
                             >
 
-                                <!--
-                                    THIS IS NOW COMPLETELY
-                                    SEPARATE FROM THE IMAGE.
-                                -->
                                 <div
                                     class="news-meta"
                                 >
