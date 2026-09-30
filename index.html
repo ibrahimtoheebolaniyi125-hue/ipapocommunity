@@ -1,1592 +1,2289 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <meta
         name="description"
-        content="Ipapo Broadcast - The official voice and media platform for the people of Ipapo, Oyo State. Local news, 24/7 live community radio, cultural heritage, and resident network."
+        content="Ipapo Broadcast — news, community, culture, events and stories from Ipapo, Itesiwaju, Oyo State, Nigeria."
     >
 
     <meta
-        name="keywords"
-        content="Ipapo, Ipapo Broadcast, Oyo State, Itesiwaju, Yoruba culture, Eleyinpo of Ipapo, Abuwe soap, community radio"
+        name="theme-color"
+        content="#080b12"
     >
 
-    <title>Ipapo Broadcast | Voice of the Community</title>
+    <title>Ipapo Broadcast | Welcome to Ipapo</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Existing stylesheets are kept so the rest of the website continues to work -->
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="css/landing.css">
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
         rel="stylesheet"
     >
 
-    <link rel="stylesheet" href="index.css">
-    <link rel="stylesheet" href="css/landing.css">
+    <style>
+        /* =========================================================
+           IPAPO BROADCAST LANDING PAGE
+           Completely isolated from old .header/.navbar/.hero CSS
+           ========================================================= */
+
+        :root {
+            --ipb-yellow: #ffcc00;
+            --ipb-yellow-dark: #e5b800;
+            --ipb-header-bg: rgba(8, 11, 18, 0.90);
+            --ipb-white: #ffffff;
+            --ipb-muted: rgba(255, 255, 255, 0.72);
+            --ipb-border: rgba(255, 255, 255, 0.13);
+        }
+
+        html.ipb-html,
+        body.ipb-body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            min-height: 100% !important;
+            overflow-x: hidden !important;
+        }
+
+        body.ipb-body {
+            background: #080b12 !important;
+            font-family: "Poppins", sans-serif !important;
+        }
+
+        body.ipb-body *,
+        body.ipb-body *::before,
+        body.ipb-body *::after {
+            box-sizing: border-box;
+        }
+
+        body.ipb-body a {
+            text-decoration: none;
+        }
+
+        /* =========================================================
+           HEADER
+           ========================================================= */
+
+        .ipb-header {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+
+            width: 100% !important;
+            height: 72px !important;
+            min-height: 72px !important;
+
+            margin: 0 !important;
+            padding: 0 28px !important;
+
+            display: flex !important;
+            align-items: center !important;
+
+            background: var(--ipb-header-bg) !important;
+
+            border: 0 !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+            border-radius: 0 !important;
+
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22) !important;
+
+            z-index: 99999 !important;
+        }
+
+        .ipb-header-inner {
+            position: relative !important;
+
+            width: 100% !important;
+            max-width: 1440px !important;
+            height: 100% !important;
+
+            margin: 0 auto !important;
+
+            display: grid !important;
+            grid-template-columns: 1fr auto 1fr !important;
+            align-items: center !important;
+
+            gap: 20px !important;
+        }
+
+        /* =========================================================
+           LOGO
+           ========================================================= */
+
+        .ipb-logo {
+            justify-self: start !important;
+
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+
+            color: #ffffff !important;
+
+            font-size: 18px !important;
+            font-weight: 700 !important;
+            letter-spacing: -0.3px !important;
+
+            white-space: nowrap !important;
+        }
+
+        .ipb-logo-mark {
+            width: 36px !important;
+            height: 36px !important;
+
+            display: grid !important;
+            place-items: center !important;
+
+            flex-shrink: 0 !important;
+
+            border-radius: 50% !important;
+
+            background: var(--ipb-yellow) !important;
+
+            color: #111111 !important;
+
+            font-size: 15px !important;
+            font-weight: 800 !important;
+
+            box-shadow: 0 5px 18px rgba(255, 204, 0, 0.18) !important;
+        }
+
+        .ipb-logo-text {
+            color: #ffffff !important;
+        }
+
+        .ipb-logo-text span {
+            color: var(--ipb-yellow) !important;
+        }
+
+        /* =========================================================
+           DESKTOP NAV
+           ========================================================= */
+
+        .ipb-nav {
+            justify-self: center !important;
+
+            height: 100% !important;
+
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+
+            gap: 4px !important;
+
+            white-space: nowrap !important;
+        }
+
+        .ipb-nav-item,
+        .ipb-dropdown-button {
+            position: relative !important;
+
+            height: 100% !important;
+
+            display: inline-flex !important;
+            align-items: center !important;
+
+            padding: 0 12px !important;
+
+            border: 0 !important;
+            outline: none !important;
+
+            background: transparent !important;
+
+            color: rgba(255, 255, 255, 0.76) !important;
+
+            font-family: inherit !important;
+            font-size: 12.5px !important;
+            font-weight: 500 !important;
+
+            cursor: pointer !important;
+
+            transition:
+                color 0.25s ease,
+                background 0.25s ease !important;
+        }
+
+        .ipb-nav-item:hover,
+        .ipb-dropdown-button:hover,
+        .ipb-nav-item.ipb-active {
+            color: #ffffff !important;
+        }
+
+        .ipb-nav-item::after,
+        .ipb-dropdown-button::after {
+            content: "" !important;
+
+            position: absolute !important;
+
+            left: 12px !important;
+            right: 12px !important;
+            bottom: 0 !important;
+
+            height: 2px !important;
+
+            background: var(--ipb-yellow) !important;
+
+            transform: scaleX(0) !important;
+            transform-origin: center !important;
+
+            transition: transform 0.25s ease !important;
+        }
+
+        .ipb-nav-item:hover::after,
+        .ipb-nav-item.ipb-active::after,
+        .ipb-dropdown:hover > .ipb-dropdown-button::after {
+            transform: scaleX(1) !important;
+        }
+
+        /* =========================================================
+           DROPDOWNS
+           ========================================================= */
+
+        .ipb-dropdown {
+            position: relative !important;
+
+            height: 100% !important;
+
+            display: flex !important;
+            align-items: center !important;
+        }
+
+        .ipb-dropdown-button {
+            gap: 6px !important;
+        }
+
+        .ipb-chevron {
+            width: 6px !important;
+            height: 6px !important;
+
+            border-right: 1px solid currentColor !important;
+            border-bottom: 1px solid currentColor !important;
+
+            transform: rotate(45deg) translateY(-2px) !important;
+
+            transition: transform 0.25s ease !important;
+        }
+
+        .ipb-dropdown:hover .ipb-chevron {
+            transform: rotate(225deg) translate(-1px, -1px) !important;
+        }
+
+        .ipb-dropdown-menu {
+            position: absolute !important;
+
+            top: calc(100% + 8px) !important;
+
+            left: 50% !important;
+
+            width: 220px !important;
+
+            margin: 0 !important;
+            padding: 8px !important;
+
+            transform: translateX(-50%) translateY(8px) !important;
+
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+
+            background: rgba(8, 11, 18, 0.98) !important;
+
+            border: 1px solid rgba(255, 255, 255, 0.11) !important;
+            border-radius: 10px !important;
+
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45) !important;
+
+            backdrop-filter: blur(18px) !important;
+            -webkit-backdrop-filter: blur(18px) !important;
+
+            transition:
+                opacity 0.22s ease,
+                transform 0.22s ease,
+                visibility 0.22s ease !important;
+
+            z-index: 100000 !important;
+        }
+
+        .ipb-dropdown:hover .ipb-dropdown-menu,
+        .ipb-dropdown.ipb-open .ipb-dropdown-menu {
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
+
+            transform: translateX(-50%) translateY(0) !important;
+        }
+
+        .ipb-dropdown-menu a {
+            display: flex !important;
+            align-items: center !important;
+
+            width: 100% !important;
+
+            min-height: 40px !important;
+
+            padding: 9px 12px !important;
+
+            border-radius: 7px !important;
+
+            color: rgba(255, 255, 255, 0.76) !important;
+
+            font-size: 12px !important;
+            font-weight: 500 !important;
+
+            transition:
+                color 0.2s ease,
+                background 0.2s ease,
+                padding-left 0.2s ease !important;
+        }
+
+        .ipb-dropdown-menu a:hover {
+            color: #ffffff !important;
+
+            background: rgba(255, 204, 0, 0.09) !important;
+
+            padding-left: 16px !important;
+        }
+
+        /* =========================================================
+           RIGHT HEADER AREA
+           ========================================================= */
+
+        .ipb-header-right {
+            justify-self: end !important;
+
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+        }
+
+        .ipb-member-link {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+
+            min-height: 36px !important;
+
+            padding: 0 14px !important;
+
+            border: 1px solid rgba(255, 255, 255, 0.17) !important;
+            border-radius: 7px !important;
+
+            color: rgba(255, 255, 255, 0.82) !important;
+
+            font-size: 11.5px !important;
+            font-weight: 500 !important;
+
+            transition:
+                background 0.25s ease,
+                border-color 0.25s ease,
+                color 0.25s ease !important;
+        }
+
+        .ipb-member-link:hover {
+            color: #ffffff !important;
+
+            background: rgba(255, 255, 255, 0.08) !important;
+
+            border-color: rgba(255, 255, 255, 0.3) !important;
+        }
+
+        .ipb-join-link {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+
+            min-height: 36px !important;
+
+            padding: 0 15px !important;
+
+            border-radius: 7px !important;
+
+            background: var(--ipb-yellow) !important;
+
+            color: #111111 !important;
+
+            font-size: 11.5px !important;
+            font-weight: 700 !important;
+
+            transition:
+                background 0.25s ease,
+                transform 0.25s ease !important;
+        }
+
+        .ipb-join-link:hover {
+            background: #ffffff !important;
+
+            color: #111111 !important;
+
+            transform: translateY(-1px) !important;
+        }
+
+        /* =========================================================
+           MOBILE BUTTON
+           ========================================================= */
+
+        .ipb-menu-button {
+            display: none !important;
+
+            width: 38px !important;
+            height: 38px !important;
+
+            place-items: center !important;
+
+            border: 1px solid rgba(255, 255, 255, 0.14) !important;
+            border-radius: 7px !important;
+
+            background: rgba(255, 255, 255, 0.05) !important;
+
+            color: #ffffff !important;
+
+            cursor: pointer !important;
+        }
+
+        .ipb-menu-lines {
+            width: 18px !important;
+            height: 14px !important;
+
+            position: relative !important;
+        }
+
+        .ipb-menu-lines span {
+            position: absolute !important;
+
+            left: 0 !important;
+
+            width: 100% !important;
+            height: 1.5px !important;
+
+            background: #ffffff !important;
+
+            transition: 0.25s ease !important;
+        }
+
+        .ipb-menu-lines span:nth-child(1) {
+            top: 0 !important;
+        }
+
+        .ipb-menu-lines span:nth-child(2) {
+            top: 6px !important;
+        }
+
+        .ipb-menu-lines span:nth-child(3) {
+            top: 12px !important;
+        }
+
+        .ipb-menu-button.ipb-open .ipb-menu-lines span:nth-child(1) {
+            top: 6px !important;
+            transform: rotate(45deg) !important;
+        }
+
+        .ipb-menu-button.ipb-open .ipb-menu-lines span:nth-child(2) {
+            opacity: 0 !important;
+        }
+
+        .ipb-menu-button.ipb-open .ipb-menu-lines span:nth-child(3) {
+            top: 6px !important;
+            transform: rotate(-45deg) !important;
+        }
+
+        /* =========================================================
+           MOBILE NAV
+           ========================================================= */
+
+        .ipb-mobile-menu {
+            position: fixed !important;
+
+            top: 72px !important;
+            left: 0 !important;
+            right: 0 !important;
+
+            width: 100% !important;
+
+            padding: 10px 16px 18px !important;
+
+            background: rgba(8, 11, 18, 0.98) !important;
+
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.3) !important;
+
+            backdrop-filter: blur(18px) !important;
+            -webkit-backdrop-filter: blur(18px) !important;
+
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+
+            transform: translateY(-8px) !important;
+
+            transition:
+                opacity 0.25s ease,
+                transform 0.25s ease,
+                visibility 0.25s ease !important;
+
+            z-index: 99998 !important;
+
+            max-height: calc(100vh - 72px) !important;
+            overflow-y: auto !important;
+        }
+
+        .ipb-mobile-menu.ipb-open {
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
+
+            transform: translateY(0) !important;
+        }
+
+        .ipb-mobile-link,
+        .ipb-mobile-dropdown-button {
+            width: 100% !important;
+
+            min-height: 44px !important;
+
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+
+            padding: 0 12px !important;
+
+            border: 0 !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+
+            background: transparent !important;
+
+            color: rgba(255, 255, 255, 0.82) !important;
+
+            font-family: inherit !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+
+            text-align: left !important;
+            cursor: pointer !important;
+        }
+
+        .ipb-mobile-link:hover,
+        .ipb-mobile-dropdown-button:hover {
+            color: var(--ipb-yellow) !important;
+        }
+
+        .ipb-mobile-submenu {
+            display: none !important;
+
+            padding: 4px 0 7px 12px !important;
+        }
+
+        .ipb-mobile-submenu.ipb-open {
+            display: block !important;
+        }
+
+        .ipb-mobile-submenu a {
+            display: block !important;
+
+            padding: 10px 12px !important;
+
+            color: rgba(255, 255, 255, 0.58) !important;
+
+            font-size: 12px !important;
+        }
+
+        .ipb-mobile-submenu a:hover {
+            color: var(--ipb-yellow) !important;
+        }
+
+        /* =========================================================
+           HERO / BACKGROUND
+           ========================================================= */
+
+        .ipb-hero {
+            position: relative !important;
+
+            width: 100% !important;
+            height: 100svh !important;
+            min-height: 620px !important;
+
+            overflow: hidden !important;
+
+            background: #080b12 !important;
+        }
+
+        .ipb-slide {
+            position: absolute !important;
+
+            inset: 0 !important;
+
+            width: 100% !important;
+            height: 100% !important;
+
+            opacity: 0 !important;
+
+            visibility: hidden !important;
+
+            transition:
+                opacity 1.3s ease,
+                visibility 1.3s ease !important;
+
+            z-index: 1 !important;
+        }
+
+        .ipb-slide.ipb-active {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .ipb-slide img {
+            width: 100% !important;
+            height: 100% !important;
+
+            display: block !important;
+
+            object-fit: cover !important;
+
+            object-position: center !important;
+
+            transform: scale(1.02) !important;
+
+            transition: transform 7s ease !important;
+        }
+
+        .ipb-slide.ipb-active img {
+            transform: scale(1.07) !important;
+        }
+
+        .ipb-slide::after {
+            content: "" !important;
+
+            position: absolute !important;
+
+            inset: 0 !important;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(0, 0, 0, 0.72) 0%,
+                    rgba(0, 0, 0, 0.48) 42%,
+                    rgba(0, 0, 0, 0.24) 100%
+                ) !important;
+        }
+
+        /* =========================================================
+           HERO CONTENT
+           ========================================================= */
+
+        .ipb-hero-content {
+            position: absolute !important;
+
+            top: 50% !important;
+            left: 0 !important;
+
+            width: 100% !important;
+
+            padding: 0 7% !important;
+
+            transform: translateY(-43%) !important;
+
+            z-index: 10 !important;
+
+            pointer-events: none !important;
+        }
+
+        .ipb-welcome {
+            margin: 0 0 14px !important;
+
+            color: var(--ipb-yellow) !important;
+
+            font-size: 12px !important;
+            font-weight: 700 !important;
+
+            letter-spacing: 3px !important;
+            text-transform: uppercase !important;
+        }
+
+        .ipb-title {
+            max-width: 720px !important;
+
+            margin: 0 !important;
+
+            color: #ffffff !important;
+
+            font-family: "Poppins", sans-serif !important;
+
+            font-size: clamp(42px, 6.2vw, 82px) !important;
+
+            line-height: 1.02 !important;
+
+            font-weight: 700 !important;
+
+            letter-spacing: -2.5px !important;
+
+            text-shadow: 0 5px 25px rgba(0, 0, 0, 0.35) !important;
+        }
+
+        .ipb-description {
+            max-width: 600px !important;
+
+            margin: 20px 0 28px !important;
+
+            color: rgba(255, 255, 255, 0.82) !important;
+
+            font-size: 15px !important;
+
+            line-height: 1.7 !important;
+        }
+
+        .ipb-actions {
+            display: flex !important;
+            align-items: center !important;
+            gap: 11px !important;
+
+            pointer-events: auto !important;
+        }
+
+        .ipb-action {
+            display: inline-flex !important;
+
+            align-items: center !important;
+            justify-content: center !important;
+
+            min-height: 45px !important;
+
+            padding: 0 20px !important;
+
+            border-radius: 6px !important;
+
+            font-family: inherit !important;
+
+            font-size: 12px !important;
+            font-weight: 600 !important;
+
+            transition:
+                transform 0.25s ease,
+                background 0.25s ease,
+                border-color 0.25s ease !important;
+        }
+
+        .ipb-action-primary {
+            background: var(--ipb-yellow) !important;
+
+            color: #111111 !important;
+        }
+
+        .ipb-action-primary:hover {
+            background: #ffffff !important;
+
+            color: #111111 !important;
+
+            transform: translateY(-2px) !important;
+        }
+
+        .ipb-action-secondary {
+            border: 1px solid rgba(255, 255, 255, 0.38) !important;
+
+            background: rgba(255, 255, 255, 0.07) !important;
+
+            color: #ffffff !important;
+
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+        }
+
+        .ipb-action-secondary:hover {
+            background: rgba(255, 255, 255, 0.16) !important;
+
+            border-color: rgba(255, 255, 255, 0.65) !important;
+
+            transform: translateY(-2px) !important;
+        }
+
+        /* =========================================================
+           SLIDE INDICATORS
+           ========================================================= */
+
+        .ipb-indicators {
+            position: absolute !important;
+
+            left: 7% !important;
+            bottom: 32px !important;
+
+            display: flex !important;
+            align-items: center !important;
+
+            gap: 6px !important;
+
+            z-index: 20 !important;
+        }
+
+        .ipb-indicator {
+            width: 22px !important;
+            height: 2px !important;
+
+            border: 0 !important;
+
+            padding: 0 !important;
+
+            background: rgba(255, 255, 255, 0.35) !important;
+
+            cursor: pointer !important;
+
+            transition:
+                width 0.3s ease,
+                background 0.3s ease !important;
+        }
+
+        .ipb-indicator.ipb-active {
+            width: 40px !important;
+
+            background: var(--ipb-yellow) !important;
+        }
+
+        /* =========================================================
+           SMALL LOCATION LABEL
+           ========================================================= */
+
+        .ipb-location {
+            position: absolute !important;
+
+            right: 7% !important;
+            bottom: 32px !important;
+
+            z-index: 20 !important;
+
+            color: rgba(255, 255, 255, 0.72) !important;
+
+            font-size: 10px !important;
+            font-weight: 500 !important;
+
+            letter-spacing: 1.8px !important;
+            text-transform: uppercase !important;
+        }
+
+        /* =========================================================
+           SIMPLE BOTTOM STRIP
+           ========================================================= */
+
+        .ipb-explore-strip {
+            position: absolute !important;
+
+            left: 50% !important;
+            bottom: 24px !important;
+
+            transform: translateX(-50%) !important;
+
+            z-index: 21 !important;
+
+            color: rgba(255, 255, 255, 0.5) !important;
+
+            font-size: 9px !important;
+
+            letter-spacing: 2px !important;
+            text-transform: uppercase !important;
+
+            white-space: nowrap !important;
+        }
+
+        /* =========================================================
+           PAGE TRANSITION
+           ========================================================= */
+
+        .ipb-page-transition {
+            position: fixed !important;
+
+            inset: 0 !important;
+
+            background: #080b12 !important;
+
+            opacity: 0 !important;
+            visibility: hidden !important;
+
+            pointer-events: none !important;
+
+            z-index: 200000 !important;
+
+            transition:
+                opacity 0.35s ease,
+                visibility 0.35s ease !important;
+        }
+
+        .ipb-page-transition.ipb-leaving {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        /* =========================================================
+           TABLET
+           ========================================================= */
+
+        @media (max-width: 1150px) {
+
+            .ipb-header {
+                padding: 0 20px !important;
+            }
+
+            .ipb-header-inner {
+                grid-template-columns: auto 1fr auto !important;
+            }
+
+            .ipb-nav {
+                gap: 0 !important;
+            }
+
+            .ipb-nav-item,
+            .ipb-dropdown-button {
+                padding: 0 8px !important;
+
+                font-size: 11.5px !important;
+            }
+
+            .ipb-member-link {
+                display: none !important;
+            }
+
+            .ipb-join-link {
+                min-height: 34px !important;
+
+                padding: 0 12px !important;
+
+                font-size: 10.5px !important;
+            }
+        }
+
+        /* =========================================================
+           TABLET / MOBILE
+           ========================================================= */
+
+        @media (max-width: 900px) {
+
+            .ipb-header {
+                height: 66px !important;
+                min-height: 66px !important;
+            }
+
+            .ipb-header-inner {
+                display: flex !important;
+                justify-content: space-between !important;
+            }
+
+            .ipb-nav,
+            .ipb-header-right {
+                display: none !important;
+            }
+
+            .ipb-menu-button {
+                display: grid !important;
+            }
+
+            .ipb-mobile-menu {
+                top: 66px !important;
+            }
+
+            .ipb-hero {
+                min-height: 600px !important;
+            }
+
+            .ipb-hero-content {
+                padding: 0 6% !important;
+            }
+
+            .ipb-title {
+                max-width: 650px !important;
+
+                font-size: clamp(40px, 8vw, 68px) !important;
+            }
+
+            .ipb-location {
+                right: 6% !important;
+            }
+
+            .ipb-indicators {
+                left: 6% !important;
+            }
+        }
+
+        /* =========================================================
+           MOBILE
+           ========================================================= */
+
+        @media (max-width: 600px) {
+
+            .ipb-header {
+                height: 62px !important;
+                min-height: 62px !important;
+
+                padding: 0 16px !important;
+            }
+
+            .ipb-logo {
+                font-size: 16px !important;
+            }
+
+            .ipb-logo-mark {
+                width: 32px !important;
+                height: 32px !important;
+
+                font-size: 13px !important;
+            }
+
+            .ipb-menu-button {
+                width: 36px !important;
+                height: 36px !important;
+            }
+
+            .ipb-mobile-menu {
+                top: 62px !important;
+
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+            }
+
+            .ipb-hero {
+                height: 100svh !important;
+                min-height: 560px !important;
+            }
+
+            .ipb-slide img {
+                object-position: center center !important;
+            }
+
+            .ipb-slide::after {
+                background:
+                    linear-gradient(
+                        180deg,
+                        rgba(0, 0, 0, 0.48),
+                        rgba(0, 0, 0, 0.74) 58%,
+                        rgba(0, 0, 0, 0.88)
+                    ) !important;
+            }
+
+            .ipb-hero-content {
+                top: 50% !important;
+
+                padding: 0 22px !important;
+
+                transform: translateY(-42%) !important;
+            }
+
+            .ipb-welcome {
+                margin-bottom: 10px !important;
+
+                font-size: 10px !important;
+
+                letter-spacing: 2.3px !important;
+            }
+
+            .ipb-title {
+                max-width: 100% !important;
+
+                font-size: clamp(38px, 12vw, 58px) !important;
+
+                line-height: 1.04 !important;
+
+                letter-spacing: -1.7px !important;
+            }
+
+            .ipb-description {
+                max-width: 470px !important;
+
+                margin: 16px 0 23px !important;
+
+                font-size: 13px !important;
+
+                line-height: 1.65 !important;
+            }
+
+            .ipb-actions {
+                flex-direction: column !important;
+
+                align-items: stretch !important;
+
+                width: min(100%, 300px) !important;
+
+                gap: 8px !important;
+            }
+
+            .ipb-action {
+                min-height: 44px !important;
+
+                width: 100% !important;
+            }
+
+            .ipb-indicators {
+                left: 22px !important;
+                bottom: 26px !important;
+            }
+
+            .ipb-location {
+                right: 22px !important;
+                bottom: 27px !important;
+
+                font-size: 8px !important;
+
+                letter-spacing: 1.2px !important;
+            }
+
+            .ipb-explore-strip {
+                display: none !important;
+            }
+        }
+
+        /* =========================================================
+           SMALL PHONES
+           ========================================================= */
+
+        @media (max-width: 380px) {
+
+            .ipb-title {
+                font-size: 35px !important;
+            }
+
+            .ipb-description {
+                font-size: 12px !important;
+            }
+
+            .ipb-hero-content {
+                transform: translateY(-39%) !important;
+            }
+
+            .ipb-indicators {
+                bottom: 20px !important;
+            }
+
+            .ipb-location {
+                bottom: 21px !important;
+            }
+        }
+
+        /* =========================================================
+           REDUCED MOTION
+           ========================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .ipb-slide,
+            .ipb-slide img,
+            .ipb-dropdown-menu,
+            .ipb-mobile-menu,
+            .ipb-action,
+            .ipb-page-transition {
+                transition: none !important;
+            }
+        }
+    </style>
 </head>
 
-<body class="landing-page-body">
+<body class="ipb-body">
+
+    <!-- =========================================================
+         HEADER
+         ========================================================= -->
+
+    <header class="ipb-header">
+
+        <div class="ipb-header-inner">
+
+            <!-- LOGO -->
+            <a
+                href="index.html"
+                class="ipb-logo"
+                aria-label="Ipapo Broadcast Home"
+            >
+                <span class="ipb-logo-mark">IB</span>
+
+                <span class="ipb-logo-text">
+                    Ipapo <span>Broadcast</span>
+                </span>
+            </a>
 
 
-    <div class="carousel-status-bar" id="carouselStatusBar"></div>
+            <!-- DESKTOP NAV -->
+            <nav
+                class="ipb-nav"
+                aria-label="Main navigation"
+            >
+
+                <a
+                    href="index.html"
+                    class="ipb-nav-item ipb-active"
+                >
+                    Home
+                </a>
+
+
+                <a
+                    href="news.html"
+                    class="ipb-nav-item"
+                >
+                    News
+                </a>
+
+
+                <!-- COMMUNITY -->
+                <div class="ipb-dropdown">
+
+                    <button
+                        type="button"
+                        class="ipb-dropdown-button"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                    >
+                        Community
+                        <span class="ipb-chevron"></span>
+                    </button>
+
+                    <div class="ipb-dropdown-menu">
+
+                        <a href="community.html">
+                            Community
+                        </a>
+
+                        <a href="gallery.html">
+                            Gallery
+                        </a>
+
+                        <a href="submit-story.html">
+                            Submit a Story
+                        </a>
+
+                        <a href="events.html">
+                            Community Events
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CULTURE -->
+                <div class="ipb-dropdown">
+
+                    <button
+                        type="button"
+                        class="ipb-dropdown-button"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                    >
+                        Culture & Heritage
+                        <span class="ipb-chevron"></span>
+                    </button>
+
+                    <div class="ipb-dropdown-menu">
+
+                        <a href="about.html">
+                            About Ipapo
+                        </a>
+
+                        <a href="about.html#heritage">
+                            Royal Heritage
+                        </a>
+
+                        <a href="about.html#culture">
+                            Culture & Tradition
+                        </a>
+
+                        <a href="events.html">
+                            Cultural Events
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <a
+                    href="events.html"
+                    class="ipb-nav-item"
+                >
+                    Events
+                </a>
+
+
+                <!-- MORE -->
+                <div class="ipb-dropdown">
+
+                    <button
+                        type="button"
+                        class="ipb-dropdown-button"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                    >
+                        More
+                        <span class="ipb-chevron"></span>
+                    </button>
+
+                    <div class="ipb-dropdown-menu">
+
+                        <a href="about.html">
+                            About
+                        </a>
+
+                        <a href="live.html">
+                            Live Radio
+                        </a>
+
+                        <a href="advertise.html">
+                            Advertise
+                        </a>
+
+                        <a href="submit-story.html">
+                            Submit Story
+                        </a>
+
+                        <a href="contact.html">
+                            Contact
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </nav>
+
+
+            <!-- RIGHT -->
+            <div class="ipb-header-right">
+
+                <a
+                    href="dashboard.html"
+                    class="ipb-member-link"
+                >
+                    Member Area
+                </a>
+
+                <a
+                    href="home.html"
+                    class="ipb-join-link"
+                >
+                    Join Community
+                </a>
+
+            </div>
+
+
+            <!-- MOBILE BUTTON -->
+            <button
+                type="button"
+                class="ipb-menu-button"
+                id="ipbMenuButton"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+            >
+                <span class="ipb-menu-lines">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================================
+         MOBILE MENU
+         ========================================================= -->
 
     <div
-        class="carousel-viewport"
-        id="landingViewport"
-        aria-hidden="true"
+        class="ipb-mobile-menu"
+        id="ipbMobileMenu"
     >
-        <div id="carouselContainer">
 
-            <div class="carousel-slide active" data-index="0">
-                <img
-                    class="carousel-slide-img"
-                    src="img/ipapo_gateway.jpg"
-                    alt="Welcome to Ipapo Monument"
-                >
-            </div>
+        <a
+            href="index.html"
+            class="ipb-mobile-link"
+        >
+            Home
+        </a>
 
-            <div class="carousel-slide" data-index="1">
-                <img
-                    class="carousel-slide-img"
-                    src="img/ippao.jpg"
-                    alt="Oba of Ipapo in Royal Regalia"
-                >
-            </div>
-
-            <div class="carousel-slide" data-index="2">
-                <img
-                    class="carousel-slide-img"
-                    src="img/ipapo_aerial.jpg"
-                    alt="Sunset Aerial View of Ipapo"
-                >
-            </div>
-
-            <div class="carousel-slide" data-index="3">
-                <img
-                    class="carousel-slide-img"
-                    src="img/abuwe.jpg"
-                    alt="Abuwe Black Soap Making in Ipapo"
-                >
-            </div>
-
-            <div class="carousel-slide" data-index="4">
-                <img
-                    class="carousel-slide-img"
-                    src="img/building.jpg"
-                    alt="Ipapo College of Education Building"
-                >
-            </div>
-
-            <div class="carousel-slide" data-index="5">
-                <img
-                    class="carousel-slide-img"
-                    src="img/school.jpg"
-                    alt="Ipapo Community Sports Festival"
-                >
-            </div>
-
-            <div class="carousel-slide" data-index="6">
-                <img
-                    class="carousel-slide-img"
-                    src="img/sport.jpg"
-                    alt="Ipapo Sports Champions"
-                >
-            </div>
-
-            <div class="carousel-slide" data-index="7">
-                <img
-                    class="carousel-slide-img"
-                    src="img/field.jpg"
-                    alt="Community Football Match at Ipapo Field"
-                >
-            </div>
-
-            <div class="carousel-slide" data-index="8">
-                <img
-                    class="carousel-slide-img"
-                    src="img/group.jpg"
-                    alt="Ipapo Scholarship Program"
-                >
-            </div>
-
-            <div class="carousel-slide" data-index="9">
-                <img
-                    class="carousel-slide-img"
-                    src="img/DARH7119.JPG"
-                    alt="Federation of Ipapo Students Union"
-                >
-            </div>
-
-        </div>
-
-        <div class="carousel-overlay"></div>
-    </div>
-
-    <button
-        class="carousel-nav-btn prev"
-        id="prevSlideBtn"
-        type="button"
-        aria-label="Previous Ipapo Scene"
-    >
-        ‹
-    </button>
-
-    <button
-        class="carousel-nav-btn next"
-        id="nextSlideBtn"
-        type="button"
-        aria-label="Next Ipapo Scene"
-    >
-        ›
-    </button>
-
-    <div class="carousel-caption-card" id="carouselCaptionCard">
-
-        <div class="caption-meta">
-            <span class="caption-tag">Town Monument</span>
-
-            <span class="caption-location">
-                📍 Town Entrance, Ipapo
-            </span>
-        </div>
-
-        <h4 class="caption-title">
-            Welcome to Ipapo: The Home of Art & Culture
-        </h4>
-
-        <p class="caption-desc">
-            The historic gateway welcoming all residents, visitors, and
-            descendants to the peaceful town of Ipapo, Oyo State.
-        </p>
-
-    </div>
-
-    <nav
-        class="carousel-thumbs-wrapper"
-        id="carouselThumbs"
-        aria-label="Ipapo Photo Gallery Selector"
-    >
-    </nav>
-<header class="lp-header" id="lpHeader">
-
-    <!-- LOGO -->
-    <a href="index.html" class="lp-logo-link" aria-label="Ipapo Broadcast home">
-
-        <div class="lp-logo-icon">📻</div>
-
-        <div>
-            <div class="lp-logo-text">
-                IPAPO <span>Broadcast</span>
-            </div>
-
-            <span class="lp-logo-sub">
-                Oyo State, Nigeria
-            </span>
-        </div>
-
-    </a>
-
-
-    <!-- DESKTOP NAVIGATION -->
-    <nav class="lp-nav-links" aria-label="Primary navigation">
-
-        <a href="news.html" class="lp-nav-item">
+        <a
+            href="news.html"
+            class="ipb-mobile-link"
+        >
             News
         </a>
 
-        <a href="live.html" class="lp-nav-item">
-            Live Radio
-        </a>
 
+        <button
+            type="button"
+            class="ipb-mobile-dropdown-button"
+            data-mobile-dropdown="community"
+        >
+            <span>Community</span>
+            <span class="ipb-chevron"></span>
+        </button>
 
-        <!-- COMMUNITY -->
-        <div class="lp-nav-dropdown">
-
-            <button
-                type="button"
-                class="lp-nav-item lp-nav-dropdown-toggle"
-                aria-expanded="false"
-            >
+        <div
+            class="ipb-mobile-submenu"
+            id="ipbMobileCommunity"
+        >
+            <a href="community.html">
                 Community
-                <span class="lp-dropdown-arrow">⌄</span>
-            </button>
+            </a>
 
-            <div class="lp-nav-dropdown-menu">
+            <a href="gallery.html">
+                Gallery
+            </a>
 
-                <a href="community.html">
-                    Community Hub
-                </a>
+            <a href="submit-story.html">
+                Submit a Story
+            </a>
 
-                <a href="gallery.html">
-                    Photo Gallery
-                </a>
-
-                <a href="submit-story.html">
-                    Submit Story
-                </a>
-
-                <a href="community.html">
-                    Community Updates
-                </a>
-
-            </div>
-
+            <a href="events.html">
+                Community Events
+            </a>
         </div>
 
 
-        <!-- CULTURE -->
-        <div class="lp-nav-dropdown">
+        <button
+            type="button"
+            class="ipb-mobile-dropdown-button"
+            data-mobile-dropdown="culture"
+        >
+            <span>Culture & Heritage</span>
+            <span class="ipb-chevron"></span>
+        </button>
 
-            <button
-                type="button"
-                class="lp-nav-item lp-nav-dropdown-toggle"
-                aria-expanded="false"
-            >
-                Culture
-                <span class="lp-dropdown-arrow">⌄</span>
-            </button>
+        <div
+            class="ipb-mobile-submenu"
+            id="ipbMobileCulture"
+        >
+            <a href="about.html">
+                About Ipapo
+            </a>
 
-            <div class="lp-nav-dropdown-menu">
+            <a href="about.html#heritage">
+                Royal Heritage
+            </a>
 
-                <a href="about.html">
-                    About Ipapo
-                </a>
+            <a href="about.html#culture">
+                Culture & Tradition
+            </a>
 
-                <a href="about.html#heritage">
-                    Royal Heritage
-                </a>
-
-                <a href="about.html#culture">
-                    Culture &amp; Traditions
-                </a>
-
-                <a href="events.html">
-                    Festivals
-                </a>
-
-            </div>
-
+            <a href="events.html">
+                Cultural Events
+            </a>
         </div>
 
 
-        <a href="events.html" class="lp-nav-item">
+        <a
+            href="events.html"
+            class="ipb-mobile-link"
+        >
             Events
         </a>
 
-        <a href="contact.html" class="lp-nav-item">
-            Contact
-        </a>
 
-    </nav>
+        <button
+            type="button"
+            class="ipb-mobile-dropdown-button"
+            data-mobile-dropdown="more"
+        >
+            <span>More</span>
+            <span class="ipb-chevron"></span>
+        </button>
 
+        <div
+            class="ipb-mobile-submenu"
+            id="ipbMobileMore"
+        >
+            <a href="about.html">
+                About
+            </a>
 
-    <!-- ACTION BUTTONS -->
-    <div class="lp-auth-actions">
+            <a href="live.html">
+                Live Radio
+            </a>
+
+            <a href="advertise.html">
+                Advertise
+            </a>
+
+            <a href="submit-story.html">
+                Submit Story
+            </a>
+
+            <a href="contact.html">
+                Contact
+            </a>
+        </div>
+
 
         <a
             href="dashboard.html"
-            class="lp-btn-login"
+            class="ipb-mobile-link"
         >
             Member Area
         </a>
 
         <a
             href="home.html"
-            class="lp-btn-signup"
+            class="ipb-mobile-link"
         >
-            Join Community
+            Join Our Community
         </a>
 
     </div>
 
 
-    <button
-        type="button"
-        class="lp-menu-btn"
-        id="lpMenuBtn"
-        aria-label="Open navigation menu"
-        aria-expanded="false"
-    >
-        ☰
-    </button>
+    <!-- =========================================================
+         HERO / AUTOMATIC BACKGROUND
+         ========================================================= -->
 
-</header>
+    <main>
 
+        <section
+            class="ipb-hero"
+            id="ipbHero"
+            aria-label="Welcome to Ipapo"
+        >
 
-
-
-
-    <div
-        class="lp-mobile-menu"
-        id="lpMobileMenu"
-        aria-hidden="true"
-    >
-
-        <a href="news.html">
-            News
-        </a>
-
-        <a href="live.html">
-            Live Radio
-        </a>
-
-        <a href="events.html">
-            Events
-        </a>
-
-        <a href="community.html">
-            Community
-        </a>
-
-        <a href="about.html">
-            About
-        </a>
-
-        <a href="contact.html">
-            Contact
-        </a>
-
-        <div class="lp-mobile-menu-actions">
-
-            <a
-                href="dashboard.html"
-                class="lp-btn-login"
+            <!-- IMAGE 1 -->
+            <div
+                class="ipb-slide ipb-active"
+                data-slide="0"
             >
-                Member Area
-            </a>
+                <img
+                    src="img/ipapo_gateway.jpg"
+                    alt="Welcome gateway to Ipapo"
+                    loading="eager"
+                >
+            </div>
 
-            <a
-                href="home.html"
-                class="lp-btn-signup"
+
+            <!-- IMAGE 2 -->
+            <div
+                class="ipb-slide"
+                data-slide="1"
             >
-                Join Community
-            </a>
-
-        </div>
-
-    </div>
-
-
-    <main class="lp-content-container">
-
-        <div class="hero-pill-badge">
-
-            <span class="pulsing-dot"></span>
-
-            <span>
-                VOICE OF THE COMMUNITY • IPAPO, OYO STATE
-            </span>
-
-        </div>
+                <img
+                    src="img/DARH7119.JPG"
+                    alt="Ipapo community"
+                    loading="lazy"
+                >
+            </div>
 
 
-        <h1 class="hero-main-title">
-            The Heartbeat, Culture & News of
-            <span class="highlight">Ipapo.</span>
-        </h1>
-
-
-        <p class="hero-lead-text">
-            Connecting our people through trusted local journalism,
-            24/7 live community radio, youth empowerment, cultural
-            heritage, and civic dialogue across Ipapo and to the world.
-        </p>
-
-
-        <div class="hero-cta-group">
-
-            <a
-                href="home.html"
-                class="btn-hero-primary"
+            <!-- IMAGE 3 -->
+            <div
+                class="ipb-slide"
+                data-slide="2"
             >
-                <span>✨ Join the Ipapo Community</span>
-                <span>→</span>
-            </a>
+                <img
+                    src="https://images.unsplash.com/photo-1540202404-a2f29016b523?auto=format&fit=crop&w=2000&q=85"
+                    alt="People and community in Ipapo"
+                    loading="lazy"
+                >
+            </div>
 
-            <a
-                href="news.html"
-                class="btn-hero-secondary"
+
+            <!-- IMAGE 4 -->
+            <div
+                class="ipb-slide"
+                data-slide="3"
             >
-                <span>
-                    🧭 Explore Town Platform ↓
-                </span>
-            </a>
+                <img
+                    src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Ado%20awaye%20mountain%20in%20oyo%20state%2030.jpg"
+  alt="Ado-Awaye Hill, Oyo State"
+                    loading="lazy"
+                >
+            </div>
 
-        </div>
+
+            <!-- IMAGE 5 -->
+            <div
+                class="ipb-slide"
+                data-slide="4"
+            >
+                <img
+                    src="img/black.jpg"
+                    alt="Ipapo community landscape"
+                    loading="lazy"
+                >
+            </div>
 
 
-        <div class="hero-stats-ribbon">
+            <!-- EXTERNAL COMMUNITY IMAGE -->
+            <div
+                class="ipb-slide"
+                data-slide="5"
+            >
+                <img
+                    src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=2200&q=85"
+                    alt="Community residential area"
+                    loading="lazy"
+                >
+            </div>
 
-            <div class="stat-box">
 
-                <div class="stat-number">
-                    24/7
-                </div>
+            <!-- EXTERNAL COMMUNITY IMAGE -->
+            <div
+                class="ipb-slide"
+                data-slide="6"
+            >
+                <img
+                    src="img/ipapo_aerial.jpg"
+                    alt="Community homes"
+                    loading="lazy"
+                >
+            </div>
 
-                <div class="stat-label">
-                    Live Community Radio
+
+            <!-- EXTERNAL AFRICAN COMMUNITY IMAGE -->
+            <div
+                class="ipb-slide"
+                data-slide="7"
+            >
+                <img
+                    src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=2200&q=85"
+                    alt="African community landscape"
+                    loading="lazy"
+                >
+            </div>
+
+
+            <!-- HERO TEXT -->
+
+            <div class="ipb-hero-content">
+
+                <p class="ipb-welcome">
+                    Welcome to Ipapo
+                </p>
+
+                <h1 class="ipb-title">
+                    Explore Ipapo
+                </h1>
+
+                <p class="ipb-description">
+                    Discover the people, stories, culture, heritage,
+                    events and everyday life that make Ipapo a special
+                    community in Itesiwaju, Oyo State.
+                </p>
+
+                <div class="ipb-actions">
+
+                    <a
+                        href="news.html"
+                        class="ipb-action ipb-action-primary"
+                    >
+                        Explore Ipapo
+                    </a>
+
+                    <a
+                        href="home.html"
+                        class="ipb-action ipb-action-secondary"
+                    >
+                        Join Our Community
+                    </a>
+
                 </div>
 
             </div>
 
 
-            <div class="stat-box">
+            <!-- SLIDE INDICATORS -->
 
-                <div class="stat-number">
-                    10+
-                </div>
+            <div
+                class="ipb-indicators"
+                id="ipbIndicators"
+                aria-label="Background image controls"
+            >
 
-                <div class="stat-label">
-                    Town Quarters & Baales
-                </div>
+                <button
+                    type="button"
+                    class="ipb-indicator ipb-active"
+                    data-index="0"
+                    aria-label="Show image 1"
+                ></button>
+
+                <button
+                    type="button"
+                    class="ipb-indicator"
+                    data-index="1"
+                    aria-label="Show image 2"
+                ></button>
+
+                <button
+                    type="button"
+                    class="ipb-indicator"
+                    data-index="2"
+                    aria-label="Show image 3"
+                ></button>
+
+                <button
+                    type="button"
+                    class="ipb-indicator"
+                    data-index="3"
+                    aria-label="Show image 4"
+                ></button>
+
+                <button
+                    type="button"
+                    class="ipb-indicator"
+                    data-index="4"
+                    aria-label="Show image 5"
+                ></button>
+
+                <button
+                    type="button"
+                    class="ipb-indicator"
+                    data-index="5"
+                    aria-label="Show image 6"
+                ></button>
+
+                <button
+                    type="button"
+                    class="ipb-indicator"
+                    data-index="6"
+                    aria-label="Show image 7"
+                ></button>
+
+                <button
+                    type="button"
+                    class="ipb-indicator"
+                    data-index="7"
+                    aria-label="Show image 8"
+                ></button>
 
             </div>
 
 
-            <div class="stat-box">
-
-                <div class="stat-number">
-                    5,000+
-                </div>
-
-                <div class="stat-label">
-                    Resident Network
-                </div>
-
+            <div class="ipb-location">
+                Ipapo · Itesiwaju · Oyo State
             </div>
 
 
-            <div class="stat-box">
-
-                <div class="stat-number">
-                    100%
-                </div>
-
-                <div class="stat-label">
-                    Verified Local Focus
-                </div>
-
+            <div class="ipb-explore-strip">
+                Discover · Connect · Belong
             </div>
 
-        </div>
+        </section>
 
     </main>
 
 
     <!-- =========================================================
-         MAIN CONTENT
+         PAGE TRANSITION
          ========================================================= -->
 
-    <div class="lp-section-wrap" id="features">
-
-        <div class="lp-section-inner">
-
-
-            <!-- =================================================
-                 FEATURES
-                 ================================================= -->
-
-            <div class="section-head">
-
-                <span class="sub-tag">
-                    Ipapo Broadcast Platform
-                </span>
-
-                <h2>
-                    Everything Your Community Needs in One Hub
-                </h2>
-
-                <p>
-                    Designed specifically for the civic development,
-                    information, and cultural unity of Ipapo descendants
-                    everywhere.
-                </p>
-
-            </div>
-
-
-            <div class="features-grid">
-
-                <div class="feature-card">
-
-                    <div class="feature-icon-bubble">
-                        📻
-                    </div>
-
-                    <h3>
-                        24/7 Live Radio
-                    </h3>
-
-                    <p>
-                        Stream live audio broadcasts, cultural music,
-                        talk shows, and morning briefs from Ipapo studio
-                        anywhere in the world.
-                    </p>
-
-                </div>
-
-
-                <div class="feature-card">
-
-                    <div class="feature-icon-bubble">
-                        📰
-                    </div>
-
-                    <h3>
-                        Verified Local News
-                    </h3>
-
-                    <p>
-                        Get real-time updates on township infrastructure,
-                        chieftaincy affairs, local politics, markets,
-                        and education.
-                    </p>
-
-                </div>
-
-
-                <div class="feature-card">
-
-                    <div class="feature-icon-bubble">
-                        👑
-                    </div>
-
-                    <h3>
-                        Culture & Heritage
-                    </h3>
-
-                    <p>
-                        Celebrate our monarch Kabiyesi Oba of Ipapo,
-                        our historic Abuwe black soap craft, masquerade
-                        festivals, and traditions.
-                    </p>
-
-                </div>
-
-
-                <div class="feature-card">
-
-                    <div class="feature-icon-bubble">
-                        🎓
-                    </div>
-
-                    <h3>
-                        Youth & Scholarships
-                    </h3>
-
-                    <p>
-                        Direct access to FLDG Ipapo scholarships,
-                        FIPSU forums, sports tournaments, and student
-                        empowerment programs.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <!-- =================================================
-                 HISTORY OF IPAPO
-                 ================================================= -->
-
-            <section
-                class="traditional-culture-section"
-                id="ipapo-origins"
-                aria-labelledby="ipapo-origins-title"
-            >
-
-                <div class="traditional-culture-image">
-
-                    <div class="culture-history-slot">
-
-                        <img
-                            src="img/background.jpg"
-                            alt="Historical Ipapo archive"
-                            loading="lazy"
-                            onerror="this.style.display='none'; this.parentElement.classList.add('missing-image'); this.parentElement.textContent='Add img/background.jpg';"
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <div class="traditional-culture-copy">
-
-                    <span class="sub-tag">
-                        Community Archive
-                    </span>
-
-                    <h2 id="ipapo-origins-title">
-                        The History of Ipapo
-                    </h2>
-
-                    <p>
-                        Ipapo's founding story should be preserved through
-                        the voices of elders, family histories, palace records
-                        and community archives.
-                    </p>
-
-                    <p>
-                        We will document the first settlement accounts,
-                        founding families, migration routes, development
-                        of the quarters, traditional leadership and the
-                        people shaping Ipapo today. The final timeline
-                        should be reviewed by elders, historians and
-                        community associations before publication.
-                    </p>
-
-                    <a
-                        href="contact.html"
-                        class="btn-hero-secondary"
-                    >
-                        Share a Family History &rarr;
-                    </a>
-
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 PHOTO SHOWCASE
-                 ================================================= -->
-
-            <div
-                class="section-head"
-                id="gallery-showcase"
-                style="margin-top: 40px;"
-            >
-
-                <span class="sub-tag">
-                    Visual Heritage
-                </span>
-
-                <h2>
-                    Captured in Ipapo
-                </h2>
-
-                <p>
-                    Click any photograph to instantly project it onto
-                    the background carousel.
-                </p>
-
-            </div>
-
-
-            <div class="photo-showcase-grid">
-
-                <div
-                    class="photo-card"
-                    data-slide-target="0"
-                >
-
-                    <img
-                        src="img/ipapo_gateway.jpg"
-                        alt="Welcome to Ipapo"
-                        loading="lazy"
-                    >
-
-                    <div class="photo-card-overlay">
-
-                        <div class="photo-card-title">
-                            Welcome Gate
-                        </div>
-
-                        <div class="photo-card-subtitle">
-                            Town Entrance
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="photo-card"
-                    data-slide-target="1"
-                >
-
-                    <img
-                        src="img/ippao.jpg"
-                        alt="Oba of Ipapo"
-                        loading="lazy"
-                    >
-
-                    <div class="photo-card-overlay">
-
-                        <div class="photo-card-title">
-                            Royal Majesty
-                        </div>
-
-                        <div class="photo-card-subtitle">
-                            Oba of Ipapo
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="photo-card"
-                    data-slide-target="2"
-                >
-
-                    <img
-                        src="img/ipapo_aerial.jpg"
-                        alt="Aerial Panorama"
-                        loading="lazy"
-                    >
-
-                    <div class="photo-card-overlay">
-
-                        <div class="photo-card-title">
-                            Sunset Panorama
-                        </div>
-
-                        <div class="photo-card-subtitle">
-                            Itesiwaju Hills
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="photo-card"
-                    data-slide-target="3"
-                >
-
-                    <img
-                        src="img/abuwe.jpg"
-                        alt="Abuwe Soap Craft"
-                        loading="lazy"
-                    >
-
-                    <div class="photo-card-overlay">
-
-                        <div class="photo-card-title">
-                            Abuwe Soap Craft
-                        </div>
-
-                        <div class="photo-card-subtitle">
-                            Isale Baale Quarters
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="photo-card"
-                    data-slide-target="4"
-                >
-
-                    <img
-                        src="img/building.jpg"
-                        alt="College of Education"
-                        loading="lazy"
-                    >
-
-                    <div class="photo-card-overlay">
-
-                        <div class="photo-card-title">
-                            College of Education
-                        </div>
-
-                        <div class="photo-card-subtitle">
-                            Campus Development
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="photo-card"
-                    data-slide-target="5"
-                >
-
-                    <img
-                        src="img/school.jpg"
-                        alt="Youth Sports Meet"
-                        loading="lazy"
-                    >
-
-                    <div class="photo-card-overlay">
-
-                        <div class="photo-card-title">
-                            Inter-House Sports
-                        </div>
-
-                        <div class="photo-card-subtitle">
-                            Muslim High School
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="photo-card"
-                    data-slide-target="6"
-                >
-
-                    <img
-                        src="img/sport.jpg"
-                        alt="Sports Laurels"
-                        loading="lazy"
-                    >
-
-                    <div class="photo-card-overlay">
-
-                        <div class="photo-card-title">
-                            Town Champions
-                        </div>
-
-                        <div class="photo-card-subtitle">
-                            Football Laurels
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="photo-card"
-                    data-slide-target="7"
-                >
-
-                    <img
-                        src="img/field.jpg"
-                        alt="Community Match"
-                        loading="lazy"
-                    >
-
-                    <div class="photo-card-overlay">
-
-                        <div class="photo-card-title">
-                            Community Matchday
-                        </div>
-
-                        <div class="photo-card-subtitle">
-                            Ipapo Central Field
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="photo-card"
-                    data-slide-target="8"
-                >
-
-                    <img
-                        src="img/group.jpg"
-                        alt="Ipapo Scholarships"
-                        loading="lazy"
-                    >
-
-                    <div class="photo-card-overlay">
-
-                        <div class="photo-card-title">
-                            FLDG Scholarships
-                        </div>
-
-                        <div class="photo-card-subtitle">
-                            Education Fund
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="photo-card"
-                    data-slide-target="9"
-                >
-
-                    <img
-                        src="img/DARH7119.JPG"
-                        alt="FIPSU Leadership"
-                        loading="lazy"
-                    >
-
-                    <div class="photo-card-overlay">
-
-                        <div class="photo-card-title">
-                            FIPSU Leadership
-                        </div>
-
-                        <div class="photo-card-subtitle">
-                            Students' Union
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- =================================================
-                 LATEST NEWS
-                 ================================================= -->
-
-            <section
-                class="landing-news-section"
-                id="latest-news"
-                aria-labelledby="landing-news-title"
-            >
-
-                <div class="section-head">
-
-                    <span class="sub-tag">
-                        Live Community News
-                    </span>
-
-                    <h2 id="landing-news-title">
-                        Latest from Ipapo
-                    </h2>
-
-                    <p>
-                        Fresh Oyo, Itesiwaju and Ipapo stories fetched
-                        from our news feed.
-                    </p>
-
-                </div>
-
-
-                <div
-                    class="landing-news-grid"
-                    id="landingNewsGrid"
-                >
-
-                    <p class="landing-news-status">
-                        Loading latest stories...
-                    </p>
-
-                </div>
-
-
-                <a
-                    href="news.html"
-                    class="btn-hero-secondary landing-news-link"
-                >
-                    View All News &rarr;
-                </a>
-
-            </section>
-
-
-            <!-- =================================================
-                 CTA
-                 ================================================= -->
-
-            <div
-                class="lp-cta-banner"
-                id="about-ipapo"
-            >
-
-                <span
-                    style="
-                        font-size:12px;
-                        font-weight:700;
-                        color:var(--lp-primary);
-                        letter-spacing:1px;
-                    "
-                >
-                    READY TO CONNECT?
-                </span>
-
-
-                <h2>
-                    Be Part of the Story of Ipapo
-                </h2>
-
-
-                <p>
-                    Join thousands of residents, community elders,
-                    students, and descendants in Oyo State and abroad
-                    staying informed and united.
-                </p>
-
-
-                <div
-                    style="
-                        display:flex;
-                        justify-content:center;
-                        gap:14px;
-                        flex-wrap:wrap;
-                    "
-                >
-
-                    <a
-                        href="news.html"
-                        class="btn-hero-primary"
-                    >
-                        Read Latest News →
-                    </a>
-
-                    <a
-                        href="community.html"
-                        class="btn-hero-secondary"
-                    >
-                        Join Community
-                    </a>
-
-                </div>
-
-            </div>
-
-
-            <!-- =================================================
-                 FOOTER
-                 ================================================= -->
-
-            <footer
-                class="lp-footer"
-                id="faq"
-            >
-
-                <div
-                    style="
-                        display:flex;
-                        gap:30px;
-                        flex-wrap:wrap;
-                        justify-content:center;
-                        margin-bottom:20px;
-                    "
-                >
-
-                    <div style="text-align:center;">
-
-                        <h4
-                            style="
-                                color:var(--lp-primary);
-                                margin-bottom:10px;
-                                font-size:14px;
-                            "
-                        >
-                            Platform
-                        </h4>
-
-                        <div
-                            style="
-                                display:flex;
-                                flex-direction:column;
-                                gap:8px;
-                            "
-                        >
-
-                            <a href="news.html">
-                                📰 News
-                            </a>
-
-                            <a href="live.html">
-                                📻 Live Radio
-                            </a>
-
-                            <a href="events.html">
-                                🎉 Events
-                            </a>
-
-                            <a href="programs.html">
-                                📺 Programs
-                            </a>
-
-                        </div>
-
-                    </div>
-
-
-                    <div style="text-align:center;">
-
-                        <h4
-                            style="
-                                color:var(--lp-primary);
-                                margin-bottom:10px;
-                                font-size:14px;
-                            "
-                        >
-                            Community
-                        </h4>
-
-                        <div
-                            style="
-                                display:flex;
-                                flex-direction:column;
-                                gap:8px;
-                            "
-                        >
-
-                            <a href="community.html">
-                                🤝 Community Hub
-                            </a>
-
-                            <a href="gallery.html">
-                                🖼️ Photo Gallery
-                            </a>
-
-                            <a href="submit-story.html">
-                                ✍️ Submit Story
-                            </a>
-
-                            <a href="contact.html">
-                                📞 Contact Us
-                            </a>
-
-                        </div>
-
-                    </div>
-
-
-                    <div style="text-align:center;">
-
-                        <h4
-                            style="
-                                color:var(--lp-primary);
-                                margin-bottom:10px;
-                                font-size:14px;
-                            "
-                        >
-                            About
-                        </h4>
-
-                        <div
-                            style="
-                                display:flex;
-                                flex-direction:column;
-                                gap:8px;
-                            "
-                        >
-
-                            <a href="about.html">
-                                👑 About Ipapo
-                            </a>
-
-                            <a href="about.html#heritage">
-                                🏛️ Royal Heritage
-                            </a>
-
-                            <a href="about.html#culture">
-                                🎭 Culture & Traditions
-                            </a>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <p>
-                    © 2026 Ipapo Broadcast • Voice of the Community •
-                    Oyo State, Nigeria
-                </p>
-
-
-                <p
-                    style="
-                        opacity:0.75;
-                        font-size:11.5px;
-                    "
-                >
-                    Designed & Developed by Ibrahim Olaniyi (Programmer)
-                </p>
-
-
-                <div
-                    style="
-                        margin-top:15px;
-                        padding-top:15px;
-                        border-top:1px solid rgba(255,255,255,0.1);
-                    "
-                >
-
-                    <a
-                        href="admin/admin-login.html"
-                        style="
-                            color:rgba(255,255,255,0.4);
-                            font-size:11px;
-                            text-decoration:none;
-                        "
-                    >
-                        🔐 Admin Portal
-                    </a>
-
-                </div>
-
-            </footer>
-
-        </div>
-
-    </div>
+    <div
+        class="ipb-page-transition"
+        id="ipbPageTransition"
+    ></div>
 
 
     <!-- =========================================================
-         SCRIPTS
-         ========================================================= -->
-
-    <script src="js/api-config.js"></script>
-
-    <script src="js/landing.js"></script>
-
-
-    <!-- =========================================================
-         HOME PAGE NEWS FETCHER
+         JAVASCRIPT
          ========================================================= -->
 
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
 
-        /*
-         * ========================================================
-         * IPAPO BROADCAST - HOME PAGE NEWS
-         * ========================================================
-         *
-         * IMPORTANT:
-         * This uses the existing:
-         *
-         * /api/fetch-news
-         *
-         * Do not replace this with another endpoint.
-         * ========================================================
-         */
+            /* =====================================================
+               ELEMENTS
+               ===================================================== */
 
-        async function loadLandingNews() {
+            const slides = Array.from(
+                document.querySelectorAll(".ipb-slide")
+            );
 
-            const grid = document.getElementById('landingNewsGrid');
+            const indicators = Array.from(
+                document.querySelectorAll(".ipb-indicator")
+            );
 
-            if (!grid) {
+            const menuButton =
+                document.getElementById("ipbMenuButton");
 
-                console.warn(
-                    'Ipapo Broadcast: landingNewsGrid was not found.'
-                );
+            const mobileMenu =
+                document.getElementById("ipbMobileMenu");
 
-                return;
-            }
+            const pageTransition =
+                document.getElementById("ipbPageTransition");
 
 
-            /*
-             * Show loading state while the API request is running.
-             */
+            /* =====================================================
+               BACKGROUND SLIDER
+               ===================================================== */
 
-            grid.innerHTML = `
-                <p class="landing-news-status">
-                    Loading latest stories...
-                </p>
-            `;
+            let currentSlide = 0;
 
+            let slideTimer = null;
 
-            try {
-
-                console.log(
-                    'Ipapo Broadcast: fetching latest news...'
-                );
+            const slideDuration = 6500;
 
 
-                /*
-                 * Use the existing fetch-news endpoint directly.
-                 */
+            function showSlide(index) {
 
-                const response = await fetch(
-                    '/api/fetch-news',
-                    {
-                        method: 'GET',
-                        cache: 'no-store',
-                        headers: {
-                            'Accept': 'application/json'
-                        }
-                    }
-                );
-
-
-                console.log(
-                    'Ipapo Broadcast: news API status:',
-                    response.status
-                );
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        `News API returned HTTP ${response.status}`
-                    );
-
-                }
-
-
-                const payload = await response.json();
-
-
-                console.log(
-                    'Ipapo Broadcast: news API response:',
-                    payload
-                );
-
-
-                /*
-                 * Make sure the backend returned an array.
-                 */
-
-                const stories = Array.isArray(payload.stories)
-                    ? payload.stories
-                    : [];
-
-
-                if (!stories.length) {
-
-                    grid.innerHTML = `
-                        <p class="landing-news-status">
-                            No fresh stories are available right now.
-                            Please check again soon.
-                        </p>
-                    `;
-
+                if (!slides.length) {
                     return;
                 }
 
+                if (index >= slides.length) {
+                    index = 0;
+                }
 
-                /*
-                 * Display the newest stories first.
-                 */
+                if (index < 0) {
+                    index = slides.length - 1;
+                }
 
-                const sortedStories = [...stories]
-                    .sort((a, b) => {
-
-                        const dateA = new Date(
-                            a.publishedAt ||
-                            a.fetchedAt ||
-                            0
-                        ).getTime();
-
-                        const dateB = new Date(
-                            b.publishedAt ||
-                            b.fetchedAt ||
-                            0
-                        ).getTime();
-
-                        return dateB - dateA;
-
-                    })
-                    .slice(0, 6);
+                currentSlide = index;
 
 
-                /*
-                 * Build the cards.
-                 */
+                slides.forEach(function (slide, i) {
 
-                grid.innerHTML = sortedStories.map((story) => {
+                    slide.classList.toggle(
+                        "ipb-active",
+                        i === currentSlide
+                    );
 
-                    const title =
-                        story.title ||
-                        'Ipapo Community Update';
-
-
-                    const description =
-                        story.summary ||
-                        story.content ||
-                        story.description ||
-                        'Fresh community update from Ipapo.';
+                });
 
 
-                    const category =
-                        story.category ||
-                        'Community';
+                indicators.forEach(function (indicator, i) {
+
+                    indicator.classList.toggle(
+                        "ipb-active",
+                        i === currentSlide
+                    );
+
+                });
+
+            }
 
 
-                    const dateValue =
-                        story.fetchedAt ||
-                        story.publishedAt;
+            function startSlider() {
+
+                stopSlider();
+
+                slideTimer = setInterval(function () {
+
+                    showSlide(currentSlide + 1);
+
+                }, slideDuration);
+
+            }
 
 
-                    let formattedDate =
-                        'Latest update';
+            function stopSlider() {
+
+                if (slideTimer) {
+
+                    clearInterval(slideTimer);
+
+                    slideTimer = null;
+
+                }
+
+            }
 
 
-                    if (dateValue) {
+            indicators.forEach(function (indicator) {
 
-                        const parsedDate =
-                            new Date(dateValue);
+                indicator.addEventListener(
+                    "click",
+                    function () {
+
+                        const index =
+                            Number(
+                                indicator.dataset.index
+                            );
+
+                        showSlide(index);
+
+                        startSlider();
+
+                    }
+                );
+
+            });
 
 
-                        if (
-                            !Number.isNaN(
-                                parsedDate.getTime()
-                            )
-                        ) {
+            showSlide(0);
 
-                            formattedDate =
-                                `Updated ${parsedDate.toLocaleDateString(
-                                    undefined,
-                                    {
-                                        day: 'numeric',
-                                        month: 'long',
-                                        year: 'numeric'
-                                    }
-                                )}`;
+            startSlider();
+
+
+            /* =====================================================
+               MOBILE MENU
+               ===================================================== */
+
+            function closeMobileMenu() {
+
+                if (!menuButton || !mobileMenu) {
+                    return;
+                }
+
+                menuButton.classList.remove(
+                    "ipb-open"
+                );
+
+                mobileMenu.classList.remove(
+                    "ipb-open"
+                );
+
+                menuButton.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+
+                document
+                    .querySelectorAll(
+                        ".ipb-mobile-submenu"
+                    )
+                    .forEach(function (menu) {
+
+                        menu.classList.remove(
+                            "ipb-open"
+                        );
+
+                    });
+
+            }
+
+
+            if (menuButton && mobileMenu) {
+
+                menuButton.addEventListener(
+                    "click",
+                    function () {
+
+                        const isOpen =
+                            mobileMenu.classList.contains(
+                                "ipb-open"
+                            );
+
+                        if (isOpen) {
+
+                            closeMobileMenu();
+
+                        } else {
+
+                            menuButton.classList.add(
+                                "ipb-open"
+                            );
+
+                            mobileMenu.classList.add(
+                                "ipb-open"
+                            );
+
+                            menuButton.setAttribute(
+                                "aria-expanded",
+                                "true"
+                            );
 
                         }
 
                     }
+                );
+
+            }
 
 
-                    const storyId =
-                        encodeURIComponent(
-                            story.id || ''
+            /* =====================================================
+               MOBILE DROPDOWNS
+               ===================================================== */
+
+            document
+                .querySelectorAll(
+                    ".ipb-mobile-dropdown-button"
+                )
+                .forEach(function (button) {
+
+                    button.addEventListener(
+                        "click",
+                        function () {
+
+                            const name =
+                                button.dataset.mobileDropdown;
+
+                            const submenu =
+                                document.getElementById(
+                                    "ipbMobile" +
+                                    name.charAt(0).toUpperCase() +
+                                    name.slice(1)
+                                );
+
+                            if (!submenu) {
+                                return;
+                            }
+
+                            submenu.classList.toggle(
+                                "ipb-open"
+                            );
+
+                        }
+                    );
+
+                });
+
+
+            /* =====================================================
+               DESKTOP DROPDOWNS
+               ===================================================== */
+
+            document
+                .querySelectorAll(".ipb-dropdown")
+                .forEach(function (dropdown) {
+
+                    const button =
+                        dropdown.querySelector(
+                            ".ipb-dropdown-button"
                         );
 
+                    if (!button) {
+                        return;
+                    }
 
-                    return `
-                        <article class="landing-news-card">
+                    button.addEventListener(
+                        "click",
+                        function (event) {
 
-                            <div class="landing-news-card-body">
+                            event.stopPropagation();
 
-                                <span>
-                                    ${escapeLandingNewsHtml(category)}
-                                </span>
-
-                                <small>
-                                    ${escapeLandingNewsHtml(formattedDate)}
-                                </small>
-
-                                <h3>
-                                    ${escapeLandingNewsHtml(title)}
-                                </h3>
-
-                                <p>
-                                    ${escapeLandingNewsHtml(description)}
-                                </p>
-
-                                <a
-                                    href="article.html?id=${storyId}"
-                                >
-                                    Read Story &rarr;
-                                </a>
-
-                            </div>
-
-                        </article>
-                    `;
-
-                }).join('');
+                            const currentlyOpen =
+                                dropdown.classList.contains(
+                                    "ipb-open"
+                                );
 
 
-                console.log(
-                    `Ipapo Broadcast: ${sortedStories.length} news cards displayed on Home page.`
-                );
+                            document
+                                .querySelectorAll(
+                                    ".ipb-dropdown"
+                                )
+                                .forEach(function (item) {
 
-            }
+                                    item.classList.remove(
+                                        "ipb-open"
+                                    );
 
+                                    const itemButton =
+                                        item.querySelector(
+                                            ".ipb-dropdown-button"
+                                        );
 
-            catch (error) {
+                                    if (itemButton) {
 
-                console.error(
-                    'Ipapo Broadcast: Home news could not load:',
-                    error
-                );
+                                        itemButton.setAttribute(
+                                            "aria-expanded",
+                                            "false"
+                                        );
 
+                                    }
 
-                grid.innerHTML = `
-                    <div
-                        class="landing-news-status"
-                        style="
-                            grid-column:1 / -1;
-                            text-align:center;
-                            padding:30px 20px;
-                        "
-                    >
-
-                        <p>
-                            Latest stories are temporarily unavailable.
-                        </p>
-
-                        <p
-                            style="
-                                margin-top:8px;
-                                opacity:0.7;
-                                font-size:13px;
-                            "
-                        >
-                            Please refresh the page or open the full
-                            news page.
-                        </p>
-
-                        <a
-                            href="news.html"
-                            class="btn-hero-secondary"
-                            style="
-                                display:inline-flex;
-                                margin-top:15px;
-                            "
-                        >
-                            Open News Page &rarr;
-                        </a>
-
-                    </div>
-                `;
-
-            }
-
-        }
+                                });
 
 
-        /*
-         * ========================================================
-         * HTML ESCAPE
-         * ========================================================
-         */
+                            if (!currentlyOpen) {
 
-        function escapeLandingNewsHtml(value) {
+                                dropdown.classList.add(
+                                    "ipb-open"
+                                );
 
-            return String(value ?? '')
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
+                                button.setAttribute(
+                                    "aria-expanded",
+                                    "true"
+                                );
 
-        }
+                            }
 
+                        }
+                    );
 
-        /*
-         * ========================================================
-         * START NEWS LOADING
-         * ========================================================
-         */
+                });
 
-        if (
-            document.readyState === 'loading'
-        ) {
 
             document.addEventListener(
-                'DOMContentLoaded',
-                loadLandingNews
+                "click",
+                function () {
+
+                    document
+                        .querySelectorAll(
+                            ".ipb-dropdown"
+                        )
+                        .forEach(function (dropdown) {
+
+                            dropdown.classList.remove(
+                                "ipb-open"
+                            );
+
+                            const button =
+                                dropdown.querySelector(
+                                    ".ipb-dropdown-button"
+                                );
+
+                            if (button) {
+
+                                button.setAttribute(
+                                    "aria-expanded",
+                                    "false"
+                                );
+
+                            }
+
+                        });
+
+                }
             );
 
-        } else {
 
-            loadLandingNews();
+            /* =====================================================
+               CLOSE MOBILE MENU AFTER LINK CLICK
+               ===================================================== */
 
-        }
+            document
+                .querySelectorAll(
+                    ".ipb-mobile-menu a"
+                )
+                .forEach(function (link) {
 
+                    link.addEventListener(
+                        "click",
+                        function () {
+
+                            closeMobileMenu();
+
+                        }
+                    );
+
+                });
+
+
+            /* =====================================================
+               PAGE TRANSITIONS
+               ===================================================== */
+
+            document
+                .querySelectorAll(
+                    'a[href$=".html"], a[href^="http"]'
+                )
+                .forEach(function (link) {
+
+                    link.addEventListener(
+                        "click",
+                        function (event) {
+
+                            const href =
+                                link.getAttribute("href");
+
+                            if (!href) {
+                                return;
+                            }
+
+                            if (
+                                href.startsWith("#") ||
+                                href.startsWith("javascript:")
+                            ) {
+                                return;
+                            }
+
+                            if (
+                                link.target === "_blank" ||
+                                event.ctrlKey ||
+                                event.metaKey ||
+                                event.shiftKey
+                            ) {
+                                return;
+                            }
+
+                            if (
+                                href.startsWith("http") &&
+                                !href.includes(
+                                    window.location.hostname
+                                )
+                            ) {
+                                return;
+                            }
+
+                            event.preventDefault();
+
+                            if (pageTransition) {
+
+                                pageTransition.classList.add(
+                                    "ipb-leaving"
+                                );
+
+                            }
+
+                            setTimeout(
+                                function () {
+
+                                    window.location.href =
+                                        href;
+
+                                },
+                                260
+                            );
+
+                        }
+                    );
+
+                });
+
+
+            /* =====================================================
+               CLOSE MENU WHEN SCREEN GETS BIGGER
+               ===================================================== */
+
+            window.addEventListener(
+                "resize",
+                function () {
+
+                    if (window.innerWidth > 900) {
+
+                        closeMobileMenu();
+
+                    }
+
+                }
+            );
+
+
+            /* =====================================================
+               PAUSE ROTATION WHEN TAB IS HIDDEN
+               ===================================================== */
+
+            document.addEventListener(
+                "visibilitychange",
+                function () {
+
+                    if (
+                        document.visibilityState ===
+                        "hidden"
+                    ) {
+
+                        stopSlider();
+
+                    } else {
+
+                        startSlider();
+
+                    }
+
+                }
+            );
+
+        });
     </script>
 
 </body>
 </html>
-```
-
-
